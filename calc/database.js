@@ -8,12 +8,12 @@ var userDB = [] // imported database
 var queryResult = [] // matching phrases
 var dbLoaded = false // if database is loaded, disable cipher rearrangement
 
-var nPhr = 25 // number of phrases in one section
+var nPhr = 15 // number of phrases in one section
+var newItems = 1 // used for scrolling
 
 $(document).ready(function(){
 	// Scroll inside table
 	$("body").on("wheel", "#QueryTable", function (event) {
-		newItems = 5
 		st = $("#QueryTable").data("startpos")
 		n = $("#QueryTable").data("dispitems")
 
@@ -23,7 +23,7 @@ $(document).ready(function(){
 				updateDatabaseQueryTable(st-newItems, n) // redraw table at new position
 			}
 		} else { // scroll up
-			if (st+newItems < queryResult.length) {
+			if (st+nPhr < queryResult.length) {
 				$("#queryArea").html() // clear previous table
 				updateDatabaseQueryTable(st+newItems, n) // redraw table at new position
 			}
@@ -76,11 +76,11 @@ $(document).ready(function(){
 	});
 
 	// Change of scrollbar position
-	$("body").on("change", "#queryScrollbar", function () {
+	$("body").on("input", "#queryScrollbar", function () {
 		st = $(this).val() * nPhr
 		n = $("#QueryTable").data("dispitems")
 		$("#queryArea").html() // clear previous table
-		updateDatabaseQueryTable(st, n) // redraw table at new position
+		updateDatabaseQueryTableScrollbar(st, n) // update only the table at new position
 	});
 
 	// Right click on scrollbar
@@ -140,7 +140,7 @@ function queryDatabase() {
 	$("#queryArea").css("width", tWidth) // set initial/minimal width for the table
 	/*var o = 'min-width:'+tWidth+';width:'+tWidth+';'
 	$("#queryArea").attr("style", o) // set minimal/initial width for the table*/
-	updateDatabaseQueryTable(0,25)
+	updateDatabaseQueryTable(0,nPhr)
 }
 
 function clearDatabaseQueryTable() {
@@ -197,6 +197,92 @@ function searchDBsameCipher() { // populate "queryResult" array with matching ph
 	queryResult.sort(function(a, b) { // sort by score (descending)
 		return b[0] - a[0]; // sort based on index 0 values ("freq" is array of arrays), (b-a) descending order, (a-b) ascending
 	});
+}
+
+function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting position, total displayed items
+	var ms, x, y, mCross, mSame, curCiph
+
+	// stPos - starting position
+	// nPhr - number of phrases in one section
+	var nextBlock = stPos+nPhr // position for next section
+	if (nextBlock > queryResult.length) nextBlock = queryResult.length // out of bounds
+	var valPos = 2 // used to retrive gematria from "gemArr" (no recalculation, [0] - score, [1] - phrase)
+	var firstPhrase = true // display cipher names before the first phrase
+	var tmpComment, commentMatch, dispPhrase // temporary variables to display comments [...]
+
+	var curPos = stPos // current position begins with starting index
+	var endPos = stPos + dItems // ending position
+	if (curPos < 0) curPos = 0 // out of bounds
+	if (endPos > queryResult.length) { // last page
+		endPos = queryResult.length
+		stPos = queryResult.length - dItems
+		curPos = queryResult.length - dItems
+	}
+
+	$("#queryArea").removeClass("minimizeQuery") // unhide query area
+
+	$('#QueryTable').data('startpos', stPos); // update table index
+	$('#QueryTable').data('dispitems', dItems);
+
+	ms = '<tbody>'
+	for (x = curPos; x < endPos; x++) { // for phrases within range
+
+		if (firstPhrase) { // open row on the first phrase
+			firstPhrase = false
+			ms += '<tr class="cH"><td class="mPQ">'
+			ms += queryResult.length+' matches'
+			ms += '<br><br><input id="queryPosInput" type="tel" autocomplete="off" value="'+curPos+'">'
+			ms += '<br>-'
+			ms += '<br>'+nextBlock
+			ms += '</td>'
+			for (z = 0; z < gemArrCiph.length; z++) { // use compact layout
+				curCiph = cipherList[ gemArrCiph[z] ]
+				// ms += '<td class="hCVQ"><span class="hCV2" style="color: hsl('+curCiph.H+' '+curCiph.S+'% '+curCiph.L+'% / 1);">'+curCiph.cipherName.replace(/ /g, "<br>")+'</span></td>' // color of cipher displayed in the table
+				ms += '<td class="hCVQ"><span class="hCV2" style="color: hsl('+curCiph.H+' '+curCiph.S+'% '+curCiph.L+'% / 1);">'
+				ms += curCiph.cipherName+'</span></td>' // color of cipher displayed in the table
+			}
+			ms += "</tr>"
+			curPos += nPhr
+		}
+
+		if (optAllowPhraseComments) {
+			tmpComment = "" // reset
+			commentMatch = queryResult[x][1].match(/\[.+\]/g) // find comment
+			if (commentMatch !== null) {
+				tmpComment = commentMatch[0]
+			}
+			// comment first, phrase without comment and leading/trailing spaces
+			dispPhrase = '<span class="pCHT">'+tmpComment+'</span>' + queryResult[x][1].replace(/\[.+\]/g, '').trim()
+		} else {
+			dispPhrase = queryResult[x][1]
+		}
+		ms += '<tr><td class="hPQ" data-ind="'+x+'">' + dispPhrase + '</td>' // phrase at index 1
+
+		valPos = 2 // reset position for new phrase
+		for (y = 0; y < gemArrCiph.length; y++) { // gemArrCiph contains indices of ciphers used for query
+			curCiph = cipherList[ gemArrCiph[y] ]
+
+			gemVal = queryResult[x][valPos] // value only
+			if (gemVal == 0) gemVal = "-"
+			valPos++ // increment value position
+
+			// mSame - same cipher match, mCross - cross cipher match
+			if ( gemVal == gemArr[y] ) {mSame = true} else {mSame = false} // if value is at the same index (meaning same cipher)
+			if (gemArr.indexOf(gemVal) > -1) {mCross = true} else {mCross = false}
+
+			ms += '<td class="tCQ">' // use instead of .tC to disable highlighting/blinking/hide effects on click
+
+			if (mSame) { ms += '<span style="color: hsl('+curCiph.H+' '+curCiph.S+'% '+curCiph.L+'% / 1);"' }
+			else if (!mSame && mCross) { ms += '<span style="color: hsl(0deg 0% 50% / 1);"' }
+			else if (!mSame && !mCross) { ms += '<span style="color: hsl('+curCiph.H+' '+curCiph.S+'% '+curCiph.L+'% / '+alphaHlt+');"' }
+			ms += ' class="gV"> '+gemVal+' </span></td>' // number properties are available
+		}
+		ms += '</tr>'
+	}
+
+	ms += '</tbody>'
+	document.getElementById("QueryTable").innerHTML = ms
+	document.getElementById("queryPosInput").focus() // restore focus
 }
 
 function updateDatabaseQueryTable(stPos = 0, dItems = 25) { // starting position, total displayed items

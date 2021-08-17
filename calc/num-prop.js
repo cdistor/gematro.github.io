@@ -5,6 +5,7 @@ populatePrimeNumbers(10000000) // 10 million is ~4.98MB, ~300ms
 var triangularNums = populateTriangularNumbers(10000000)
 var fibonacciNums = populateFibonacciNumbers(10000000)
 var starNums = populateStarNumbers(10000000)
+var mobileUserAgent = navigator.userAgent.match('Mobile')
 
 // ======================= Number Properties ========================
 
@@ -12,13 +13,13 @@ $(document).ready(function() {
 
 	var showTooltip = function(event) {
 		// if (ctrlIsPressed || navigator.maxTouchPoints > 1) { // support for mobile devices
-		if (ctrlIsPressed && navigator.maxTouchPoints < 1) { // desktop only
+		if (ctrlIsPressed) { // desktop only
 			$('div.numPropTooltip').remove(); // old tooltip
 			val = $(this).text().trim() // remove spaces
 			$('<div class="numPropTooltip" data-number="'+val+'">'+listNumberProperties(val)+'</div>').appendTo('body');
 			changeTooltipPosition(event);
 		}
-		if (shiftIsPressed && navigator.maxTouchPoints < 1) { // additional properties
+		if (shiftIsPressed) { // additional properties
 			$('div.numPropTooltip').remove(); // old tooltip
 			val = $(this).text().trim() // remove spaces
 			$('<div class="numPropTooltip" data-number="'+val+'_alt" style="max-width: unset;">'+listNumberPropertiesAlt(val)+'</div>').appendTo('body');
@@ -59,7 +60,7 @@ $(document).ready(function() {
 
 			$('div.numPropTooltip').css({top: tooltipY, left: tooltipX});
 		}
-		if (navigator.maxTouchPoints > 1) { // for mobile devices
+		if (navigator.maxTouchPoints > 1 && mobileUserAgent) { // for mobile devices
 			var tooltipX = event.pageX - 8;
 			var tooltipY = event.pageY + 8;
 			$('div.numPropTooltip').css({top: tooltipY, left: tooltipX});

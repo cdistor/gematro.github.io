@@ -17,6 +17,8 @@ function createExportMenu() {
 	o += '<input id="btn-print-breakdown-details-png" class="intBtn" type="button" value="Print Gematria Card">' // print detailed breakdown
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-num-props-png" class="intBtn" type="button" value="Print Number Properties">' // print number properties
+	o += '<div style="margin: 0.5em;"></div>'
+	o += '<input id="btn-date-calc-png" class="intBtn" type="button" value="Print Date Durations">' // print date durations
 	
 	o += '<hr style="background-color: rgb(77,77,77); height: 1px; border: none; margin: 0.75em;">'
 
@@ -48,6 +50,12 @@ $(document).ready(function(){
 		var fileName = sHistory[0].normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/ /g, "-").replace(/["|']/g, "")+
 			"_"+getTimestamp()+"_table.png";
 		openImageWindow(".HistoryTable", fileName);
+	});
+	$("body").on("click", "#btn-date-calc-png", function () {
+		// phrase-with-spaces_2021-03-26_10-23-52_table.png
+		var fileName = (saved_d1.getMonth()+1)+'-'+saved_d1.getDate()+'-'+saved_d1.getFullYear()+'_'+
+			(saved_d2.getMonth()+1)+'-'+saved_d2.getDate()+'-'+saved_d2.getFullYear()+"_date_durations.png";
+		openImageWindow(".dateCalcTable2", fileName);
 	});
 
 	$("body").on("click", "#btn-print-word-break-png", function () {
@@ -235,6 +243,42 @@ function exportCiphers() {
 	out = 'data:text/js;charset=utf-8,'+encodeURIComponent(out) // format as text file
 	// ciphers_2021-03-26_10-23-52.js
 	download("ciphers_"+getTimestamp()+".js", out); // download file
+}
+
+function exportCiphersDB() {
+	var out = '// ciphers.js\n'
+	out += "interfaceHue = "+interfaceHue+"\n" // save current interface color
+	out += "cipherList = [\n"
+	for (i = 0; i < cipherList.length; i++) {
+		if (cipherList[i].enabled) { // export only enabled ciphers
+			var cArr_ = []
+			var vArr_ = []
+			
+			// Read list of characters
+			for (m = 0; m < cipherList[i].cArr.length; m++) {
+				// cArr_.push(String.fromCharCode(cipherList[i].cArr[m])) // character
+				cArr_.push(cipherList[i].cArr[m]) // charcode
+			}
+			
+			// Read values for each character
+			for (m = 0; m < cipherList[i].vArr.length; m++) {
+				vArr_.push(cipherList[i].vArr[m])
+			}
+			
+			out +=
+				'\tnew cipher(\n'+
+				'\t\t"'+cipherList[i].cipherName+'",\n'+
+				'\t\t"'+cipherList[i].cipherCategory+'",\n'+
+				'\t\t'+cipherList[i].H+', '+cipherList[i].S+', '+cipherList[i].L+',\n'+
+				'\t\t'+JSON.stringify(cArr_)+',\n'+
+				'\t\t'+JSON.stringify(vArr_)+',\n'+
+				'\t\t'+cipherList[i].diacriticsAsRegular+',\n'+
+				'\t\t'+cipherList[i].enabled+'\n'+
+				'\t),\n'
+		}
+	}
+	out = out.substring(0, out.length-2) + '\n]' // remove last comma and new line, close array
+	return out
 }
 
 function exportHighlighterMatches(histArr) { // highlighter mode controls export mode

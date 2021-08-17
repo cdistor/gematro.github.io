@@ -230,7 +230,7 @@ $(document).ready(function(){
 			document.getElementById("phraseBox").value = phr; // insert into search box
 			updateWordBreakdown() // update breakdown for current phrase
 			updateEnabledCipherTable() // update enabled cipher values
-			document.getElementById("phraseBox").focus(); // focus input
+			document.getElementById("queryPosInput").focus(); // focus input
 			addPhraseToHistory(phr, true) // enter as single phrase
 		}
 	});

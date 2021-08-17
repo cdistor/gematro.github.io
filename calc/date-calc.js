@@ -12,7 +12,8 @@ $(document).ready(function(){
 		$('#offsetD').val(0)
 		endChkEnabled = true // allow to toggle checkbox
 		$('#chkbox_incEndDate').prop("disabled", "")
-		if ( $(this).val().length > 0 ) updDates(); // if input not empty
+		$('#chkbox_excStartDate').prop("disabled", "")
+		if ( $(this).val().length > 0 ) updDates(false, $(this).attr('class')); // if input not empty
 	});
 	$("body").on("input", ".offsetDateInput", function () { // if input from add/subtract controls
 		offY = Number( $('#offsetY').val() );
@@ -34,10 +35,19 @@ $(document).ready(function(){
 
 		endDate = 0 // exclude end date from calculation (makes no sense for offset mode)
 		$('#chkbox_incEndDate').prop("checked", "") // uncheck box
+		$('#chkbox_excStartDate').prop("checked", "") // uncheck box
 		endChkEnabled = false // don't allow to toggle checkbox
 		$('#chkbox_incEndDate').prop("disabled", "disabled")
+		$('#chkbox_excStartDate').prop("disabled", "disabled")
 
 		updDates(true); // date offset mode
+	});
+	$("body").on("click", ".dateDurLine", function () { // left click - toggle highlight
+		$(this).toggleClass('highlightDurLine');
+	});
+	$("body").on("contextmenu", ".dateDurLine", function () { // right click - remove line
+		$(this).parent().remove();
+		return false; // don't show menus
 	});
 });
 
@@ -49,15 +59,15 @@ var reset_d2 = new Date(saved_d2)
 
 var offsetYMWD = [0,0,0,0] // store values for date offset controls
 
-var endDate = 0 // set to 1 to include end date
+var endDate = 0 // set to 1 to include end date, -1 to exclude start date
 var endChkEnabled = true // can checkbox be toggled or not
 
-function updDates(offsetMode = false) { // offsetMode - add/subtract
+function updDates(offsetMode = false, ctrlClass = '') { // offsetMode - add/subtract
 
 	// date 1
 	var d1 = new Date($('#d1y').val(), $('#d1m').val()-1, $('#d1d').val()) // year, month, date
 	saved_d1 = new Date(d1) // save date
-	// $('#d1y').val(d1.getFullYear()) // update controls with valid values
+	if (ctrlClass !== 'dateInputYear') $('#d1y').val(d1.getFullYear()) // update controls with valid values
 	$('#d1m').val(d1.getMonth()+1)
 	$('#d1d').val(d1.getDate())
 	$('#d1full').text(monthNames(d1.getMonth())+' '+d1.getDate()+', '+d1.getFullYear()) // update date 1
@@ -71,7 +81,7 @@ function updDates(offsetMode = false) { // offsetMode - add/subtract
 		d2 = new Date(saved_d2) // use precalculated date
 		$('#d2y').val(d2.getFullYear()) // update year
 	}
-	// $('#d2y').val(d2.getFullYear()) // update controls with valid values
+	if (ctrlClass !== 'dateInputYear') $('#d2y').val(d2.getFullYear()) // update controls with valid values
 	$('#d2m').val(d2.getMonth()+1)
 	$('#d2d').val(d2.getDate())
 	$('#d2full').text(monthNames(d2.getMonth())+' '+d2.getDate()+', '+d2.getFullYear()) // update date 2
@@ -79,21 +89,25 @@ function updDates(offsetMode = false) { // offsetMode - add/subtract
 	var d_min = new Date( Math.min(d1,d2) ) // dates used for calculation
 	var d_max = new Date( Math.max(d1,d2) )
 	var d_max_disp = new Date( Math.max(d1,d2) ) // date for display
-	d_max.setDate(d_max.getDate() + endDate) // +1 day to include end date if necessary
+	d_max.setDate(d_max.getDate() + endDate) // +1 day to include end date, -1 day to if necessary
 
 	// from Date 1 to Date 2 is:
 	var o = '<span class="weekDayLabel">'+dayOfWeek(d_min.getDay())+',</span>'+' '
 	o += '<span class="dateFullTable2">'+monthNames(d_min.getMonth())+' '+d_min.getDate()+', '+d_min.getFullYear()+'</span>'
 	o += '<br>'
-	o += dFmt(dayOfYear(d_min))+n_th(dayOfYear(d_min), d_min.getFullYear())+'<span style="font-weight: 400;"> day of the year / <span>'
-	o += dFmt(daysLeftInYear(d_min))+'<span style="font-weight: 400;"> days remaining</span>'
+	o += '<span style="color: rgb(128,128,128); font-size: 68%;">'
+	o += dFmt(dayOfYear(d_min))+'<span style="font-weight: 600;">'+n_th(dayOfYear(d_min), d_min.getFullYear())+' day of the year / <span>'
+	o += dFmt(daysLeftInYear(d_min))+'<span style="font-weight: 600;"> days remaining</span>'
+	o += '</span>'
 	$('#d1full_t2').html(o)
 
 	var o = '<span class="weekDayLabel">'+dayOfWeek(d_max_disp.getDay())+',</span>'+' '
 	o += '<span class="dateFullTable2">'+monthNames(d_max_disp.getMonth())+' '+d_max_disp.getDate()+', '+d_max_disp.getFullYear()+'</span>'
 	o += '<br>'
-	o += dFmt(dayOfYear(d_max_disp))+n_th(dayOfYear(d_max_disp), d_max_disp.getFullYear())+'<span style="font-weight: 400;"> day of the year / <span>'
-	o += dFmt(daysLeftInYear(d_max_disp))+'<span style="font-weight: 400;"> days remaining</span>'
+	o += '<span style="color: rgb(128,128,128); font-size: 68%;">'
+	o += dFmt(dayOfYear(d_max_disp))+'<span style="font-weight: 600;">'+n_th(dayOfYear(d_max_disp), d_max_disp.getFullYear())+' day of the year / <span>'
+	o += dFmt(daysLeftInYear(d_max_disp))+'<span style="font-weight: 600;"> days remaining</span>'
+	o += '</span>'
 	$('#d2full_t2').html(o)
 
 	// date difference
@@ -105,14 +119,32 @@ function updDates(offsetMode = false) { // offsetMode - add/subtract
 	var MD_arr = getMDdiff(d_min, d_max)
 	var WD_arr = getWDdiff(d_min, d_max)
 
-	$('#diff_YMWD').html( (dFmt(YMWD_arr.Y,0) + dFmt(YMWD_arr.M,1) + dFmt(MWD_arr.W,2) + dFmt(YMWD_arr.D,3)).trim() )
-	$('#diff_YMD').html( (dFmt(YMD_arr.Y,0) + dFmt(YMD_arr.M,1) + dFmt(YMD_arr.D,3)).trim() )
-	$('#diff_YWD').html( (dFmt(YWD_arr.Y,0) + dFmt(YWD_arr.W,2) + dFmt(YWD_arr.D,3)).trim() )
-	$('#diff_YD').html( (dFmt(YD_arr.Y,0) + dFmt(YD_arr.D,3)).trim() )
-	$('#diff_MWD').html( (dFmt(MWD_arr.M,1) + dFmt(MWD_arr.W,2) + dFmt(MWD_arr.D,3)).trim() )
-	$('#diff_MD').html( (dFmt(MD_arr.M,1) + dFmt(MD_arr.D,3)).trim() )
-	$('#diff_WD').html( (dFmt(WD_arr.W,2) + dFmt(WD_arr.D,3)).trim() )
-	$('#diff_D').html( (dFmt(getDayDiff(d_max, d_min),3)).trim() )
+	o = ''
+	if (YMWD_arr.Y !== 0) { // exclude durations if less than a year
+		if (YMWD_arr.M !== 0 && YMWD_arr.W !== 0) o += dDurLine( dFmt(YMWD_arr.Y,0) + dFmt(YMWD_arr.M,1) + dFmt(MWD_arr.W,2) + dFmt(YMWD_arr.D,3) )
+		if (YMD_arr.M !== 0) o += dDurLine( dFmt(YMD_arr.Y,0) + dFmt(YMD_arr.M,1) + dFmt(YMD_arr.D,3) )
+		if (YWD_arr.W !== 0) o += dDurLine( dFmt(YWD_arr.Y,0) + dFmt(YWD_arr.W,2) + dFmt(YWD_arr.D,3) )
+		o += dDurLine( dFmt(YD_arr.Y,0) + dFmt(YD_arr.D,3) )
+	}
+	if (MWD_arr.M !== 0 && MWD_arr.W !== 0) o += dDurLine( dFmt(MWD_arr.M,1) + dFmt(MWD_arr.W,2) + dFmt(MWD_arr.D,3) )
+	if (MD_arr.M !== 0) o += dDurLine( dFmt(MD_arr.M,1) + dFmt(MD_arr.D,3) )
+	if (WD_arr.W !== 0) o += dDurLine( dFmt(WD_arr.W,2) + dFmt(WD_arr.D,3) )
+	o += dDurLine( dFmt(getDayDiff(d_max, d_min),3) )
+
+	if (d_min.getTime() == d_max.getTime()) o = dDurLine('<span class="durVal">0</span> days') // same dates
+	$('#dateDurValues').html(o)
+}
+
+function dDurLine(val) { // build string to display date duration
+	val = val.trim() // remove spaces
+	if (endDate !== 0) val = endDateDisp(val) // display day offset
+	val = '<div><span class="dateDurLine">'+val+'</span></div>'// add class for highlighting
+	return val
+}
+
+function endDateDisp(val) {
+	if (endDate == 1) return '<span class="dayOffDisp">+1&nbsp;&nbsp;&nbsp;</span>'+val+'&nbsp;&nbsp;&nbsp;'
+	else if (endDate == -1) return '<span class="dayOffDisp">-1&nbsp;&nbsp;&nbsp;</span>'+val+'&nbsp;&nbsp;&nbsp;'
 }
 
 function dFmt(val, mode) { // formatting and label for date durations, y,m,w,d is 0,1,2,3 (optional)
@@ -120,7 +152,8 @@ function dFmt(val, mode) { // formatting and label for date durations, y,m,w,d i
 	var dLabel = ['years','months','weeks','days']
 	if (val == 1) dLabel = ['year','month','week','day']
 	if (typeof mode !== 'undefined') { o = '<span class="durVal">'+val+'</span>'+' '+dLabel[mode]+' ' }
-	else { o = '<span class="durVal">'+val+'</span>' }
+	else { o = '<span class="dOfYear">'+val+'</span>' } // // day of year, days remaining
+	if (val == 0 && mode == 3) o = '' // exclude "0 days"
 	return o
 }
 
@@ -171,9 +204,9 @@ function toggleDateCalcMenu() {
 		o += '</tr>'
 
 		o += '<tr style="line-height: 0.6em;">' // labels
-		o += '<td style="padding-bottom: 0.5em;"><span class="dateInputLabel">Month</span></td>'
-		o += '<td style="padding-bottom: 0.5em;"><span class="dateInputLabel">Day</span></td>'
-		o += '<td colspan=2 style="padding-bottom: 0.5em;"><span class="dateInputLabel">Year</span></td>'
+		o += '<td style="padding-bottom: 0.3em;"><span class="dateInputLabel">Month</span></td>'
+		o += '<td style="padding-bottom: 0.3em;"><span class="dateInputLabel">Day</span></td>'
+		o += '<td colspan=2 style="padding-bottom: 0.3em;"><span class="dateInputLabel">Year</span></td>'
 		o += '</tr>'
 
 		o += '<tr><td colspan=4><span id="d2full"></span></td></tr>' // full date 2
@@ -185,15 +218,20 @@ function toggleDateCalcMenu() {
 		o += '</tr>'
 
 		o += '<tr style="line-height: 0.6em;">' // labels
-		o += '<td style="padding-bottom: 0.5em;"><span class="dateInputLabel">Month</span></td>'
-		o += '<td style="padding-bottom: 0.5em;"><span class="dateInputLabel">Day</span></td>'
-		o += '<td colspan=2 style="padding-bottom: 0.5em;"><span class="dateInputLabel">Year</span></td>'
+		o += '<td style="padding-bottom: 0.4em;"><span class="dateInputLabel">Month</span></td>'
+		o += '<td style="padding-bottom: 0.4em;"><span class="dateInputLabel">Day</span></td>'
+		o += '<td colspan=2 style="padding-bottom: 0.4em;"><span class="dateInputLabel">Year</span></td>'
 		o += '</tr>'
 
-		var endCheckedState = ""; var endDisabledState = "";
+		var endCheckedState = "";
+		var startCheckedState = "";
 		if (endDate == 1) endCheckedState = "checked"
-		if (!endChkEnabled) endCheckedState = "disabled"
-		o += '<tr><td colspan=4 style="padding-bottom: 1.5em;"><input type="checkbox" id="chkbox_incEndDate" onclick="toggleEndDateCalc()" '+endCheckedState+' '+endDisabledState+'><span class="endDateLabel">Include End Date</span></td></tr>'
+		if (endDate == -1) startCheckedState = "checked"
+		if (!endChkEnabled) { endCheckedState = "disabled"; startCheckedState = "disabled"; }
+		o += '<tr><td colspan=1 style="text-align: right;"><input type="checkbox" id="chkbox_incEndDate" onclick="toggleEndDateCalc()" '+endCheckedState+'>'
+		o += '<td colspan=3 style="text-align: left;"><span class="endDateLabel">Include End Date</span></td></tr>'
+		o += '<tr><td colspan=1 style="text-align: right; padding-bottom: 0.5em;"><input type="checkbox" id="chkbox_excStartDate" onclick="toggleStartDateCalc()" '+startCheckedState+'>'
+		o += '<td colspan=3 style="text-align: left; padding-bottom: 0.5em;"><span class="endDateLabel">Exclude Start Date</span></td></tr>'
 
 		// add/subtract date
 		o += '<tr>'
@@ -219,17 +257,9 @@ function toggleDateCalcMenu() {
 		o += '<div class="dateCalcBg">'
 
 		o += '<table class="dateCalcTable2"><tbody>'
-		o += '<tr style="line-height: 1em;"><td style="padding-bottom: 0.75em;"><span id="d1full_t2" class="dateDetailsText"></span></td></tr>' // Date 1
-		o += '<tr style="line-height: 1em;"><td><span id="d2full_t2" class="dateDetailsText"></span></td></tr>' // Date 2
-		o += '<tr><td style="padding: 0em 1em 0em 1em;"><hr class="numPropSeparator"></hr></td></tr>'
-		o += '<tr><td><span id="diff_YMWD" class="dateDetailsText"></span></td></tr>'
-		o += '<tr><td><span id="diff_YMD" class="dateDetailsText"></span></td></tr>'
-		o += '<tr><td><span id="diff_YWD" class="dateDetailsText"></span></td></tr>'
-		o += '<tr><td><span id="diff_YD" class="dateDetailsText"></span></td></tr>'
-		o += '<tr><td><span id="diff_MWD" class="dateDetailsText"></span></td></tr>'
-		o += '<tr><td><span id="diff_MD" class="dateDetailsText"></span></td></tr>'
-		o += '<tr><td><span id="diff_WD" class="dateDetailsText"></span></td></tr>'
-		o += '<tr><td><span id="diff_D" class="dateDetailsText"></span></td></tr>'
+		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d1full_t2" class="dateDetailsText"></span></td></tr>' // Date 1
+		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d2full_t2" class="dateDetailsText"></span></td></tr>' // Date 2
+		o += '<tr><td style="background: var(--menu-bg-accent); padding: 0.4em 0.75em 0.5em 0.75em;"><span id="dateDurValues" class="dateDetailsText"></span></td></tr>'
 		o += '</tbody></table>'
 		
 		o += '</div>' // dateCalcBg
@@ -257,8 +287,10 @@ function resetDateControls() {
 
 	endChkEnabled = true // allow to toggle checkbox
 	$('#chkbox_incEndDate').prop("disabled", "") 
+	$('#chkbox_excStartDate').prop("disabled", "") 
 	endDate = 0 // exclude end date from calculation
 	$('#chkbox_incEndDate').prop("checked", "") // uncheck box
+	$('#chkbox_excStartDate').prop("checked", "") // uncheck box
 
 	offsetYMWD = [0,0,0,0] // reset offset controls
 	$('#offsetY').val(0)
@@ -268,11 +300,25 @@ function resetDateControls() {
 	updDates() // update tables, true to reset date 2 controls
 }
 
-function toggleEndDateCalc() {
-	if (endDate == 0) {
-		endDate = 1
+function toggleStartDateCalc() {
+	if (endDate !== -1) {
+		endDate = -1
+		el = document.getElementById('chkbox_incEndDate')
+		if (el !== null) el.checked = false
 	} else {
 		endDate = 0
+	}
+	updDates()
+}
+
+function toggleEndDateCalc() {
+	if (endDate !== 1) {
+		endDate = 1
+		el = document.getElementById('chkbox_excStartDate')
+		if (el !== null) el.checked = false
+	} else {
+		endDate = 0
+
 	}
 	updDates()
 }

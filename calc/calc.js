@@ -135,7 +135,7 @@ function createAboutMenu() { // create menu with all cipher catergories
 
 	o += '<center>'
 	o += '<div style="display: flex; justify-content: center;"><img src="res/logo.svg" style="height: 10px"></div>'
-	o += '<div style="display: flex; justify-content: center;"><span style="font-size: 70%; color: rgb(186,186,186);">by ravic norsou</span></div>'
+	o += '<div style="display: flex; justify-content: center;"><span style="font-size: 70%; color: rgb(186,186,186);">by Saun Virroco</span></div>'
 	o += '</center>'
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="GitHub Repository" onclick="gotoGitHubRepo()">'
@@ -148,7 +148,7 @@ function createAboutMenu() { // create menu with all cipher catergories
 }
 
 function gotoGitHubRepo() {
-	window.open("https://github.com/ravic-norsou/gematria.github.io", "_blank")
+	window.open("https://github.com/gematro/gematro.github.io", "_blank")
 }
 
 // ========================= Options Menu ===========================

@@ -10,8 +10,6 @@ $(document).ready(function(){
 	});
 });
 
-var userHist = "" // user history table
-
 function dropHandler(ev) {
 	// console.log('File(s) dropped')
 	$("#phraseBox").removeClass("dragOver")
@@ -52,7 +50,7 @@ function importFileAction(file) {
 	var sb = "" // string builder
 	reader.onload = (event) => { // actions to perform after file is read
 		file = event.target.result // full file contents
-		userHist = file.split(/\r\n|\n/) // to string array, line break as separator
+		var userHist = file.split(/\r\n|\n/) // to string array, line break as separator
 		
 		//userHist.forEach((line) => { // print line by line
 		//	console.log(line)
@@ -64,7 +62,8 @@ function importFileAction(file) {
 		// detect database export mode
 		if (uCiph[0] == "CREATE_GEMATRO_DB") {
 			userHist.splice(0,1) // remove the first line
-			exportHistoryCSV(userHist, true) // export database
+			expCiphers = exportCiphersDB() // export enabled ciphers
+			exportHistoryCSV(userHist, true, expCiphers) // export database with enabled ciphers
 			return
 		}
 
@@ -114,37 +113,39 @@ function importFileAction(file) {
 
 		// detect database import
 		if ( uCiph[0] == 'GEMATRO_DB' ) {
-			// check validity of DB, rearranged/renamed/missing/extra ciphers invalidate the database
-			var validDB = false
-			if (uCiph.length == cipherList.length+1) { // matching amount of ciphers (+1 table header)
-				validDB = true
-				for (i = 1; i < uCiph.length; i++) { // compare cipher names
-					if (cipherList[i-1].cipherName == uCiph[i]) { // names match, DB is valid
-					} else {
-						validDB = false // mismatch
-						break // exit loop
-					}
-				}
+			// import ciphers from database
+			var intHue = file.match(/(?<=interfaceHue = )\d+/) // consecutive digits
+			if (intHue !== null) interfaceHue = Number(intHue[0]) // update hue if match is found, use first match
+
+			var ciph = file.match(/(?<=cipherList = \[)[\s\S]+/m) // match after "cipherList = [" till end of file, multiple line regex - [\s\S]+
+			file = ciph[0].replace(/(\t|  +|\r|\n)/g, "").slice(10,-1) // remove tabs, consequtive spaces, line breaks - "new cipher" at start, last bracket
+			ciph = file.split(",new cipher") // split string into array
+
+			cipherList = []; cCat = []; defaultCipherArray = [] // clear arrays with previously defined ciphers, categories, default ciphers
+			for (n = 0; n < ciph.length; n++) {
+				cipherList.push(eval("new cipher("+ciph[n].slice(1,-1)+")")) // remove parethesis, evaluate string as javascript code
 			}
-			if (validDB) {
-				userDB = [] // clear previous DB
-				var tmp = []
-				for (i = 1; i < userHist.length; i++) { // ignore first line (cipher names)
-					tmp = userHist[i].split(";") // current line to array, phrase at index 0
-					// for (n = 1; n < tmp.length; n++) { tmp[n] = Number(tmp[n]) } // parse as numbers
-					// it takes some 5 seconds instead of 1s, maybe better to convert number to string when search is performed
-					userDB.push(tmp) // add phrase (no check for duplicates)
-				}
-				$("#queryDBbtn").removeClass("hideValue") // display query button
-				$("#clearDBqueryBtn").removeClass("hideValue") // clear button
-				$("#btn-export-db-query").removeClass("hideValue") // export button
-				$("#edCiphBtn").addClass("hideValue") // hide "Edit Ciphers"
-				closeAllOpenedMenus() // close "Edit Ciphers"
-				console.log("Database loaded! ("+userDB.length+" entries)")
-				dbLoaded = true // database loaded, disable cipher rearrangement
-			} else {
-				alert('Ciphers in database are different from ciphers used in calculator!\nFile was not loaded.')
+			document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
+			initCalc() // reinit
+			updateTables() // update tables
+			updateInterfaceHue(true) // update interface color (first run)
+
+			ciphersPos = userHist.indexOf("// ciphers.js") // line number where cipher definition starts
+			userDB = [] // clear previous DB
+			var tmp = []
+			for (i = 1; i < ciphersPos; i++) { // ignore first line (cipher names), ignore lines after "// ciphers.js"
+				tmp = userHist[i].split(";") // current line to array, phrase at index 0
+				// for (n = 1; n < tmp.length; n++) { tmp[n] = Number(tmp[n]) } // parse as numbers
+				// it takes some 5 seconds instead of 1s, maybe better to convert number to string when search is performed
+				userDB.push(tmp) // add phrase (no check for duplicates)
 			}
+			$("#queryDBbtn").removeClass("hideValue") // display query button
+			$("#clearDBqueryBtn").removeClass("hideValue") // clear button
+			$("#btn-export-db-query").removeClass("hideValue") // export button
+			$("#edCiphBtn").addClass("hideValue") // hide "Edit Ciphers"
+			closeAllOpenedMenus() // close "Edit Ciphers"
+			console.log("Database loaded! ("+userDB.length+" entries)")
+			dbLoaded = true // database loaded, disable cipher rearrangement
 			return
 		}
 
@@ -187,7 +188,7 @@ function dragOverHandler(ev) {
 	ev.preventDefault() // Prevent default drag behavior (Prevent file from being opened)
 }
 
-function exportHistoryCSV(arr, dbMode = false) {
+function exportHistoryCSV(arr, dbMode = false, addCiphers = '') {
 	if (arr.length == 0) return
 	
 	var t = ""
@@ -215,6 +216,7 @@ function exportHistoryCSV(arr, dbMode = false) {
 		}
 		if (i+1 < arr.length) t += "\n" // line break, exclude last line
 	}
+	if (dbMode) t += "\n"+addCiphers // include ciphers inside database
 	
 	t = 'data:text/plain;charset=utf-8,'+encodeURIComponent(t) // format as text file
 	if (dbMode) {

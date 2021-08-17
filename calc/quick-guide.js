@@ -55,11 +55,11 @@ function displayQuickstartGuide() {
 	o += '<hr class="numPropSeparator">'
 	o += '<p><span class="qgBold2">Features</p>'
 
-	o += '<p class="qgMedium">Date Calculator</p>\n<ul><li>Calculate interval between two dates according to Gregorian calendar, supports <span class="qgBold">Add/Subtract</span> mode<br><span class="qgNote">Note: Make sure to consult timeanddate.com or other websites for precise calculations for old dates or other calendars (e.g. Julian)</span></li><li>You can <span class="qgBold">import</span> a text file to calculate durations between multiple dates at once.<br>One date per line, <span class="qgBold">M/D/YYYY</span> format, comments are optional:<br><br>GEMATRO_DATES<br>1/28/2006 [comment]<br>11/7/1968 [comment]</li></ul>'
+	o += '<p class="qgMedium">Date Calculator</p>\n<ul><li>Calculate interval between two dates according to Gregorian calendar, supports <span class="qgBold">Add/Subtract</span> mode<br><span class="qgNote">Note: Make sure to consult timeanddate.com or other websites for precise calculations for old dates or other calendars (e.g. Julian)</span></li><li><span class="qgBold">Left Click</span> to highlight line with date durations</li><li><span class="qgBold">Right Click</span> to remove line with date durations</li><span class="qgNote">Note: Toggle "Include End Date" checkbox to bring the removed lines back</span></li><li>You can <span class="qgBold">import</span> a text file to calculate durations between multiple dates at once.<br>One date per line, <span class="qgBold">M/D/YYYY</span> format, comments are optional:<br><br>GEMATRO_DATES<br>1/28/2006 [comment]<br>11/7/1968 [comment]</li></ul>'
 
 	o += '<p class="qgMedium">Color Controls</p>\n<ul><li>Change cipher colors (<span class="qgBold">HSL</span> - Hue, Saturation, Lightness)</li><li>Make sure to <span class="qgBold">"Export Ciphers"</span> before you make any modifications inside <span class="qgBold">"Edit Ciphers"</span> menu</li></ul>'
 
-	o += '<p class="qgMedium">Edit Ciphers</p>\n<ul><li><span class="qgBold">"Left Click"</span> on cipher name in Enabled Ciphers Table to edit existing cipher</li><li>Cipher names are unique; if name matches, it means an existing cipher is modified</li><li>Existing cipher can be moved to a different category (it will be added as last item in that category)</li><li>Any cipher category can be created</li><li>Cells with individual letters or values can be modified</li><li><span class="qgBold">Unicode</span> characters are supported</li><li>Color controls are reset on any change in <span class="qgBold">"Edit Ciphers"</span> menu</li></ul>'
+	o += '<p class="qgMedium">Edit Ciphers</p>\n<ul><li><span class="qgBold">"Left Click"</span> on cipher name in Enabled Ciphers Table to edit existing cipher or make a new one based on existing one</li><li>Cipher names are unique; if name matches, it means an existing cipher is modified</li><li>Existing cipher can be moved to a different category (it will be added as last item in that category)</li><li>Any cipher category can be created</li><li>Cells with individual letters or values can be modified</li><li><span class="qgBold">Unicode</span> characters are supported</li><li>Color controls are reset on any change in <span class="qgBold">"Edit Ciphers"</span> menu</li></ul>'
 
 	o += '<p><span class="qgBold">"Find Matches"</span> - populate <span class="qgBold">Highlight Box</span> with numbers that match at least twice</p>'
 	o += '<p><span class="qgBold">"Enter As Words"</span> - read text from <span class="qgBold">Phrase Box</span> one word at a time until a certain phrase length is reached, then move on to the next starting word, process is repeated until all words are entered into history table</p>'
@@ -68,7 +68,7 @@ function displayQuickstartGuide() {
 	o += '<hr class="numPropSeparator">'
 	o += '<p><span class="qgBold2">Export</p>'
 
-	o += '<ul><li><span class="qgBold">"Print Cipher Chart", etc</span> - render correspondent element as an image (PNG), image preview is opened first<br><span class="qgNote">Note: If text or table are misaligned, click "Refresh" button to generate a new image. Sometimes outer borders may be missing on the preview (bug in Chrome), however the saved image has no such defects</span></li>'
+	o += '<ul><li><span class="qgBold">"Print Cipher Chart", etc</span> - render correspondent element as an image (PNG), image preview is opened first<br><span class="qgNote">Note: If text or table are misaligned, click "Refresh" button to generate a new image</span></li>'
 
 	o += '<li><span class="qgBold">"Import File"</span> - import a <span class="qgBold">.txt</span> file (one phrase per line), previously exported CSV history, exported matches or user ciphers<br><span class="qgNote">Note: You can also drag and drop file into Phrase Box</span></li>'
 
@@ -85,29 +85,29 @@ function displayQuickstartGuide() {
 
 	o += '<li><span class="qgBold">"Ignore Comments [...]"</span> flag affects database generation<br><span class="qgNote">Note: When database is loaded, calculator should use the same mode of "Ignore Comments [...]" as at the moment of database generation, otherwise values inside database and calculator will differ</span></li>'
 
-	o += '<li><span class="qgBold">All available</span> ciphers should be enabled prior to database generation</li>'
+	o += '<li>Database is calculated only for currently enabled ciphers. Those ciphers are stored inside the database as well.<br><span class="qgNote">Note: When the database is loaded, calculator will allow to use only those ciphers which are available inside that database<br>For example, if you load a database that contains values only for English Ordinal cipher, English Ordinal becomes the only available cipher for any calculations</span></li>'
 
-	o += '<li>After you import text file for database generation, calculation will start immediately and a dialogue that offers to save the database will appear. Process may take some time, please be patient</li>'
+	o += '<li>After you import text file for database generation, calculation will start immediately and a dialogue that offers to save the database will appear<br><span class="qgNote">Note: Process may take some time, please be patient</span></li>'
 
-	o += '<li>When a database is imported, new elements become available:<ul><li><span class="qgBold">"Query"</span> - match current phrase or number against database</li><li><span class="qgBold">"Clear DB Query" (Features)</span> - close current <span class="qgBold">Query Table</span> and switch back to centered interface</li><li><span class="qgBold">"Export DB Query (CSV)" (Export)</span> - save matching phrases from database as a CSV file</ul></li>'
+	o += '<li>When a precalculated database is imported, new elements become available:<ul><li><span class="qgBold">"Query"</span> - match current phrase or number against database</li><li><span class="qgBold">"Clear DB Query" (Features)</span> - close current <span class="qgBold">Query Table</span> and switch back to centered interface</li><li><span class="qgBold">"Export DB Query (CSV)" (Export)</span> - save matching phrases from database as a CSV file</ul></li>'
 
-	o += '<li><span class="qgBold">"Cipher Edit"</span> (and rearrangement) is not available when database is loaded. If any of the ciphers were rearranged/renamed/deleted or new ones were added, database will not be loaded. Use the exact same set of ciphers as at the moment of database generation</li>'
+	o += '<li><span class="qgBold">"Cipher Edit"</span> (and rearrangement) is not available when database is loaded</li>'
 
 	o += '<li>Current highlighter mode (<span class="qgBold">"Cross Cipher Match"</span> or <span class="qgBold">"Same Cipher Match"</span>) controls database query<br><span class="qgNote">Note: "Show Only Matching" option hides nonmatching values as well</span></li>'
 
-	o += '<li>Query is based on current cipher selection. There is no limit for the amount of ciphers</li>'
+	o += '<li>Query is based on current cipher selection; there is no limit for the amount of enabled ciphers</li>'
 
-	o += '<li>Input any phrase into the <span class="qgBold">"Phrase Box"</span> and press <span class="qgBold">"Query"</span> button to match against currently loaded database. Numerical input is supported, several numbers are recognized as well:<br><span class="qgBold">74 0 142</span><br><span class="qgNote">Note: In the example above, the first enabled cipher will be matched against 74 and the third cipher will be matched against 142</span></ul>'
+	o += '<li>Input any phrase into the <span class="qgBold">"Phrase Box"</span> and press <span class="qgBold">"Query"</span> button to match against currently loaded database</li><li>Numerical input is supported, several numbers are recognized as well:<br><span class="qgBold">74 0 142</span><br><span class="qgNote">Note: In the example above, the first enabled cipher will be matched against 74 and the third cipher will be matched against 142</span></li></ul>'
 
 	o += '<p class="qgMedium">Query Table</p>\n'
 
-	o += '<ul><li>Use <span class="qgBold">"Up"</span> and <span class="qgBold">"Down"</span> arrow keys to scroll one page at a time or use the mouse wheel. A horizontal scroll bar above the table can be used for navigation as well or you can input an exact position inside the box<br><span class="qgNote">Note: Up/Down arrow keys work only when input is focused inside textbox with current position</span></li>'
+	o += '<ul><li>Use <span class="qgBold">"Up"</span> and <span class="qgBold">"Down"</span> arrow keys to scroll one page at a time or use the mouse wheel</li><li>A horizontal scroll bar above the table can be used for navigation as well or you can input the exact position inside the box with index<br><span class="qgNote">Note: Up/Down arrow keys work only when input is focused inside textbox with current position</span></li>'
 
-	o += '<li>Drag the bottom-right corner of the <span class="qgBold">Query Table</span> to resize it<br><span class="qgNote">Hint: Extend the table in case if phrases do not fit on one line</span></li>'
+	o += '<li>Drag the bottom-right corner of the <span class="qgBold">Query Table</span> to resize it<br><span class="qgNote">Hint: Extend the table in case if long phrases do not fit on one line</span></li>'
 
 	o += '<li><span class="qgBold">"Ctrl + Left Click"</span> on phrase - load phrase from <span class="qgBold">Query Table</span> into <span class="qgBold">Phrase Box</span> and add it to <span class="qgBold">History Table</span></li>'
 
-	o += '<li><span class="qgBold">"Right Click"</span> on horizontal scroll bar to temporarily minimize the table if it obstructs the interface. Right click again to bring the table back<br><span class="qgNote">Hint: You can zoom out the page if too many ciphers are active</span></ul>'
+	o += '<li><span class="qgBold">"Right Click"</span> on horizontal scroll bar to temporarily minimize the table if it obstructs the interface (right click again to bring the table back)<br><span class="qgNote">Hint: You can zoom out the page if too many ciphers are active</span></ul>'
 
 	o += '<hr class="numPropSeparator">'
 	o += '<p><span class="qgBold2">Additional Resources</p>'

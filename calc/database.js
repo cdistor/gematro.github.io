@@ -386,6 +386,47 @@ function NumberArray() {
 	return isNum
 }
 
+function unloadDatabase() {
+	clearDatabaseQueryTable()
+	var curCiphArr = [] // save currently enabled cipher names (database)
+	for (var n = 0; n < cipherList.length; n++) {
+		if (curCiphArr.indexOf(cipherList[n].cipherName) == -1 && cipherList[n].enabled) {
+			curCiphArr.push(cipherList[n].cipherName)
+		}
+	}
+	updateTables() // update
+
+	cipherList = [...cipherListSaved] // restore initial ciphers
+	interfaceHue = interfaceHueDefault
+	userDB = [] // clear previous DB
+
+	document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
+	initCalc() // reinit
+	defaultCipherArray = [...defaultCipherArraySaved] // restore default ciphers choice
+	disableAllCiphers()
+
+	for (n = 0; n < cipherList.length; n++) { //enable previous ciphers choice if available (from database)
+		if (curCiphArr.indexOf(cipherList[n].cipherName) > -1) {
+			cipherList[n].enabled = true
+			cur_chkbox = document.getElementById("cipher_chkbox"+n)
+			if (cur_chkbox !== null) cur_chkbox.checked = true // update checkbox if present
+		}
+	}
+	updateTables() // update tables
+	updateInterfaceHue() // update interface color
+
+	$("#queryDBbtn").addClass("hideValue") // hide query button
+	$("#clearDBqueryBtn").addClass("hideValue") // clear button
+	$("#unloadDBBtn").addClass("hideValue") // unload database button
+	$("#btn-export-db-query").addClass("hideValue") // export button
+	$("#edCiphBtn").removeClass("hideValue") // show "Edit Ciphers"
+
+	closeAllOpenedMenus() // close "Edit Ciphers"
+	console.log("Database unloaded!")
+	dbLoaded = false // database unloaded, enable cipher rearrangement
+	return
+}
+
 function db_PhrLenStats(column = 1) { // phrase length statistics inside current database, column can be value[0] or matches[1]
 	var pLenArr = [] // phrase length array
 	for (i = 0; i < userDB.length; i++) {

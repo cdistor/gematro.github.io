@@ -1,7 +1,9 @@
 // ============================== Init ==============================
 
 var cipherList = [] // list of all available ciphers
+var cipherListSaved = [] // copy of all initially available ciphers
 var defaultCipherArray = [] // default ciphers
+var defaultCipherArraySaved = [] // copy of default ciphers
 var cCat = []; // list of all available cipher categories
 
 // Layout
@@ -44,7 +46,8 @@ var interfaceHue = 222 // calculator interface color
 var interfaceHueDefault = 222 // value for reset, updated on first run of updateInterfaceHue()
 
 function initCalc() { // run after page has finished loading
-	initCiphers()
+	saveInitialCiphers()
+	initCiphers() // update default ciphers
 	createCiphersMenu()
 	createOptionsMenu()
 	createFeaturesMenu()
@@ -380,9 +383,11 @@ function createFeaturesMenu() {
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="Enter As Words" onclick="phraseBoxKeypress(35)">' // "End" keystroke
 	o += '<div style="margin: 0.5em;"></div>'
+	o += '<input class="intBtn" type="button" value="Clear History" onclick="phraseBoxKeypress(36)">' // "Home" keystroke
+	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="clearDBqueryBtn" class="intBtn hideValue" type="button" value="Clear DB Query" onclick="clearDatabaseQueryTable()">' // clear database query
 	o += '<div style="margin: 0.5em;"></div>'
-	o += '<input class="intBtn" type="button" value="Clear History" onclick="phraseBoxKeypress(36)">' // "Home" keystroke
+	o += '<input id="unloadDBBtn" class="intBtn hideValue" type="button" value="Unload Database" onclick="unloadDatabase()">' // unload database
 
 	o += '</div></div>'
 	document.getElementById("calcOptionsPanel").innerHTML = o
@@ -604,6 +609,10 @@ function populateColorValues() { // update color controls for each individual ci
 
 // ====================== Enabled Cipher Table ======================
 
+function saveInitialCiphers() {
+	if (cipherListSaved.length == 0) cipherListSaved = [...cipherList] // make a copy of initial ciphers to revert changes
+}
+
 function initCiphers(updDefCiph = true) { // list categories, define default (base) ciphers
 	var c = ""
 	cCat = [] // clear categories
@@ -612,6 +621,7 @@ function initCiphers(updDefCiph = true) { // list categories, define default (ba
 		if (cCat.indexOf(c) == -1) cCat.push(c) // list categories
 		if (cipherList[i].enabled && updDefCiph) defaultCipherArray.push(cipherList[i].cipherName) // update default ciphers
 	}
+	if (defaultCipherArraySaved.length == 0) defaultCipherArraySaved = [...defaultCipherArray] // copy of initial default ciphers
 	initColorArrays()
 }
 

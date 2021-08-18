@@ -128,7 +128,7 @@ function importFileAction(file) {
 			document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
 			initCalc() // reinit
 			updateTables() // update tables
-			updateInterfaceHue(true) // update interface color (first run)
+			updateInterfaceHue() // update interface color
 
 			ciphersPos = userHist.indexOf("// ciphers.js") // line number where cipher definition starts
 			userDB = [] // clear previous DB
@@ -141,6 +141,7 @@ function importFileAction(file) {
 			}
 			$("#queryDBbtn").removeClass("hideValue") // display query button
 			$("#clearDBqueryBtn").removeClass("hideValue") // clear button
+			$("#unloadDBBtn").removeClass("hideValue") // unload database button
 			$("#btn-export-db-query").removeClass("hideValue") // export button
 			$("#edCiphBtn").addClass("hideValue") // hide "Edit Ciphers"
 			closeAllOpenedMenus() // close "Edit Ciphers"

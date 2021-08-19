@@ -526,8 +526,9 @@ function getMDdiff(d1, d2) { // month, day difference
 }
 
 function getWDdiff(d1, d2) { // week, day difference
-	w_diff = Math.floor( Math.abs(d2-d1) / 604800000) // weeks should use Math.floor()
-	d_diff = Math.round( (Math.abs(d2-d1) % 604800000) / 86400000 ) // days should use Math.round()
+	d_diff = Math.round( Math.abs(d2-d1) / 86400000 )
+	w_diff = Math.floor(d_diff / 7)
+	d_diff -= w_diff*7
 	return {W: w_diff, D: d_diff} // object
 }
 

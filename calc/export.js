@@ -29,7 +29,7 @@ function createExportMenu() {
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-export-matches-txt" class="intBtn" type="button" value="Export Matches (TXT)">' // export available same/cross cipher matches
 	o += '<div style="margin: 0.5em;"></div>'
-	o += '<input id="btn-export-db-query" class="intBtn hideValue" type="button" value="Export DB Query (CSV)">' // export database query
+	o += '<input id="btn-export-db-query" class="intBtn" type="button" value="Export DB Query (CSV)">' // export database query
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-export-ciphers" class="intBtn" type="button" value="Export Ciphers">' // export all available ciphers
 
@@ -205,6 +205,7 @@ function exportCiphers() {
 			'\t[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26], // values\n'+
 			'\ttrue, // characters with diacritic marks have the same value as regular ones, default is "true"\n'+
 			'\ttrue // enabled state, default is "false"\n'+
+			'\tfalse // case sensitive cipher, default is "false"\n'+
 		')\n'+
 		'*/\n\n'
 
@@ -234,7 +235,8 @@ function exportCiphers() {
 			'\t\t'+JSON.stringify(cArr_)+',\n'+
 			'\t\t'+JSON.stringify(vArr_)+',\n'+
 			'\t\t'+cipherList[i].diacriticsAsRegular+',\n'+
-			'\t\t'+cipherList[i].enabled+'\n'+
+			'\t\t'+cipherList[i].enabled+',\n'+
+			'\t\t'+cipherList[i].caseSensitive+'\n'+
 			'\t),\n'
 	}
 	out = out.substring(0, out.length-2) + '\n]' // remove last comma and new line, close array
@@ -273,7 +275,8 @@ function exportCiphersDB() {
 				'\t\t'+JSON.stringify(cArr_)+',\n'+
 				'\t\t'+JSON.stringify(vArr_)+',\n'+
 				'\t\t'+cipherList[i].diacriticsAsRegular+',\n'+
-				'\t\t'+cipherList[i].enabled+'\n'+
+				'\t\t'+cipherList[i].enabled+',\n'+
+				'\t\t'+cipherList[i].caseSensitive+'\n'+
 				'\t),\n'
 		}
 	}
@@ -282,6 +285,7 @@ function exportCiphersDB() {
 }
 
 function exportHighlighterMatches(histArr) { // highlighter mode controls export mode
+	if (histArr.length == 0) return
 	if (optFiltCrossCipherMatch) {
 		exportCrossCipherMatches(histArr)
 	} else if (optFiltSameCipherMatch) {

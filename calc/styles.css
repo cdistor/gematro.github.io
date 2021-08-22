@@ -647,6 +647,17 @@ body {
 	margin: 0em 0.3em;
 	width: 75px;
 }
+#dbAlert {
+	position: absolute;
+	left: 50%;
+	transform: translate(-50%, 0);
+	bottom: 40px;
+	background: var(--menu-bg-accent);
+	padding: 1em 1.5em;
+	font-size: 125%;
+	font-weight: 500;
+	border-radius: 15px;
+}
 .intBtn:hover, .intBtn2:hover, .intBtn3:hover, .intBtnResetDate:hover, #queryDBbtn:hover {
 	background-color: var(--btn-hover-accent);
 }
@@ -838,7 +849,7 @@ body {
 	width: 570px;
 }
 .custCipherTable {
-	margin: 0.75em 0em 0.75em 0em;
+	margin: 0em 0em 0.75em 0em;
 }
 #custCipherNameInput, #custCipherCatInput {
 	background: var(--btn-bg-accent);
@@ -874,8 +885,9 @@ body {
 	border: 1px solid var(--focus-outline);
 	border: none;
 }
-#diacrChkbox {
-	margin-bottom: 0.7em;
+#diacrChkbox, #caseSensChkbox {
+	display: inline-flex;
+	padding: 0em 1em 0.75em 1em;
 }
 .custCharIndTable {
 	width: 40px;

@@ -1,6 +1,7 @@
 // ========================== Edit Ciphers ==========================
 
-var ignoreDiarciticsCustom = true // flag for custom cipher
+var ignoreDiarciticsCustom = true // diacritical marks flag for custom cipher
+var caseSensitiveCustom = false // case sensitivity flag for custom cipher
 
 $(document).ready(function(){
 
@@ -29,7 +30,7 @@ $(document).ready(function(){
 			}
 			document.getElementById("custCipherGlobVals").value = tmp.slice(0,-1); // remove last comma
 
-			var IDMstate = "";
+			var IDMstate = ""; // ignore diacritical marks state
 			if (cipherList[cID].diacriticsAsRegular == true) { // check diacritics flag
 				IDMstate = "checked"; // checkbox state
 				ignoreDiarciticsCustom = true;
@@ -38,6 +39,16 @@ $(document).ready(function(){
 			}
 			var o = '<input type="checkbox" id="chkbox_IDM" value="" onclick="conf_IDM()" '+IDMstate+'><span class="optionElementLabel">Ignore Diacritical Marks (é=e)</span>';
 			document.getElementById("diacrChkbox").innerHTML = o; // update element
+			
+			var CSstate = ""; // case sensitive state
+			if (cipherList[cID].caseSensitive == true) { // check case sensitive flag
+				CSstate = "checked"; // checkbox state
+				caseSensitiveCustom = true;
+			} else {
+				caseSensitiveCustom = false;
+			}
+			var o = '<input type="checkbox" id="chkbox_CS" value="" onclick="conf_CS()" '+CSstate+'><span class="optionElementLabel">Case Sensitive Cipher</span>';
+			document.getElementById("caseSensChkbox").innerHTML = o; // update element
 			
 			createIndLetterControls(); // update
 			checkCustCipherName(); // redraw button (add/update)
@@ -63,10 +74,15 @@ function toggleEditCiphersMenu() {
 		o += '<tr><td colspan=2><textarea id="custCipherGlobVals" type="text" autocomplete="off" oninput="createIndLetterControls()" placeholder="Values (1,2,3)"></textarea></td></tr>'
 		o += '</tbody></table>'
 
+		o += '<div>' // container for checkboxes
 		var IDMstate = ""
 		if (ignoreDiarciticsCustom) IDMstate = "checked" // checkbox state
 		o += '<div id="diacrChkbox"><input type="checkbox" id="chkbox_IDM" value="" onclick="conf_IDM()" '+IDMstate+'><span class="optionElementLabel">Ignore Diacritical Marks (é=e)</span></div>'
-		
+		var CSstate = ""
+		if (caseSensitiveCustom) CSstate = "checked" // checkbox state
+		o += '<div id="caseSensChkbox"><input type="checkbox" id="chkbox_CS" value="" onclick="conf_CS()" '+CSstate+'><span class="optionElementLabel">Case Sensitive Cipher</span></div>'
+		o += '</div>' // close
+
 		o += '<div id="custCipherIndCtrls"></div>' // individual characters controls
 		o += '<div id="custCipherButtonArea"><input class="intBtn2" type="button" value="Add New Cipher" onclick="addNewCipherAction()"></div>' // buttons
 		o += '</div>'
@@ -80,6 +96,11 @@ function toggleEditCiphersMenu() {
 
 function conf_IDM() { // ignore diacritical marks
 	ignoreDiarciticsCustom = !ignoreDiarciticsCustom // toggle
+	createIndLetterControls() // update
+}
+
+function conf_CS() { // case sensitive cipher
+	caseSensitiveCustom = !caseSensitiveCustom // toggle
 	createIndLetterControls() // update
 }
 
@@ -103,7 +124,8 @@ function checkCustCipherName() { // redraw add/update cipher button
 
 function createIndLetterControls() {
 	var alphabet = document.getElementById("custCipherAlphabet").value
-	alphabet = alphabet.toLowerCase().replace(/\t/g,"").replace(/ /g,"") // to lowercase, remove tabs and spaces
+	alphabet = alphabet.replace(/\t/g,"").replace(/ /g,"") // to lowercase, remove tabs and spaces
+	if (!caseSensitiveCustom) alphabet = alphabet.toLowerCase()
 	if (ignoreDiarciticsCustom) alphabet = alphabet.normalize('NFD').replace(/[\u0300-\u036f]/g, "") // remove diacritics
 	document.getElementById("custCipherAlphabet").value = alphabet
 
@@ -180,7 +202,8 @@ function changeIndLetterValue(id) { // update char value from individual input b
 }
 
 function changeIndLetter(id) { // update char from individual box
-	var curIdChar = document.getElementById("custChar"+id+"").value.toLowerCase().substring(0,1) // get current char, to lowercase, one char only
+	var curIdChar = document.getElementById("custChar"+id+"").value.substring(0,1) // get current char, to lowercase, one char only
+	if (!caseSensitiveCustom) curIdChar = curIdChar.toLowerCase()
 	if (ignoreDiarciticsCustom) curIdChar = curIdChar.normalize('NFD').replace(/[\u0300-\u036f]/g, "") // remove diacritics
 
 	if (curIdChar !== "") { // if not empty
@@ -226,7 +249,7 @@ function addNewCipherAction() { // update existing cipher if ID is specified
 	resetColorControls() // reset color changes (otherwise they become permanent)
 	var custCipher
 	if (replaceID > -1) { // cipher needs to be updated (retain colors)
-		custCipher = new cipher(custName, custCat, cipherList[replaceID].H, cipherList[replaceID].S, cipherList[replaceID].L, charsArr, valArr, ignoreDiarciticsCustom, true)
+		custCipher = new cipher(custName, custCat, cipherList[replaceID].H, cipherList[replaceID].S, cipherList[replaceID].L, charsArr, valArr, ignoreDiarciticsCustom, true, caseSensitiveCustom)
 		if (cipherList[replaceID].cipherCategory == custCat) { // same category
 			cipherList[replaceID] = custCipher // replace existing cipher
 		} else if (cCat.indexOf(custCat) > -1) { // other existing category
@@ -240,7 +263,7 @@ function addNewCipherAction() { // update existing cipher if ID is specified
 			cipherList.push(custCipher) // add new cipher in the end of array
 		}
 	} else { // use random colors
-		custCipher = new cipher(custName, custCat, rndInt(0, 360), rndInt(0, 68), rndInt(53, 67), charsArr, valArr, ignoreDiarciticsCustom, true)
+		custCipher = new cipher(custName, custCat, rndInt(0, 360), rndInt(0, 68), rndInt(53, 67), charsArr, valArr, ignoreDiarciticsCustom, true, caseSensitiveCustom)
 		if (cCat.indexOf(custCat) > -1) { // existing category
 			for (i = cipherList.length-1; i > -1; i--) { // go in reverse order
 				// insert after last cipher in that category

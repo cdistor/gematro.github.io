@@ -7,6 +7,7 @@ var numericalMode // boolean flag, match numbers instead of phrase gematria
 var userDB = [] // imported database
 var queryResult = [] // matching phrases
 var dbLoaded = false // if database is loaded, disable cipher rearrangement
+var defaultDB = true // use bundled database
 
 var nPhr = 15 // number of phrases in one section
 var newItems = 1 // used for scrolling
@@ -94,6 +95,18 @@ function queryDatabase() {
 	var cVal
 	if(sVal() == "" || sVal() == 0) return // empty input
 
+	if (offlineMode == true && dbLoaded == false) { // query for default database is not available offline in browser (use XAMPP)
+		console.log("'default.db' was not loaded because CORS requests for file:/// protocol are forbidden. Use offline version with XAMPP software to allow default database to load.")
+		var alertDiv = $('<div />').appendTo('body');
+		alertDiv.attr('id', 'dbAlert');
+		alertDiv.html("<span>Database is not available!</span>")
+		setTimeout(function() {
+			alertDiv.remove()
+		}, 1000)
+		return
+	}
+	if (defaultDB == true) calcDefaultDatabase(userDBdefault) // calculate gematria for default database for enabled ciphers
+
 	$("#calcMain").addClass("splitInterface") // split screen
 
 	if (document.getElementById("queryArea") == null) { // create div if it doesn't exist
@@ -146,17 +159,27 @@ function queryDatabase() {
 function clearDatabaseQueryTable() {
 	$("#calcMain").removeClass("splitInterface")
 	$("#queryArea").remove() // remove element from page
+	queryResult = [] // clear
 }
 
 function searchDBcrossCipher() { // populate "queryResult" array with matching phrases
+	var p, m, n
 	queryResult = [] // reset matching phrases
 	var tmpArr = [] // one phrase with score and gematria
 	var tmpVal = 0 // current phrase value
+	var gemArrCiphUsed = [...gemArrCiph]
+	if (defaultDB == true) { // 0,1,2...
+		len = gemArrCiph.length
+		gemArrCiphUsed = []
+		for (n = 0; n < len; n++) {
+			gemArrCiphUsed.push(n)
+		}
+	}
 	// take phrase, take cipher, all values match in cipher add score, build string, next phrase, then sort by score
 	for (p = 0; p < userDB.length; p++) { // for each phrase in database
 		tmpArr = [0, userDB[p][0]] // reset, set score[0], phrase[1]
-		for (m = 0; m < gemArrCiph.length; m++) { // for each enabled cipher index
-			tmpVal = Number(userDB[p][gemArrCiph[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
+		for (m = 0; m < gemArrCiphUsed.length; m++) { // for each enabled cipher index
+			tmpVal = Number(userDB[p][gemArrCiphUsed[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
 			tmpArr.push(tmpVal) // first add values irrelevant of match validity
 			for (n = 0; n < gemArr.length; n++) { // for each gematria value (cross cipher)
 				if (tmpVal == gemArr[m]) { 
@@ -178,14 +201,23 @@ function searchDBcrossCipher() { // populate "queryResult" array with matching p
 }
 
 function searchDBsameCipher() { // populate "queryResult" array with matching phrases
+	var p, m, n
 	queryResult = [] // reset matching phrases
 	var tmpArr = [] // one phrase with score and gematria
 	var tmpVal = 0 // current phrase value
+	var gemArrCiphUsed = [...gemArrCiph]
+	if (defaultDB == true) { // 0,1,2...
+		len = gemArrCiph.length
+		gemArrCiphUsed = []
+		for (n = 0; n < len; n++) {
+			gemArrCiphUsed.push(n)
+		}
+	}
 	// take phrase, take cipher, all values match in cipher add score, build string, next phrase, then sort by score
 	for (p = 0; p < userDB.length; p++) { // for each phrase in database
 		tmpArr = [0, userDB[p][0]] // reset, set score[0], phrase[1]
-		for (m = 0; m < gemArrCiph.length; m++) { // for each enabled cipher index
-			tmpVal = Number(userDB[p][gemArrCiph[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
+		for (m = 0; m < gemArrCiphUsed.length; m++) { // for each enabled cipher index
+			tmpVal = Number(userDB[p][gemArrCiphUsed[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
 			tmpArr.push(tmpVal) // first add values irrelevant of match validity
 			if (tmpVal == gemArr[m]) {
 				// tmpArr[0] += gemArr[m] // same cipher, add score
@@ -262,7 +294,11 @@ function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting posi
 		for (y = 0; y < gemArrCiph.length; y++) { // gemArrCiph contains indices of ciphers used for query
 			curCiph = cipherList[ gemArrCiph[y] ]
 
-			gemVal = queryResult[x][valPos] // value only
+			if (defaultDB == true) {
+				gemVal = curCiph.calcGematria(queryResult[x][1]) // recalculate displayed value
+			} else {
+				gemVal = queryResult[x][valPos] // value only
+			}
 			if (gemVal == 0) gemVal = "-"
 			valPos++ // increment value position
 
@@ -285,7 +321,7 @@ function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting posi
 	document.getElementById("queryPosInput").focus() // restore focus
 }
 
-function updateDatabaseQueryTable(stPos = 0, dItems = 25) { // starting position, total displayed items
+function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, total displayed items
 	var ms, x, y, mCross, mSame, curCiph
 
 	// stPos - starting position
@@ -348,7 +384,11 @@ function updateDatabaseQueryTable(stPos = 0, dItems = 25) { // starting position
 		for (y = 0; y < gemArrCiph.length; y++) { // gemArrCiph contains indices of ciphers used for query
 			curCiph = cipherList[ gemArrCiph[y] ]
 
-			gemVal = queryResult[x][valPos] // value only
+			if (defaultDB == true) {
+				gemVal = curCiph.calcGematria(queryResult[x][1]) // recalculate displayed value
+			} else {
+				gemVal = queryResult[x][valPos] // value only
+			}
 			if (gemVal == 0) gemVal = "-"
 			valPos++ // increment value position
 
@@ -415,16 +455,41 @@ function unloadDatabase() {
 	updateTables() // update tables
 	updateInterfaceHue() // update interface color
 
-	$("#queryDBbtn").addClass("hideValue") // hide query button
-	$("#clearDBqueryBtn").addClass("hideValue") // clear button
+	// $("#queryDBbtn").addClass("hideValue") // hide query button
+	// $("#clearDBqueryBtn").addClass("hideValue") // clear button
 	$("#unloadDBBtn").addClass("hideValue") // unload database button
-	$("#btn-export-db-query").addClass("hideValue") // export button
+	$("#unloadDBBtn_margin").addClass("hideValue")
+	// $("#btn-export-db-query").addClass("hideValue") // export button
 	$("#edCiphBtn").removeClass("hideValue") // show "Edit Ciphers"
 
 	closeAllOpenedMenus() // close "Edit Ciphers"
-	console.log("Database unloaded!")
 	dbLoaded = false // database unloaded, enable cipher rearrangement
+	defaultDB = true // enable default database
+
+	console.log("Database unloaded!")
+	var alertDiv = $('<div />').appendTo('body');
+	alertDiv.attr('id', 'dbAlert');
+	alertDiv.html("<span>Database unloaded!</span>")
+	setTimeout(function() {
+		alertDiv.remove()
+	}, 750)
 	return
+}
+
+function calcDefaultDatabase(arr) {
+	var i, n
+	var tmpArr = []
+	userDB = [] // reset database values
+	for (i = 0; i < arr.length; i++) {
+		tmpArr = [] // reset
+		tmpArr.push(arr[i]) // add phrase
+		for (n = 0; n < cipherList.length; n++) {
+			if (cipherList[n].enabled) {
+				tmpArr.push(cipherList[n].calcGematria(arr[i])) // gematria value for each enabled cipher
+			}
+		}
+		userDB.push(tmpArr) // add row with phrase and gematria for enabled ciphers
+	}
 }
 
 function db_PhrLenStats(column = 1) { // phrase length statistics inside current database, column can be value[0] or matches[1]
@@ -449,6 +514,22 @@ function db_CopyPhrOfLen(low, up) { // copy phrases of length within range (incl
 	var pLenArr = [] // phrase length array
 	for (i = 0; i < userDB.length; i++) {
 		if (userDB[i][0].length >= low && userDB[i][0].length <= up) pLenArr.push(userDB[i][0]) // load phrase
+	}
+	var res = ""
+	for (i = 0; i < pLenArr.length; i++) {
+		res += pLenArr[i]+'\n'
+	}
+	res = res.slice(0,-1) // remove last new line
+	copy(res)
+	console.log("Copied to clipboard!")
+}
+
+function db_CopyWordRange(low, up) { // copy phrases that have specific amount of words within range (inclusive) from database
+	var pLenArr = [] // phrase length array
+	var tmp = []
+	for (i = 0; i < userDB.length; i++) {
+		tmp = userDB[i][0].split(' ')
+		if (tmp.length >= low && tmp.length <= up) pLenArr.push(userDB[i][0]) // load phrase
 	}
 	var res = ""
 	for (i = 0; i < pLenArr.length; i++) {

@@ -139,14 +139,23 @@ function importFileAction(file) {
 				// it takes some 5 seconds instead of 1s, maybe better to convert number to string when search is performed
 				userDB.push(tmp) // add phrase (no check for duplicates)
 			}
-			$("#queryDBbtn").removeClass("hideValue") // display query button
-			$("#clearDBqueryBtn").removeClass("hideValue") // clear button
+			// $("#queryDBbtn").removeClass("hideValue") // display query button
+			// $("#clearDBqueryBtn").removeClass("hideValue") // clear button
 			$("#unloadDBBtn").removeClass("hideValue") // unload database button
-			$("#btn-export-db-query").removeClass("hideValue") // export button
+			$("#unloadDBBtn_margin").removeClass("hideValue")
+			// $("#btn-export-db-query").removeClass("hideValue") // export button
 			$("#edCiphBtn").addClass("hideValue") // hide "Edit Ciphers"
 			closeAllOpenedMenus() // close "Edit Ciphers"
-			console.log("Database loaded! ("+userDB.length+" entries)")
 			dbLoaded = true // database loaded, disable cipher rearrangement
+			defaultDB = false // disable default database
+
+			console.log("Database loaded! ("+userDB.length+" entries)")
+			var alertDiv = $('<div />').appendTo('body');
+			alertDiv.attr('id', 'dbAlert');
+			alertDiv.html("<span>Database loaded!</span>")
+			setTimeout(function() {
+				alertDiv.remove()
+			}, 750)
 			return
 		}
 

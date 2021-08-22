@@ -1,7 +1,7 @@
 // ============================= Logic ==============================
 
 class cipher { // cipher constructor class
-	constructor(ciphName, ciphCategory, col_H, col_S, col_L, ciphCharacterSet, ciphValues, diacriticsAsRegular = true, ciphEnabled = false) {
+	constructor(ciphName, ciphCategory, col_H, col_S, col_L, ciphCharacterSet, ciphValues, diacriticsAsRegular = true, ciphEnabled = false, caseSensitive = false) {
 		this.cipherName = ciphName // cipher name
 		this.cipherCategory = ciphCategory // cipher category
 		this.H = col_H // hue
@@ -10,34 +10,27 @@ class cipher { // cipher constructor class
 		this.cArr = ciphCharacterSet // character array
 		this.vArr = ciphValues // value array
 		this.diacriticsAsRegular = diacriticsAsRegular // if true, characters with diactritic marks have the same value as regular ones
+		this.caseSensitive = caseSensitive // capital letters have different values
 		this.enabled = ciphEnabled // cipher state on/off
 		this.cp = []; this.cv = []; this.sumArr = [] // cp - character position, cv - character value, sumArr - phrase gematria value
 	}
 
 	calcGematria(gemPhrase) { // calculate gematria of a phrase
 		var i, ch_pos, cur_char
-		var ch_calc // // charcode for calculation
 		var gemValue = 0
 		
 		if (optAllowPhraseComments == true) { gemPhrase = gemPhrase.replace(/\[.+\]/g, '').trim() } // remove [...], leading/trailing spaces
+		/*if (this.diacriticsAsRegular) {
+			gemPhrase = gemPhrase.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+		} else {
+			gemPhrase = gemPhrase.toLowerCase()
+		}*/
+		if (this.diacriticsAsRegular) gemPhrase = gemPhrase.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+		if (this.caseSensitive == false) gemPhrase = gemPhrase.toLowerCase()
 
 		for (i = 0; i < gemPhrase.length; i++) {
 			cur_char = gemPhrase.charCodeAt(i)
-
-			if (this.diacriticsAsRegular) { // if characters with diacritic marks are treated as regular characters
-				// .substring is faster than String.fromCharCode(cur_char)
-				// get one current character, remove any diacritic marks, convert to lowercase and get charcode
-				ch_calc = gemPhrase.substring(i,i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase().charCodeAt(0)
-				// console.log(gemPhrase.substring(i,i+1)+" ("+gemPhrase.substring(i,i+1).charCodeAt(0)+
-				// 	") -> "+String.fromCharCode(cur_char).normalize('NFD').replace(/[\u0300-\u036f]/g, "")+" ("+String.fromCharCode(cur_char).normalize('NFD').replace(/[\u0300-\u036f]/g, "").charCodeAt(0)+
-				// 	") -> "+String.fromCharCode(cur_char).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()+" -> "+String.fromCharCode(cur_char).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase().charCodeAt(0) )
-			} else {
-				ch_calc = gemPhrase.substring(i,i+1).toLowerCase().charCodeAt(0) // formatted charcode (lowercase) - for calculation
-				// console.log(gemPhrase.substring(i,i+1)+" ("+gemPhrase.substring(i,i+1).charCodeAt(0)+
-				// 	") -> "+String.fromCharCode(cur_char).toLowerCase()+" -> "+String.fromCharCode(cur_char).toLowerCase().charCodeAt(0) )
-			}
-
-			ch_pos = this.cArr.indexOf(ch_calc)
+			ch_pos = this.cArr.indexOf(cur_char)
 			if (ch_pos > -1) { // append value for each found character
 				gemValue += this.vArr[ch_pos]
 			}
@@ -88,15 +81,17 @@ class cipher { // cipher constructor class
 			n = gemPhrase.charCodeAt(i); // get charcode for each character in phrase
 
 			if (this.diacriticsAsRegular) { // if characters with diacritic marks are treated as regular characters
-				nv = gemPhrase.substring(i,i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase().charCodeAt(0)
+				nv = gemPhrase.substring(i,i+1).normalize('NFD').replace(/[\u0300-\u036f]/g, "")
 				// console.log(gemPhrase.substring(i,i+1)+" ("+gemPhrase.substring(i,i+1).charCodeAt(0)+
 				// 	") -> "+String.fromCharCode(n).normalize('NFD').replace(/[\u0300-\u036f]/g, "")+" ("+String.fromCharCode(n).normalize('NFD').replace(/[\u0300-\u036f]/g, "").charCodeAt(0)+
 				// 	") -> "+String.fromCharCode(n).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()+" -> "+String.fromCharCode(n).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase().charCodeAt(0) )
 			} else {
-				nv = gemPhrase.substring(i,i+1).toLowerCase().charCodeAt(0) // formatted charcode (lowercase) - for calculation
+				nv = gemPhrase.substring(i,i+1) // formatted charcode (lowercase) - for calculation
 				// console.log(gemPhrase.substring(i,i+1)+" ("+gemPhrase.substring(i,i+1).charCodeAt(0)+
 				// 	") -> "+String.fromCharCode(n).toLowerCase()+" -> "+String.fromCharCode(n).toLowerCase().charCodeAt(0) )
 			}
+			if (this.caseSensitive == false) nv = nv.toLowerCase()
+			nv = nv.charCodeAt(0)
 
 			if (n > 47 && n < 58) { // 0-9 digits
 				if (optNumCalcMethod == "Full") {

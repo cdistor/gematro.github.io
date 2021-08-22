@@ -457,7 +457,7 @@ function removeNotMatchingPhrases() {
 		updateEnabledCipherTable() // update ciphers
 	}
 	
-	var o = '<input id="btn-clear-active-filter" type="button" value="X" onclick="removeActiveFilter()"/>'
+	var o = '<input id="btn-clear-active-filter" type="button" value="X" onclick="removeActiveFilter();displayCipherCatDetailed(cCat[0]);"/>'
 	$("#clearFilterButton").html(o) // clear active filter button
 	
 	if (optFiltSameCipherMatch) {

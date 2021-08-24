@@ -29,7 +29,7 @@ function createExportMenu() {
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-export-matches-txt" class="intBtn" type="button" value="Export Matches (TXT)">' // export available same/cross cipher matches
 	o += '<div style="margin: 0.5em;"></div>'
-	o += '<input id="btn-export-db-query" class="intBtn" type="button" value="Export DB Query (CSV)">' // export database query
+	o += '<input id="btn-export-db-query" class="intBtn hideValue" type="button" value="Export DB Query (CSV)">' // export database query
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-export-ciphers" class="intBtn" type="button" value="Export Ciphers">' // export all available ciphers
 

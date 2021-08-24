@@ -8,7 +8,6 @@
 <link rel="manifest" href="manifest.json">
 
 <script src="lib/jquery.min.js"></script>
-<script src="lib/lzma_worker-min.js"></script>
 <script src="lib/html2canvas.min.js"></script>
 <!-- html2canvas v1.0.0-alpha.12 -->
 
@@ -25,7 +24,6 @@
 <script src="calc/date-calc.js"></script>
 <script src="calc/database.js"></script>
 <script src="calc/quick-guide.js"></script>
-<script src="calc/db-compression.js"></script>
 
 <link rel="stylesheet" type="text/css" href="calc/styles.css">
 
@@ -55,7 +53,7 @@ $(window).load(function(){
 		<div id="dateCalcMenuArea"></div>
 
 		<div id="inputArea">
-		  <input id="queryDBbtn" class="" type="button" onclick="queryDatabase()" value="Query">
+		  <input id="queryDBbtn" class="hideValue" type="button" onclick="queryDatabase()" value="Query">
 		  <input id="phraseBox" autofocus type="text" autocomplete="off" oninput="updateEnabledCipherTable(); updateWordBreakdown(breakCipher,false,false);" onkeydown="phraseBoxKeypress(event.keyCode)" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
 		  <input id="highlightBox" type="text" autocomplete="off"><span id="clearFilterButton"></span>
 		</div>

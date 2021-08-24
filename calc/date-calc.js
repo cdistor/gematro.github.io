@@ -218,9 +218,9 @@ function toggleDateCalcMenu() {
 		o += '</tr>'
 
 		o += '<tr style="line-height: 0.6em;">' // labels
-		o += '<td style="padding-bottom: 0.4em;"><span class="dateInputLabel">Month</span></td>'
-		o += '<td style="padding-bottom: 0.4em;"><span class="dateInputLabel">Day</span></td>'
-		o += '<td colspan=2 style="padding-bottom: 0.4em;"><span class="dateInputLabel">Year</span></td>'
+		o += '<td style="padding-bottom: 0.6em;"><span class="dateInputLabel">Month</span></td>'
+		o += '<td style="padding-bottom: 0.6em;"><span class="dateInputLabel">Day</span></td>'
+		o += '<td colspan=2 style="padding-bottom: 0.6em;"><span class="dateInputLabel">Year</span></td>'
 		o += '</tr>'
 
 		var endCheckedState = "";

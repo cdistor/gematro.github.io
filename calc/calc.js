@@ -137,8 +137,7 @@ function createAboutMenu() { // create menu with all cipher catergories
 	o += '<div class="dropdown-content">'
 
 	o += '<center>'
-	o += '<div style="display: flex; justify-content: center;"><img src="res/logo.svg" style="height: 10px"></div>'
-	o += '<div style="display: flex; justify-content: center;"><span style="font-size: 70%; color: rgb(186,186,186);">by Saun Virroco</span></div>'
+	o += '<div style="display: flex; justify-content: center; padding-bottom: 0.4em;"><img src="res/logo.svg" style="height: 10px"></div>'
 	o += '</center>'
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="GitHub Repository" onclick="gotoGitHubRepo()">'
@@ -384,10 +383,8 @@ function createFeaturesMenu() {
 	o += '<input class="intBtn" type="button" value="Enter As Words" onclick="phraseBoxKeypress(35)">' // "End" keystroke
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="Clear History" onclick="phraseBoxKeypress(36)">' // "Home" keystroke
-	o += '<div style="margin: 0.5em;"></div>'
-	o += '<input id="clearDBqueryBtn" class="intBtn" type="button" value="Clear DB Query" onclick="clearDatabaseQueryTable()">' // clear database query
-	o += '<div id="unloadDBBtn_margin" class="hideValue" style="margin: 0.5em;"></div>'
-	o += '<input id="unloadDBBtn" class="intBtn hideValue" type="button" value="Unload Database" onclick="unloadDatabase()">' // unload database
+	o += '<input id="clearDBqueryBtn" style="margin-top: 0.5em;" class="intBtn hideValue" type="button" value="Clear DB Query" onclick="clearDatabaseQueryTable()">' // clear database query
+	o += '<input id="unloadDBBtn" style="margin-top: 0.5em;" class="intBtn hideValue" type="button" value="Unload Database" onclick="unloadDatabase()">' // unload database
 
 	o += '</div></div>'
 	document.getElementById("calcOptionsPanel").innerHTML = o

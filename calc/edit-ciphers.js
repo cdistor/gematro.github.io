@@ -6,9 +6,9 @@ var caseSensitiveCustom = false // case sensitivity flag for custom cipher
 $(document).ready(function(){
 
 	// click on cipher name in enabled ciphers table to load existing cipher
-	$("body").on("click", ".cipherHoverLabel", function () {
+	$("body").on("click", ".phraseGemCiphName", function () {
 		if (editCiphersMenuOpened) { // if menu is opened
-			var curCiphName = $(this).html();
+			var curCiphName = $(this).text();
 			var cID = 0; // current cipher ID
 			for (i = 0; i < cipherList.length; i++) { // get cipher ID
 				if (cipherList[i].cipherName == curCiphName) { cID = i; break; }
@@ -298,4 +298,11 @@ function initCalcCustCiph() {
 	// update tables
 	updateTables() 
 	checkCustCipherName() // redraw add/update custom cipher button
+	if (userDBlive.length !== 0) { // restore controls if live database is loaded
+		$("#queryDBbtn").removeClass("hideValue") // display query button
+		$("#clearDBqueryBtn").removeClass("hideValue") // clear button
+		$("#unloadDBBtn").removeClass("hideValue") // unload database button
+		$("#btn-export-db-query").removeClass("hideValue") // export button
+		$("#liveDBOption").addClass("hideValue") // hide "Live Database Mode"
+	}
 }

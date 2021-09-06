@@ -41,6 +41,7 @@ var optFiltCrossCipherMatch = true // filter shows only ciphers that have matchi
 var alphaHlt = 0.15 // opacity for values that do not match - change value here and in conf_SOM()
 
 var optAllowPhraseComments = true // allow phrase comments, text inside [...] is not evaluated
+var liveDatabaseMode = true // live database mode
 
 var interfaceHue = 222 // calculator interface color
 var interfaceHueDefault = 222 // value for reset, updated on first run of updateInterfaceHue()
@@ -164,24 +165,24 @@ function createOptionsMenu() {
 	o += '<div class="dropdown-content-opt">'
 
 	o += create_NumCalc() // Number Calculation
-	o += create_PL() // Phrase Limit (End)
 
 	// get checkbox states
-	var CCMstate, SCMstate, SOMstate, CHTstate, THTstate, APCstate, LWCstate, SRstate, WBstate, SCCstate, SWCstate, MCRstate = ""
+	var CCMstate, SCMstate, SOMstate, CHstate, THstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, SWCstate, MCRstate = ""
 
 	if (optFiltCrossCipherMatch) CCMstate = "checked" // Cross Cipher Match
 	if (optFiltSameCipherMatch) SCMstate = "checked" // Same Cipher Match
 	if (optShowOnlyMatching) SOMstate = "checked" // Show Only Matching
 
-	if (optCompactHistoryTable) CHTstate = "checked" // Compact History
-	if (optTinyHistoryTable) THTstate = "checked" // Tiny History
+	if (optCompactHistoryTable) CHstate = "checked" // Compact History
+	if (optTinyHistoryTable) THstate = "checked" // Tiny History
 
 	if (optAllowPhraseComments) APCstate = "checked" // Allow Phrase Comments
+	if (liveDatabaseMode) LDMstate = "checked" // Live Database Mode
 
 	if (optLetterWordCount) LWCstate = "checked" // Letter/Word Count
 	if (optSimpleResult) SRstate = "checked" // Simple Result
 	if (optWordBreakdown) WBstate = "checked" // Word Breakdown
-	if (optShowCipherChart) SCCstate = "checked" // Cipher Chart
+	if (optShowCipherChart) CCstate = "checked" // Cipher Chart
 
 	if (optLoadUserHistCiphers) SWCstate = "checked" // Switch Ciphers (CSV)
 	if (!optMatrixCodeRain) MCRstate = "checked" // Matrix Code Rain
@@ -190,15 +191,16 @@ function createOptionsMenu() {
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SCM" value="" onclick="conf_SCM()" '+SCMstate+'><span class="optionElementLabel">Same Cipher Match</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SOM" value="" onclick="conf_SOM()" '+SOMstate+'><span class="optionElementLabel">Show Only Matching</span></div>'
 	o += '<div style="margin: 1em"></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CH" value="" onclick="conf_CH()" '+CHTstate+'><span class="optionElementLabel">Compact History</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_TH" value="" onclick="conf_TH()" '+THTstate+'><span class="optionElementLabel">Tiny History</span></div>'
+	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CH" value="" onclick="conf_CH()" '+CHstate+'><span class="optionElementLabel">Compact History</span></div>'
+	o += '<div class="optionElement"><input type="checkbox" id="chkbox_TH" value="" onclick="conf_TH()" '+THstate+'><span class="optionElementLabel">Tiny History</span></div>'
 	o += '<div style="margin: 1em"></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_APC" value="" onclick="conf_APC()" '+APCstate+'><span class="optionElementLabel">Ignore Comments [...]</span></div>'
+	o += '<div id="liveDBOption" class="optionElement"><input type="checkbox" id="chkbox_LDM" value="" onclick="conf_LDM()" '+LDMstate+'><span class="optionElementLabel">Live Database Mode</span></div>'
 	o += '<div style="margin: 1em"></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_LWC" value="" onclick="conf_LWC()" '+LWCstate+'><span class="optionElementLabel">Letter/Word Count</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SR" value="" onclick="conf_SR()" '+SRstate+'><span class="optionElementLabel">Simple Result</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_WB" value="" onclick="conf_WB()" '+WBstate+'><span class="optionElementLabel">Word Breakdown</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CC" value="" onclick="conf_CC()" '+SCCstate+'><span class="optionElementLabel">Cipher Chart</span></div>'
+	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CC" value="" onclick="conf_CC()" '+CCstate+'><span class="optionElementLabel">Cipher Chart</span></div>'
 	o += '<div style="margin: 1em"></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SWC" value="" onclick="conf_SWC()" '+SWCstate+'><span class="optionElementLabel">Switch Ciphers (CSV)</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_MCR" value="" onclick="conf_MCR()" '+MCRstate+'><span class="optionElementLabel">Matrix Code Rain</span></div>'
@@ -207,24 +209,6 @@ function createOptionsMenu() {
 	o += '</div></div>'
 
 	document.getElementById("calcOptionsPanel").innerHTML = o
-
-	// set checkbox states
-	if (optFiltCrossCipherMatch) document.getElementById("chkbox_CCM").checked = true // Cross Cipher Match
-	if (optFiltSameCipherMatch) document.getElementById("chkbox_SCM").checked = true // Same Cipher Match
-	if (optShowOnlyMatching) document.getElementById("chkbox_SOM").checked = true // Show Only Matching
-
-	if (optCompactHistoryTable) document.getElementById("chkbox_CH").checked = true // Compact History
-	if (optTinyHistoryTable) document.getElementById("chkbox_TH").checked = true // Tiny History
-
-	if (optAllowPhraseComments) document.getElementById("chkbox_APC").checked = true // Allow Phrase Comments
-
-	if (optLetterWordCount) document.getElementById("chkbox_LWC").checked = true // Letter/Word Count
-	if (optSimpleResult) document.getElementById("chkbox_SR").checked = true // Simple Result
-	if (optShowCipherChart) document.getElementById("chkbox_WB").checked = true // Word Breakdown
-	if (optShowCipherChart) document.getElementById("chkbox_CC").checked = true // Cipher Chart
-
-	if (optLoadUserHistCiphers) document.getElementById("chkbox_SWC").checked = true // Switch Ciphers (CSV)
-	if (!optMatrixCodeRain) document.getElementById("chkbox_MCR").checked = true // Matrix Code Rain
 }
 
 function conf_CCM() { // Cross Cipher Match
@@ -315,50 +299,45 @@ function conf_SWC() { // Switch Ciphers (CSV)
 	optLoadUserHistCiphers = !optLoadUserHistCiphers
 }
 
+function conf_LDM() { // Live Database Mode
+	liveDatabaseMode = !liveDatabaseMode
+}
+
 function conf_MCR() { // Matrix Code Rain
 	toggleCodeRain()
 }
 
 function create_NumCalc() { // Number Calculation
-	var ns = ""
-	var nArr = ["Off", "Full", "Reduced"]
-	var nArr2 = [" ", " (123 = 123)", " (123 = 1+2+3 = 6)"]
-	ns += '<div class="optionElementDropdown"><span>Number Calculation</span>'
-	ns += '<select id="numCalcBox" onchange="conf_NumCalc()">'
-	for (x = 0; x < nArr.length; x++) {
-		if (nArr[x] == optNumCalcMethod) {
-			ns += '<option value="' + nArr[x] + '" selected="selected">' +  nArr[x] + nArr2[x] + '</option>'
-		} else {
-			ns += '<option value="' + nArr[x] + '">' +  nArr[x] + nArr2[x] + '</option>'
-		}
-	}
-	ns += '</select></div>'
-	return ns
+	var o = ""
+	var fullNumCalcState, redNumCalcState, offNumCalcState
+	if (optNumCalcMethod == "Full") { fullNumCalcState = 'checked' }
+	else if (optNumCalcMethod == "Reduced") { redNumCalcState = 'checked' }
+	else if (optNumCalcMethod == "Off") { offNumCalcState = 'checked' }
+	o += '<table class="optionElementTable"><tbody>'
+	o += '<tr><td colspan=3><span>Number Calculation</span></td></tr>'
+	o += '<tr><td><input type="checkbox" id="chkbox_fullNumCalc" onclick="conf_NumCalc(&quot;Full&quot;)" '+fullNumCalcState+'><span class="optionTableLabel">Full</span></td>'
+	o += '<td><input type="checkbox" id="chkbox_redNumCalc" onclick="conf_NumCalc(&quot;Reduced&quot;)" '+redNumCalcState+'><span class="optionTableLabel">Reduced</span></td>'
+	o += '<td><input type="checkbox" id="chkbox_offNumCalc" onclick="conf_NumCalc(&quot;Off&quot;)" '+offNumCalcState+'><span class="optionTableLabel">Off</span></td></tr>'
+	o += '</tbody></table>'
+	return o
 }
-function conf_NumCalc() { // Number Calculation
-	var nCalc = document.getElementById("numCalcBox")
-	optNumCalcMethod = nCalc.value
+function conf_NumCalc(mode) { // Number Calculation
+	optNumCalcMethod = mode
+	if (mode == "Full") {
+		document.getElementById("chkbox_fullNumCalc").checked = true
+		document.getElementById("chkbox_redNumCalc").checked = false
+		document.getElementById("chkbox_offNumCalc").checked = false
+	} else if (mode == "Reduced") {
+		document.getElementById("chkbox_redNumCalc").checked = true
+		document.getElementById("chkbox_fullNumCalc").checked = false
+		document.getElementById("chkbox_offNumCalc").checked = false
+	} else if (mode == "Off") {
+		document.getElementById("chkbox_offNumCalc").checked = true
+		document.getElementById("chkbox_fullNumCalc").checked = false
+		document.getElementById("chkbox_redNumCalc").checked = false
+	}
 	updateWordBreakdown()
 	updateTables()
-}
-
-function create_PL() { // Phrase Limit (End)
-	var ns = ""
-	var nArr = [1,2,3,4,5,6,7,8,9,10]
-	ns += '<div class="optionElementDropdown"><span style="size: 80%">Enter As Words (Limit)</span>'
-	ns += '<select id="phrLimitBox" onchange="conf_PL()">'
-	for (x = 0; x < nArr.length; x++) {
-		ns += '<option value="' + nArr[x] + '"'
-		if (nArr[x] == optPhraseLimit) {ns += ' selected="selected"'}
-		if (nArr[x] == 1) {ns += '>'+nArr[x]+' word</option>'}
-		else {ns += '>'+nArr[x]+' words</option>'}
-	}
-	ns += '</select></div>'
-	return ns
-}
-function conf_PL() {
-	var pLimit = document.getElementById("phrLimitBox")
-	optPhraseLimit = pLimit.value
 }
 
 // ========================= Color Functions ========================
@@ -381,6 +360,7 @@ function createFeaturesMenu() {
 	o += '<input class="intBtn" type="button" value="Find Matches" onclick="updateHistoryTableAutoHlt()">'
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="Enter As Words" onclick="phraseBoxKeypress(35)">' // "End" keystroke
+	o += create_PL() // Phrase Limit (End)
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="Clear History" onclick="phraseBoxKeypress(36)">' // "Home" keystroke
 	o += '<input id="clearDBqueryBtn" style="margin-top: 0.5em;" class="intBtn hideValue" type="button" value="Clear DB Query" onclick="clearDatabaseQueryTable()">' // clear database query
@@ -388,6 +368,17 @@ function createFeaturesMenu() {
 
 	o += '</div></div>'
 	document.getElementById("calcOptionsPanel").innerHTML = o
+}
+function create_PL() { // Phrase Limit (End)
+	var o = ""
+	o += '<div class="enterAsWordsLimit">'
+	o += '<span class="optionTableLabel">Word limit:</span><input id="phrLimitBox" onchange="conf_PL()" type="text" value="'+optPhraseLimit+'">'
+	o += '</div>'
+	return o
+}
+function conf_PL() {
+	var pLimit = document.getElementById("phrLimitBox")
+	optPhraseLimit = pLimit.value
 }
 
 function toggleColorControlsMenu(redraw = false) { // display control menu to adjust each cipher
@@ -777,7 +768,7 @@ function updateEnabledCipherTable() { // draws a table with phrase gematria for 
 			if (ciph_in_row < result_columns) { // until number of ciphers in row equals number of colums
 				cur_col = 'color: hsl('+cipherList[i].H+' '+cipherList[i].S+'% '+cipherList[i].L+'% / 1);'
 				if (odd_col) { // odd column, "cipher name - value"
-					o += '<td class="phraseGemCiphName" style="'+cur_col+'">'+HeadLink(cipherList[i])+'</td>'
+					o += '<td class="phraseGemCiphName" style="'+cur_col+'">'+cipherList[i].cipherName+'</td>'
 					// o += '<td class="phraseGemValueOdd" style="'+cur_col+'">'+cipherList[i].calcGematria(phr)+'</td>'
 					o += '<td class="phraseGemValueOdd" style="'+cur_col+'"><span class="numProp">'+cipherList[i].calcGematria(phr)+'<span></td>'
 					ciph_in_row++
@@ -786,7 +777,7 @@ function updateEnabledCipherTable() { // draws a table with phrase gematria for 
 				} else if (!odd_col) { // even column, "value - cipher name"
 					// o += '<td class="phraseGemValueEven" style="'+cur_col+'">'+cipherList[i].calcGematria(phr)+'</td>'
 					o += '<td class="phraseGemValueEven" style="'+cur_col+'"><span class="numProp">'+cipherList[i].calcGematria(phr)+'<span></td>'
-					o += '<td class="phraseGemCiphName" style="'+cur_col+'">'+HeadLink(cipherList[i])+'</td>'
+					o += '<td class="phraseGemCiphName" style="'+cur_col+'">'+cipherList[i].cipherName+'</td>'
 					ciph_in_row++
 					odd_col = true
 					//console.log(cipherList[i].cipherName+": even")

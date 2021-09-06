@@ -79,7 +79,8 @@ $(document).ready(function(){
 		}
 		// $(".LetterCounts").html('<span style="color: hsl('+c_h+' '+c_s+'% '+c_l+'% / 1); font-weight: 500; font-size: 200%;">Gematria</span><br><hr style="background-color: rgb(105,105,105); height: 2px; border: none;">');
 		//$("#BreakdownDetails").attr("style", "padding-top: 1.25em;"); // more padding
-		$(".LetterCounts").html('<br><hr style="background-color: rgb(105,105,105); height: 2px; border: none;">');
+		// $(".LetterCounts").html('<br><hr style="background-color: rgb(105,105,105); height: 2px; border: none;">');
+		$(".LetterCounts").html('');
 		$("#BreakdownDetails").attr("style", "padding-top: 0.75em;"); // more padding
 		updateCipherChartGemCard(); // redraw cipher chart for current cipher (with borders)
 

@@ -5,8 +5,9 @@ var gemArrCiph = [] // enabled ciphers indices
 var numericalMode // boolean flag, match numbers instead of phrase gematria
 
 var userDB = [] // imported database
+var userDBlive = [] // imported live database (phrases only)
 var queryResult = [] // matching phrases
-var dbLoaded = false // if database is loaded, disable cipher rearrangement
+var precalcDBLoaded = false // if precalculated database is loaded, disable cipher rearrangement
 
 var nPhr = 15 // number of phrases in one section
 var newItems = 1 // used for scrolling
@@ -94,6 +95,8 @@ function queryDatabase() {
 	var cVal
 	if(sVal() == "" || sVal() == 0) return // empty input
 
+	if (liveDatabaseMode == true) calcLiveDatabase(userDBlive) // calculate gematria for default database for enabled ciphers
+
 	$("#calcMain").addClass("splitInterface") // split screen
 
 	if (document.getElementById("queryArea") == null) { // create div if it doesn't exist
@@ -154,11 +157,19 @@ function searchDBcrossCipher() { // populate "queryResult" array with matching p
 	queryResult = [] // reset matching phrases
 	var tmpArr = [] // one phrase with score and gematria
 	var tmpVal = 0 // current phrase value
+	var gemArrCiphUsed = [...gemArrCiph]
+	if (liveDatabaseMode == true) { // 0,1,2...
+		len = gemArrCiph.length
+		gemArrCiphUsed = []
+		for (n = 0; n < len; n++) {
+			gemArrCiphUsed.push(n)
+		}
+	}
 	// take phrase, take cipher, all values match in cipher add score, build string, next phrase, then sort by score
 	for (p = 0; p < userDB.length; p++) { // for each phrase in database
 		tmpArr = [0, userDB[p][0]] // reset, set score[0], phrase[1]
-		for (m = 0; m < gemArrCiph.length; m++) { // for each enabled cipher index
-			tmpVal = Number(userDB[p][gemArrCiph[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
+		for (m = 0; m < gemArrCiphUsed.length; m++) { // for each enabled cipher index
+			tmpVal = Number(userDB[p][gemArrCiphUsed[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
 			tmpArr.push(tmpVal) // first add values irrelevant of match validity
 			for (n = 0; n < gemArr.length; n++) { // for each gematria value (cross cipher)
 				if (tmpVal == gemArr[m]) { 
@@ -184,11 +195,19 @@ function searchDBsameCipher() { // populate "queryResult" array with matching ph
 	queryResult = [] // reset matching phrases
 	var tmpArr = [] // one phrase with score and gematria
 	var tmpVal = 0 // current phrase value
+	var gemArrCiphUsed = [...gemArrCiph]
+	if (liveDatabaseMode == true) { // 0,1,2...
+		len = gemArrCiph.length
+		gemArrCiphUsed = []
+		for (n = 0; n < len; n++) {
+			gemArrCiphUsed.push(n)
+		}
+	}
 	// take phrase, take cipher, all values match in cipher add score, build string, next phrase, then sort by score
 	for (p = 0; p < userDB.length; p++) { // for each phrase in database
 		tmpArr = [0, userDB[p][0]] // reset, set score[0], phrase[1]
-		for (m = 0; m < gemArrCiph.length; m++) { // for each enabled cipher index
-			tmpVal = Number(userDB[p][gemArrCiph[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
+		for (m = 0; m < gemArrCiphUsed.length; m++) { // for each enabled cipher index
+			tmpVal = Number(userDB[p][gemArrCiphUsed[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
 			tmpArr.push(tmpVal) // first add values irrelevant of match validity
 			if (tmpVal == gemArr[m]) {
 				// tmpArr[0] += gemArr[m] // same cipher, add score
@@ -265,7 +284,11 @@ function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting posi
 		for (y = 0; y < gemArrCiph.length; y++) { // gemArrCiph contains indices of ciphers used for query
 			curCiph = cipherList[ gemArrCiph[y] ]
 
-			gemVal = queryResult[x][valPos] // value only
+			if (liveDatabaseMode == true) {
+				gemVal = curCiph.calcGematria(queryResult[x][1]) // recalculate displayed value
+			} else {
+				gemVal = queryResult[x][valPos] // value only
+			}
 			if (gemVal == 0) gemVal = "-"
 			valPos++ // increment value position
 
@@ -351,7 +374,11 @@ function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, tot
 		for (y = 0; y < gemArrCiph.length; y++) { // gemArrCiph contains indices of ciphers used for query
 			curCiph = cipherList[ gemArrCiph[y] ]
 
-			gemVal = queryResult[x][valPos] // value only
+			if (liveDatabaseMode == true) {
+				gemVal = curCiph.calcGematria(queryResult[x][1]) // recalculate displayed value
+			} else {
+				gemVal = queryResult[x][valPos] // value only
+			}
 			if (gemVal == 0) gemVal = "-"
 			valPos++ // increment value position
 
@@ -399,9 +426,12 @@ function unloadDatabase() {
 	}
 	updateTables() // update
 
-	cipherList = [...cipherListSaved] // restore initial ciphers
-	interfaceHue = interfaceHueDefault
+	if (!liveDatabaseMode) { // restore ciphers only when precalculated database is unloaded
+		cipherList = [...cipherListSaved] // restore initial ciphers
+		interfaceHue = interfaceHueDefault // restore hue
+	}
 	userDB = [] // clear previous DB
+	userDBlive = [] // clear live DB
 
 	document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
 	initCalc() // reinit
@@ -423,9 +453,11 @@ function unloadDatabase() {
 	$("#unloadDBBtn").addClass("hideValue") // unload database button
 	$("#btn-export-db-query").addClass("hideValue") // export button
 	$("#edCiphBtn").removeClass("hideValue") // show "Edit Ciphers"
+	$("#liveDBOption").removeClass("hideValue") // show "Live Database Mode"
 
 	closeAllOpenedMenus() // close "Edit Ciphers"
-	dbLoaded = false // database unloaded, enable cipher rearrangement
+	precalcDBLoaded = false // precalculated database unloaded, enable cipher rearrangement
+	liveDatabaseMode = true // restore live database mode
 
 	console.log("Database unloaded!")
 	var alertDiv = $('<div />').appendTo('body');
@@ -433,8 +465,24 @@ function unloadDatabase() {
 	alertDiv.html("<span>Database unloaded!</span>")
 	setTimeout(function() {
 		alertDiv.remove()
-	}, 750)
+	}, 1000)
 	return
+}
+
+function calcLiveDatabase(arr) {
+	var i, n
+	var tmpArr = []
+	userDB = [] // reset database values
+	for (i = 0; i < arr.length; i++) {
+		tmpArr = [] // reset
+		tmpArr.push(arr[i]) // add phrase
+		for (n = 0; n < cipherList.length; n++) {
+			if (cipherList[n].enabled) {
+				tmpArr.push(cipherList[n].calcGematria(arr[i])) // gematria value for each enabled cipher
+			}
+		}
+		userDB.push(tmpArr) // add row with phrase and gematria for enabled ciphers
+	}
 }
 
 function db_PhrLenStats(column = 1) { // phrase length statistics inside current database, column can be value[0] or matches[1]

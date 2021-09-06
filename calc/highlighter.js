@@ -116,8 +116,8 @@ $(document).ready(function(){
 	
 	// Right click on cipher name in enabled cipher table
 	$("body").on("contextmenu", ".phraseGemCiphName", function (e) { // tC - history table cell
-		var val = $(this).find(".cipherHoverLabel").html(); // get cipher name from element
-		if (ctrlIsPressed && !dbLoaded) { // if no database was loaded
+		var val = $(this).text(); // get cipher name from element
+		if (ctrlIsPressed && !precalcDBLoaded) { // if no precalculated database is loaded
 			if (prevCiphIndex == -1) { // no previous selection
 				$(this).addClass("selectedPhrase") // highlight
 				for (i = 0; i < cipherList.length; i++) {
@@ -148,6 +148,13 @@ $(document).ready(function(){
 					createExportMenu()
 					createAboutMenu()
 
+					if (userDBlive.length !== 0) { // restore controls if live database is loaded
+						$("#queryDBbtn").removeClass("hideValue") // display query button
+						$("#clearDBqueryBtn").removeClass("hideValue") // clear button
+						$("#unloadDBBtn").removeClass("hideValue") // unload database button
+						$("#btn-export-db-query").removeClass("hideValue") // export button
+						$("#liveDBOption").addClass("hideValue") // hide "Live Database Mode"
+					}
 					updateTables() // index is reset by update
 				}
 			}

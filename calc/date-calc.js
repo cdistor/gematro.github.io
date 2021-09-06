@@ -143,8 +143,8 @@ function dDurLine(val) { // build string to display date duration
 }
 
 function endDateDisp(val) {
-	if (endDate == 1) return '<span class="dayOffDisp">+1&nbsp;&nbsp;&nbsp;</span>'+val+'&nbsp;&nbsp;&nbsp;'
-	else if (endDate == -1) return '<span class="dayOffDisp">-1&nbsp;&nbsp;&nbsp;</span>'+val+'&nbsp;&nbsp;&nbsp;'
+	if (endDate == 1) return '<span class="dayOffDisp">+1&nbsp;&nbsp;&nbsp;</span>'+val+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+	else if (endDate == -1) return '<span class="dayOffDisp">-1&nbsp;&nbsp;&nbsp;</span>'+val+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 }
 
 function dFmt(val, mode) { // formatting and label for date durations, y,m,w,d is 0,1,2,3 (optional)

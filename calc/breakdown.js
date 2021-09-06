@@ -7,15 +7,18 @@ function getSum(total, num) { // used to .reduce() array, adds all values
     return total + num;
 }
 
-function HeadLink(curCipher) { // change breakdown tables when mouse over/click
-	var o = ""
-	o += '<a class="cipherHoverLabel" onmouseover="javascript:updateWordBreakdown('
-	o += "'" + curCipher.cipherName + "', false)"
-	o += '" onmouseout="updateWordBreakdown()" href="javascript:updateWordBreakdown('
-	o += "'" + curCipher.cipherName + "', true"
-	o += ')">' + curCipher.cipherName + '</a>'
-	return o
-}
+$(document).ready(function(){
+	// update breakdown on mouse enter/leave/click events
+	$("body").on("mouseenter", ".phraseGemCiphName", function () {
+		updateWordBreakdown($(this).text(), false);
+	});
+	$("body").on("mouseleave", ".phraseGemCiphName", function () {
+		updateWordBreakdown();
+	});
+	$("body").on("click", ".phraseGemCiphName", function () {
+		updateWordBreakdown($(this).text(), true);
+	});
+});
 
 function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = true) { // false - preview temporary (hover), true - lock breakdown to a specific cipher
 	var x, curCipher, cSpot

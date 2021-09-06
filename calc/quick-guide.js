@@ -31,8 +31,6 @@ function displayQuickstartGuide() {
 
 	o += '<ul><li><span class="qgBold">"Number Calculation"</span><ul><li>Full (123 = 123) - <span class="qgBold">default</span></li><li>Reduced (123 = 1+2+3 = 6)</li><li>Off</li></ul></li>'
 
-	o += '<li><span class="qgBold">"Enter As Words (Limit)"</span> - maximum phrase length for <span class="qgBold">"Enter As Words"</span> function</li>'
-
 	o += '<li><span class="qgBold">Highlighter</span> has two different modes:<ul><li><span class="qgBold">"Cross Cipher Match"</span></li><li><span class="qgBold">"Same Cipher Match"</span><br><span class="qgNote">Note: If there is just one value, only "Cross Cipher Match" will pick that</span></li></ul></li>'
 
 	o += '<li><span class="qgBold">"Show Only Matching"</span> - when highlighter is active, sets opacity of nonmatching values to zero</li>'
@@ -47,6 +45,8 @@ function displayQuickstartGuide() {
 	o += '<li><span class="qgBold">"Tiny History"</span> - no cipher names, seamless history table</li>'
 
 	o += '<li><span class="qgBold">"Ignore Comments [...]"</span> - exclude any text inside square brackets from gematria calculation<br><span class="qgNote">Note: Comments are preserved on export/import</span></li>'
+
+	o += '<li><span class="qgBold">"Live Database Mode"</span> - disable this option to generate a precalculated database on file import<br><span class="qgNote">Note: More information is available in the "Databases" section of this guide</span></li>'
 
 	o += '<li><span class="qgBold">"Switch Ciphers (CSV)"</span> - enable previously selected ciphers on history file import</li>'
 
@@ -81,17 +81,17 @@ function displayQuickstartGuide() {
 	o += '<hr class="numPropSeparator">'
 	o += '<p><span class="qgBold2">Databases</p>'
 
-	o += '<ul><li><span class="qgBold">GEMATRO</span> can generate databases from plain TXT files<br><span class="qgNote">Note: File should contain one phrase per line, the first line must be<br>CREATE_GEMATRO_DB</span></li>'
+	o += '<ul><li>Import a properly formatted TXT file to enable database query. <span class="qgBold">Live Database Mode</span> is used by default, however <span class="qgBold">GEMATRO</span> can generate a precalculated database as well<br><span class="qgNote">Note: File should contain one phrase per line, the first line must be<br>CREATE_GEMATRO_DB</span></li>'
 
-	o += '<li><span class="qgBold">"Ignore Comments [...]"</span> flag affects database generation<br><span class="qgNote">Note: When database is loaded, calculator should use the same mode of "Ignore Comments [...]" as at the moment of database generation, otherwise values inside database and calculator will differ</span></li>'
+	o += '<li><span class="qgBold">"Ignore Comments [...]"</span> flag affects database generation<br><span class="qgNote">Note: When database is loaded, calculator should use the same mode of "Ignore Comments [...]" as at the moment of database generation, otherwise values inside database and calculator will differ. The same is valid for number calculation settings</span></li>'
 
-	o += '<li>Database is calculated only for currently enabled ciphers. Those ciphers are stored inside the database as well.<br><span class="qgNote">Note: When the database is loaded, calculator will allow to use only those ciphers which are available inside that database<br>For example, if you load a database that contains values only for English Ordinal cipher, English Ordinal becomes the only available cipher for any calculations until you unload the database</span></li>'
+	o += '<li>Precalculated database can be generated when <span class="qgBold">"Live Database Mode"</span> is disabled. Database will have values only for currently selected ciphers. Those ciphers are stored inside the database as well.<br><span class="qgNote">Note: When precalculated database is loaded, calculator will allow to use only those ciphers which are available inside that database<br>For example, if you load a database that contains values only for English Ordinal cipher, English Ordinal becomes the only available cipher for any calculations until you unload the database. "Live Database Mode" calculates all values on the fly and can work with any ciphers, however this mode is slower and there is no separate file with precalculated gematria values</span></li>'
 
-	o += '<li>After you import text file for database generation, calculation will start immediately and a dialogue that offers to save the database will appear<br><span class="qgNote">Note: Process may take some time, please be patient</span></li>'
+	o += '<li>After you import a properly formatted text file for database generation, calculation will start immediately and a dialogue that offers to save new precalculated database will appear<br><span class="qgNote">Note: Process may take some time, please be patient</span></li>'
 
-	o += '<li>When a precalculated database is imported, new elements become available:<ul><li><span class="qgBold">"Query"</span> - match current phrase or number against database</li><li><span class="qgBold">"Clear DB Query" (Features)</span> - close current <span class="qgBold">Query Table</span> and switch back to centered interface</li><li><span class="qgBold">"Unload Database" (Features)</span> - unload database and restore initial ciphers; <span class="qgBold">History Table</span> is preserved</li><li><span class="qgBold">"Export DB Query (CSV)" (Export)</span> - save matching phrases from database as a CSV file</li></ul>'
+	o += '<li>When a database is imported, new elements become available:<ul><li><span class="qgBold">"Query"</span> - match current phrase or number against database</li><li><span class="qgBold">"Clear DB Query" (Features)</span> - close current <span class="qgBold">Query Table</span> and switch back to centered interface</li><li><span class="qgBold">"Unload Database" (Features)</span> - unload database and restore initial ciphers; <span class="qgBold">History Table</span> is preserved</li><li><span class="qgBold">"Export DB Query (CSV)" (Export)</span> - save matching phrases from database as a CSV file</li></ul>'
 
-	o += '<li><span class="qgBold">"Cipher Edit"</span> (and rearrangement) is not available when database is loaded</li>'
+	o += '<li><span class="qgBold">"Cipher Edit"</span> (and rearrangement) is not available when a precalculated database is loaded</li>'
 
 	o += '<li>Current highlighter mode (<span class="qgBold">"Cross Cipher Match"</span> or <span class="qgBold">"Same Cipher Match"</span>) controls database query<br><span class="qgNote">Note: "Show Only Matching" option hides nonmatching values as well</span></li>'
 

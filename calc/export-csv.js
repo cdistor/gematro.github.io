@@ -62,8 +62,26 @@ function importFileAction(file) {
 		// detect database export mode
 		if (uCiph[0] == "CREATE_GEMATRO_DB") {
 			userHist.splice(0,1) // remove the first line
-			expCiphers = exportCiphersDB() // export enabled ciphers
-			exportHistoryCSV(userHist, true, expCiphers) // export database with enabled ciphers
+			if (liveDatabaseMode == false) { // precompiled database mode
+				expCiphers = exportCiphersDB() // export enabled ciphers
+				exportHistoryCSV(userHist, true, expCiphers) // export database with enabled ciphers
+			} else {
+				userDBlive = [...userHist] // live database mode
+				$("#queryDBbtn").removeClass("hideValue") // display query button
+				$("#clearDBqueryBtn").removeClass("hideValue") // clear button
+				$("#unloadDBBtn").removeClass("hideValue") // unload database button
+				$("#btn-export-db-query").removeClass("hideValue") // export button
+				$("#liveDBOption").addClass("hideValue") // hide "Live Database Mode"
+				closeAllOpenedMenus() // close menus
+
+				console.log("Database loaded! ("+userDB.length+" entries)")
+				var alertDiv = $('<div />').appendTo('body');
+				alertDiv.attr('id', 'dbAlert');
+				alertDiv.html("<span>Database loaded!</span>")
+				setTimeout(function() {
+					alertDiv.remove()
+				}, 1000)
+			}
 			return
 		}
 
@@ -76,8 +94,13 @@ function importFileAction(file) {
 	
 		// detect cipher.js, load user ciphers
 		if (uCiph[0] == "// ciphers.js") {
-			if (dbLoaded) { // return if database is loaded
-				alert("Cipher import is disabled!\nReload the page to unload the database.")
+			if (precalcDBLoaded) { // return if precalculated database is loaded
+				var alertDiv = $('<div />').appendTo('body');
+				alertDiv.attr('id', 'dbAlert');
+				alertDiv.html("<center><span>Cipher import for precalculated databases is disabled!</span><br><span>Unload the database first.</span></center>")
+				setTimeout(function() {
+					alertDiv.remove()
+				}, 3000)
 				return
 			}
 			var intHue = file.match(/(?<=interfaceHue = )\d+/) // consecutive digits
@@ -113,6 +136,8 @@ function importFileAction(file) {
 
 		// detect database import
 		if ( uCiph[0] == 'GEMATRO_DB' ) {
+			liveDatabaseMode = false // disable live database mode
+
 			// import ciphers from database
 			var intHue = file.match(/(?<=interfaceHue = )\d+/) // consecutive digits
 			if (intHue !== null) interfaceHue = Number(intHue[0]) // update hue if match is found, use first match
@@ -144,8 +169,9 @@ function importFileAction(file) {
 			$("#unloadDBBtn").removeClass("hideValue") // unload database button
 			$("#btn-export-db-query").removeClass("hideValue") // export button
 			$("#edCiphBtn").addClass("hideValue") // hide "Edit Ciphers"
+			$("#liveDBOption").addClass("hideValue") // hide "Live Database Mode"
 			closeAllOpenedMenus() // close "Edit Ciphers"
-			dbLoaded = true // database loaded, disable cipher rearrangement
+			precalcDBLoaded = true // precalculated database loaded, disable cipher rearrangement
 
 			console.log("Database loaded! ("+userDB.length+" entries)")
 			var alertDiv = $('<div />').appendTo('body');
@@ -153,7 +179,7 @@ function importFileAction(file) {
 			alertDiv.html("<span>Database loaded!</span>")
 			setTimeout(function() {
 				alertDiv.remove()
-			}, 750)
+			}, 1000)
 			return
 		}
 

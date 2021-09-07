@@ -729,6 +729,42 @@ function sValNoComments() {
 	return document.getElementById("phraseBox").value.replace(/\[.+\]/g, '').replace(/\[/g, '').replace(/\]/g, '').trim()
 }
 
+function calcCipherNameWidthPx(str) { // calculate column width inside table based on cipher name length
+	chWidthArr = [["a",8.13],["b",9.28],["c",7.66],["d",9.28],["e",8.32],["f",4.8],["g",9.38],["h",9.26],["i",3.79],["j",3.86],["k",8.38],["l",3.79],["m",14.38],["n",9.26],["o",8.64],["p",9.28],["q",9.28],["r",5.48],["s",6.81],["t",5.46],["u",9.21],["v",7.49],["w",12.12],["x",7.51],["y",7.49],["z",7.09],["A",10.13],["B",10.3],["C",9.63],["D",11.23],["E",9.11],["F",8.64],["G",10.5],["H",11.04],["I",4.22],["J",6.98],["K",9.78],["L",8.08],["M",12.99],["N",11.04],["O",11.42],["P",9.68],["Q",11.42],["R",9.89],["S",8.45],["T",8.12],["U",10.76],["V",9.68],["W",15.31],["X",8.9],["Y",8.76],["Z",8.94],["1",5.03],["2",7.81],["3",7.71],["4",9.1],["5",7.74],["6",8.39],["7",8.13],["8",8.76],["9",8.39],["0",9.07],["-",5.25],["(",4.58],[")",4.6],[" ",3.66]]
+	var i, n, m
+	var tmp = 0; var curChar = ''; var lenArr = [];
+	var arr = str.split(' ') // split string by words
+	for (i = 0; i < arr.length; i++) { // for each word
+		tmp = 0 // reset word width
+		for (n = 0; n < arr[i].length; n++) { // for each character in that word
+			curChar = arr[i].substring(n,n+1) // current character
+			for (m = 0; m < chWidthArr.length; m++) { // for each element in array with widths
+				if (chWidthArr[m][0] == curChar) tmp += chWidthArr[m][1] // add width for correspondent character
+			}
+		}
+		lenArr.push(tmp) // save width for current word
+	}
+	tmp = 0
+	for (i = 0; i < lenArr.length; i++) {
+		if (lenArr[i] > tmp) tmp = lenArr[i] // find max value
+	}
+	if (tmp+6 >= 80) return Math.ceil(tmp+6) // 6px padding
+	return 80
+}
+
+function calcCipherNameHeightPx(str) { // calculate row height inside compact table based on cipher name length
+	chWidthArr = [["a",8.13],["b",9.28],["c",7.66],["d",9.28],["e",8.32],["f",4.8],["g",9.38],["h",9.26],["i",3.79],["j",3.86],["k",8.38],["l",3.79],["m",14.38],["n",9.26],["o",8.64],["p",9.28],["q",9.28],["r",5.48],["s",6.81],["t",5.46],["u",9.21],["v",7.49],["w",12.12],["x",7.51],["y",7.49],["z",7.09],["A",10.13],["B",10.3],["C",9.63],["D",11.23],["E",9.11],["F",8.64],["G",10.5],["H",11.04],["I",4.22],["J",6.98],["K",9.78],["L",8.08],["M",12.99],["N",11.04],["O",11.42],["P",9.68],["Q",11.42],["R",9.89],["S",8.45],["T",8.12],["U",10.76],["V",9.68],["W",15.31],["X",8.9],["Y",8.76],["Z",8.94],["1",5.03],["2",7.81],["3",7.71],["4",9.1],["5",7.74],["6",8.39],["7",8.13],["8",8.76],["9",8.39],["0",9.07],["-",5.25],["(",4.58],[")",4.6],[" ",3.66]]
+	var i, n
+	var tmp = 0; var curChar = '';
+	for (i = 0; i < str.length; i++) { // for each character in string
+		curChar = str.substring(i,i+1) // current character
+		for (n = 0; n < chWidthArr.length; n++) { // for each element in array with widths
+			if (chWidthArr[n][0] == curChar) tmp += chWidthArr[n][1] // add width for correspondent character
+		}
+	}
+	return Math.ceil(tmp+18) // 18px padding
+}
+
 function updateEnabledCipherTable() { // draws a table with phrase gematria for enabled ciphers (odd/even)
 	document.getElementById("enabledCiphTable").innerHTML = "" // clear previous table
 	
@@ -929,9 +965,9 @@ function updateHistoryTable(hltBoolArr) {
 			for (z = 0; z < cipherList.length; z++) {
 				if (cipherList[z].enabled) {
 					if (optCompactHistoryTable) {
-						ms += '<td class="hCV"><span class="hCV2" style="color: hsl('+cipherList[z].H+' '+cipherList[z].S+'% '+cipherList[z].L+'% / 1);">'+cipherList[z].cipherName+'</span></td>' // color of cipher displayed in the table
+						ms += '<td class="hCV" style="height: '+calcCipherNameHeightPx(cipherList[z].cipherName)+'px;"><span class="hCV2" style="color: hsl('+cipherList[z].H+' '+cipherList[z].S+'% '+cipherList[z].L+'% / 1);">'+cipherList[z].cipherName+'</span></td>' // color of cipher displayed in the table
 					} else {
-						ms += '<td class="hC" style="color: hsl('+cipherList[z].H+' '+cipherList[z].S+'% '+cipherList[z].L+'% / 1);">'+cipherList[z].cipherName+'</td>' // color of cipher displayed in the table
+						ms += '<td class="hC" style="color: hsl('+cipherList[z].H+' '+cipherList[z].S+'% '+cipherList[z].L+'% / 1); max-width: '+calcCipherNameWidthPx(cipherList[z].cipherName)+'px; min-width: '+calcCipherNameWidthPx(cipherList[z].cipherName)+'px;">'+cipherList[z].cipherName+'</td>' // color of cipher displayed in the table
 					}
 				}
 			}

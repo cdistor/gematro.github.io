@@ -256,6 +256,11 @@ body {
 	height: 32px;
 	cursor: pointer;
 }
+.phraseGemCiphNameBlank {
+	padding: 0.2em 0.5em;
+	max-width: 110px;
+	height: 32px;
+}
 #canv {
 	margin: 0;
 	padding: 0;

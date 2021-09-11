@@ -15,6 +15,7 @@ var editCiphersMenuOpened = false // edit ciphers menu state
 var dateCalcMenuOpened = false // date calculator menu state
 
 var enabledCiphCount = 0 // number of enabled ciphers
+var optEnableExtraCiphers = false // enable extra ciphers
 
 // Cipher colors
 var origColors = [] // preserve original cipher colors
@@ -167,7 +168,7 @@ function createOptionsMenu() {
 	o += create_NumCalc() // Number Calculation
 
 	// get checkbox states
-	var CCMstate, SCMstate, SOMstate, CHstate, THstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, SWCstate, MCRstate = ""
+	var CCMstate, SCMstate, SOMstate, CHstate, THstate, EECstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, SWCstate, MCRstate = ""
 
 	if (optFiltCrossCipherMatch) CCMstate = "checked" // Cross Cipher Match
 	if (optFiltSameCipherMatch) SCMstate = "checked" // Same Cipher Match
@@ -176,6 +177,7 @@ function createOptionsMenu() {
 	if (optCompactHistoryTable) CHstate = "checked" // Compact History
 	if (optTinyHistoryTable) THstate = "checked" // Tiny History
 
+	if (optEnableExtraCiphers) EECstate = "checked" // Enable Extra Ciphers
 	if (optAllowPhraseComments) APCstate = "checked" // Allow Phrase Comments
 	if (liveDatabaseMode) LDMstate = "checked" // Live Database Mode
 
@@ -194,6 +196,7 @@ function createOptionsMenu() {
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CH" value="" onclick="conf_CH()" '+CHstate+'><span class="optionElementLabel">Compact History</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_TH" value="" onclick="conf_TH()" '+THstate+'><span class="optionElementLabel">Tiny History</span></div>'
 	o += '<div style="margin: 1em"></div>'
+	o += '<div class="optionElement" id="enableExtraCiphOption"><input type="checkbox" id="chkbox_EEC" value="" onclick="conf_EEC()" '+EECstate+'><span class="optionElementLabel">Enable Extra Ciphers</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_APC" value="" onclick="conf_APC()" '+APCstate+'><span class="optionElementLabel">Ignore Comments [...]</span></div>'
 	o += '<div id="liveDBOption" class="optionElement"><input type="checkbox" id="chkbox_LDM" value="" onclick="conf_LDM()" '+LDMstate+'><span class="optionElementLabel">Live Database Mode</span></div>'
 	o += '<div style="margin: 1em"></div>'
@@ -209,6 +212,28 @@ function createOptionsMenu() {
 	o += '</div></div>'
 
 	document.getElementById("calcOptionsPanel").innerHTML = o
+}
+
+function conf_EEC() { // Enable Extra Ciphers
+	var i, n
+	var cipherExists = false
+	optEnableExtraCiphers = !optEnableExtraCiphers
+	resetColorControls() // reset color changes (otherwise they become permanent)
+	if (optEnableExtraCiphers) { // load extra ciphers
+		for (i = 0; i < cipherListExtra.length; i++) {
+			for (n = 0; n < cipherList.length; n++) { // check if cipher exists
+				if (cipherListExtra[i].cipherName == cipherList[n].cipherName) {cipherExists = true; return;}
+			}
+			if (!cipherExists) cipherList.push( Object.assign(new cipher(), cipherListExtra[i]) )// copy of a cipher object
+		}
+	} else { // unload extra ciphers
+		for (i = 0; i < cipherListExtra.length; i++) {
+			for (n = 0; n < cipherList.length; n++) {
+				if (cipherListExtra[i].cipherName == cipherList[n].cipherName) cipherList.splice(n,1) // remove cipher
+			}
+		}
+	}
+	initCalcCustCiph(false) // don't update values inside cipher editor
 }
 
 function conf_CCM() { // Cross Cipher Match
@@ -762,7 +787,7 @@ function calcCipherNameHeightPx(str) { // calculate row height inside compact ta
 			if (chWidthArr[n][0] == curChar) tmp += chWidthArr[n][1] // add width for correspondent character
 		}
 	}
-	return Math.ceil(tmp+18) // 18px padding
+	return Math.ceil(tmp+20) // 20px padding
 }
 
 function updateEnabledCipherTable() { // draws a table with phrase gematria for enabled ciphers (odd/even)
@@ -821,12 +846,12 @@ function updateEnabledCipherTable() { // draws a table with phrase gematria for 
 				if (cur_ciph_index == enabledCiphCount && last_row_elements !== 0) { // last enabled cipher is added and last row is not fully populated
 					for (n = 0; n < result_columns - last_row_elements; n++) { // for remaining empty cells in last row
 						if (odd_col) {
-							o += '<td class="phraseGemCiphName"></td>'
+							o += '<td class="phraseGemCiphNameBlank"></td>'
 							o += '<td class="phraseGemValueOdd"></td>'
 							odd_col = false
 						} else if (!odd_col) {
 							o += '<td class="phraseGemValueEven"></td>'
-							o += '<td class="phraseGemCiphName"></td>'
+							o += '<td class="phraseGemCiphNameBlank"></td>'
 							odd_col = true
 						}
 					}

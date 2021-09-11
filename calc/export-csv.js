@@ -74,7 +74,7 @@ function importFileAction(file) {
 				$("#liveDBOption").addClass("hideValue") // hide "Live Database Mode"
 				closeAllOpenedMenus() // close menus
 
-				console.log("Database loaded! ("+userDB.length+" entries)")
+				console.log("Database loaded! ("+userDBlive.length+" entries)")
 				var alertDiv = $('<div />').appendTo('body');
 				alertDiv.attr('id', 'dbAlert');
 				alertDiv.html("<span>Database loaded!</span>")
@@ -94,6 +94,9 @@ function importFileAction(file) {
 	
 		// detect cipher.js, load user ciphers
 		if (uCiph[0] == "// ciphers.js") {
+			optEnableExtraCiphers = false // clear "Enable Extra Ciphers" option
+			document.getElementById('chkbox_EEC').checked = false
+
 			if (precalcDBLoaded) { // return if precalculated database is loaded
 				var alertDiv = $('<div />').appendTo('body');
 				alertDiv.attr('id', 'dbAlert');
@@ -172,6 +175,10 @@ function importFileAction(file) {
 			$("#liveDBOption").addClass("hideValue") // hide "Live Database Mode"
 			closeAllOpenedMenus() // close "Edit Ciphers"
 			precalcDBLoaded = true // precalculated database loaded, disable cipher rearrangement
+
+			optEnableExtraCiphers = false // disable and hide "Enable Extra Ciphers" option
+			document.getElementById('chkbox_EEC').checked = false
+			$('#enableExtraCiphOption').addClass('hideValue')
 
 			console.log("Database loaded! ("+userDB.length+" entries)")
 			var alertDiv = $('<div />').appendTo('body');

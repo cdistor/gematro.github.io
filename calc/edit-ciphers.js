@@ -286,7 +286,7 @@ function deleteCipherAction() {
 	initCalcCustCiph() // update
 }
 
-function initCalcCustCiph() {
+function initCalcCustCiph(editorOpened = true) {
 	document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
 	// reinit, create menus
 	initCiphers(false) // don't alter default ciphers
@@ -297,7 +297,7 @@ function initCalcCustCiph() {
 	createAboutMenu()
 	// update tables
 	updateTables() 
-	checkCustCipherName() // redraw add/update custom cipher button
+	if (editorOpened) checkCustCipherName() // redraw add/update custom cipher button
 	if (userDBlive.length !== 0) { // restore controls if live database is loaded
 		$("#queryDBbtn").removeClass("hideValue") // display query button
 		$("#clearDBqueryBtn").removeClass("hideValue") // clear button

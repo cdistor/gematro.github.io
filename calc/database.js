@@ -429,6 +429,7 @@ function unloadDatabase() {
 	if (!liveDatabaseMode) { // restore ciphers only when precalculated database is unloaded
 		cipherList = [...cipherListSaved] // restore initial ciphers
 		interfaceHue = interfaceHueDefault // restore hue
+		$('#enableExtraCiphOption').removeClass('hideValue') // show "Enable Extra Ciphers" option
 	}
 	userDB = [] // clear previous DB
 	userDBlive = [] // clear live DB

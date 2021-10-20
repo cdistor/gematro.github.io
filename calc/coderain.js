@@ -36,7 +36,7 @@ function matrix() {
 	ctx.fillRect(0, 0, w, h)
 
 	// set color and font in the drawing context
-	ctx.fillStyle = "rgb(0,77,0)"
+	ctx.fillStyle = "rgb(39,58,57)" // "rgb(0,42,0)"
 	ctx.font = "bold 18pt matrix-font"
 	if(navigator.userAgent.toLowerCase().indexOf('firefox') == -1) { // if not Firefox
 		ctx.shadowColor = "rgba(0,255,0,0.4)"

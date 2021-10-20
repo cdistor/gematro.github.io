@@ -64,6 +64,17 @@ class cipher { // cipher constructor class
 		return gemValue
 	}
 	
+	calcGematriaFast(gemPhrase) { // calculate gematria (no numbers, lowercase only)
+		var i, ch_pos, cur_char
+		var gemValue = 0
+		for (i = 0; i < gemPhrase.length; i++) {
+			cur_char = gemPhrase.charCodeAt(i)
+			ch_pos = this.cArr.indexOf(cur_char)
+			if (ch_pos > -1) gemValue += this.vArr[ch_pos]
+		}
+		return gemValue
+	}
+
 	calcBreakdown(gemPhrase) { // character breakdown table
 		var i, cIndex, wordSum //
 		var lastSpace = true

@@ -14,6 +14,10 @@ function displayQuickstartGuide() {
 
 	o += '<hr class="numPropSeparator">'
 
+	o += '<ul><li><a class="qgLink" href="https://gematriaresearch.blogspot.com/">https://gematriaresearch.blogspot.com/</a><br><span class="qgNote">History of neglected ciphers and methods used in the practice of gematria</span></li></ul>'
+	
+	o += '<hr class="numPropSeparator">'
+
 	o += '<p class="qgMedium">Phrase Box - enter any word, phrase or number</p>\n<ul><li><span class="qgBold">"Enter"</span> - add phrase to history table</li><li><span class="qgBold">"Up"</span> and <span class="qgBold">"Down"</span> arrow keys - select phrase from history table<br>Press <span class="qgBold">"Down"</span> to select previously entered phrase</li><li><span class="qgBold">"Delete"</span> - delete current phrase from history table</li><li>Additional Shortcuts:<br><span class="qgBold">"Home"</span> - clear history table<br><span class="qgBold">"End"</span> - shortcut for <span class="qgBold">"Enter As Words"</span> function</li></ul>'
 
 	o += '<p class="qgMedium">Highlight Box - enter space delimited numbers</p>\n<ul><li><span class="qgBold">"Enter"</span> - activate filter (remove nonmatching phrases and ciphers)</li><li><span class="qgBold">"Delete"</span> - clear box contents (does not reset filter)<br><span class="qgNote">Note: Reset filter with an "X" button near the box</span></li><li>Additional Shortcuts:<br><span class="qgBold">"Insert"</span> - find all available matches<br><span class="qgBold">"Ctrl + Delete"</span> - reset filter and revert to initial history state<br><span class="qgNote">Note: History table is recalculated on each keystroke</span></li></ul>'
@@ -74,6 +78,8 @@ function displayQuickstartGuide() {
 
 	o += '<li><span class="qgBold">"Import File"</span> - import a <span class="qgBold">.txt</span> file (one phrase per line), previously exported CSV history, exported matches or user ciphers<br><span class="qgNote">Note: You can also drag and drop file into Phrase Box</span></li>'
 
+	o += '<li><span class="qgBold">"Create Database (TXT)"</span> - convert a <span class="qgBold">.txt</span> file into <span class="qgBold">Live Database</span> format<br><span class="qgNote">Note: Database contains unique words which are sorted by alphabetical order</span></li>'
+
 	o += '<li><span class="qgBold">"Export History (CSV)"</span> - export phrases from current history table as a CSV file, semicolon is used as separator, first row contains cipher names</li>'
 
 	o += '<li><span class="qgBold">"Export Matches (TXT)"</span> - export all available matches from current history table as a text file, current highlighter mode (<span class="qgBold">"Cross Cipher Match"</span> or <span class="qgBold">"Same Cipher Match"</span>) is used during export<br><span class="qgNote">Note: Matches can be imported back into calculator</span></li>'
@@ -110,11 +116,6 @@ function displayQuickstartGuide() {
 	o += '<li><span class="qgBold">"Ctrl + Left Click"</span> on phrase - load phrase from <span class="qgBold">Query Table</span> into <span class="qgBold">Phrase Box</span> and add it to <span class="qgBold">History Table</span></li>'
 
 	o += '<li><span class="qgBold">"Right Click"</span> on horizontal scroll bar to temporarily minimize the table if it obstructs the interface (right click again to bring the table back)<br><span class="qgNote">Hint: You can zoom out the page if too many ciphers are active</span></ul>'
-
-	o += '<hr class="numPropSeparator">'
-	o += '<p><span class="qgBold2">Additional Resources</p>'
-
-	o += '<ul><li><a class="qgLink" href="https://gematriaresearch.blogspot.com/">https://gematriaresearch.blogspot.com/</a><br><span class="qgNote">"Improve your Gematria practice by knowing the History behind your Ciphers"<br>"To know your tools means to know your work"</span></li></ul>'
 
 	o += '</div>'
 

@@ -25,6 +25,9 @@ function createExportMenu() {
 	o += '<input type="file" id="importFileDummy" style="display: none;">' // dummy item for file import
 	o += '<label for="importFileDummy" class="intBtn" style="text-align: center; box-sizing: border-box;">Import File</label>' // import file
 	o += '<div style="margin: 0.5em;"></div>'
+	o += '<input type="file" id="importFileDummyDict" style="display: none;">' // dummy item for file import
+	o += '<label for="importFileDummyDict" class="intBtn" style="text-align: center; box-sizing: border-box;">Create Database (TXT)</label>' // create dictionary from file
+	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-export-history-png" class="intBtn" type="button" value="Export History (CSV)">' // export history as CSV file
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-export-matches-txt" class="intBtn" type="button" value="Export Matches (TXT)">' // export available same/cross cipher matches
@@ -109,6 +112,10 @@ $(document).ready(function(){
 	});
 	$("body").on("click", "#btn-export-db-query", function () {
 		exportCurrentDBquery(queryResult);
+	});
+	$("body").on("change", "#importFileDummyDict", function () {
+		var file = document.querySelector("#importFileDummyDict").files[0];
+		createDictFromFile(file);
 	});
 	$("body").on("click", "#btn-export-ciphers", function () {
 		exportCiphers();

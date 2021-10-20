@@ -257,9 +257,9 @@ function getNumDivisors(val) { // first element is sum of all divisors
 	return arr
 }
 
-function getNumFactorization(val) {
+function getNumFactorization(val, xeno = false) {
 	var i
-	if (val < 2 || val >= 10000000) return ["n/a"]
+	if (val < 2 || val >= 10000000) { if (!xeno) { return ["n/a"] } else { return [] } }
 	var arr = []; var p = 0
 	for (i = 0; i < primeNums.length; i++) {
 		p = primeNums[i] // prime

@@ -844,6 +844,13 @@ body {
 	font-size: 110%;
 	font-family: "Roboto Mono", sans-serif;
 }
+.numTicXeno {
+	/*font-size: 85%;*/
+	/*font-family: "Roboto Mono", sans-serif;*/
+	font-size: 100%;
+	font-family: "Montserrat", "Arial", sans-serif;
+	font-weight: 500;
+}
 .numPropValPad {
 	margin-right: 0.4em;
 	margin-left: 0.4em;

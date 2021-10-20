@@ -95,7 +95,7 @@ function queryDatabase() {
 	var cVal
 	if(sVal() == "" || sVal() == 0) return // empty input
 
-	if (liveDatabaseMode == true) calcLiveDatabase(userDBlive) // calculate gematria for default database for enabled ciphers
+	if (liveDatabaseMode == true) calcLiveDatabase(userDBlive) // calculate gematria for live database for enabled ciphers
 
 	$("#calcMain").addClass("splitInterface") // split screen
 
@@ -488,8 +488,17 @@ function calcLiveDatabase(arr) {
 
 function db_PhrLenStats(column = 1) { // phrase length statistics inside current database, column can be value[0] or matches[1]
 	var pLenArr = [] // phrase length array
-	for (i = 0; i < userDB.length; i++) {
-		pLenArr.push(userDB[i][0].length) // read length of each phrase
+	var db = []
+	if (precalcDBLoaded) {
+		db = userDB // precalculated database
+		for (i = 0; i < db.length; i++) {
+			pLenArr.push(db[i][0].length) // read length of each phrase
+		}
+	} else {
+		db = userDBlive // live database
+		for (i = 0; i < db.length; i++) {
+			pLenArr.push(db[i].length) // read length of each phrase
+		}
 	}
 	var pStat = countMatches(pLenArr) // number of matches[1] for each value[0]
 	pStat.sort(function(a, b) { // sort by score (descending)
@@ -506,8 +515,17 @@ function db_PhrLenStats(column = 1) { // phrase length statistics inside current
 
 function db_CopyPhrOfLen(low, up) { // copy phrases of length within range (inclusive) from database
 	var pLenArr = [] // phrase length array
-	for (i = 0; i < userDB.length; i++) {
-		if (userDB[i][0].length >= low && userDB[i][0].length <= up) pLenArr.push(userDB[i][0]) // load phrase
+	var db = []
+	if (precalcDBLoaded) {
+		db = userDB // precalculated database
+		for (i = 0; i < db.length; i++) {
+			if (db[i][0].length >= low && db[i][0].length <= up) pLenArr.push(db[i][0]) // load phrase
+		}
+	} else {
+		db = userDBlive // live database
+		for (i = 0; i < db.length; i++) {
+			if (db[i].length >= low && db[i].length <= up) pLenArr.push(db[i]) // load phrase
+		}
 	}
 	var res = ""
 	for (i = 0; i < pLenArr.length; i++) {
@@ -521,9 +539,19 @@ function db_CopyPhrOfLen(low, up) { // copy phrases of length within range (incl
 function db_CopyWordRange(low, up) { // copy phrases that have specific amount of words within range (inclusive) from database
 	var pLenArr = [] // phrase length array
 	var tmp = []
-	for (i = 0; i < userDB.length; i++) {
-		tmp = userDB[i][0].split(' ')
-		if (tmp.length >= low && tmp.length <= up) pLenArr.push(userDB[i][0]) // load phrase
+	var db = []
+	if (precalcDBLoaded) {
+		db = userDB // precalculated database
+		for (i = 0; i < db.length; i++) {
+			tmp = db[i][0].split(' ')
+			if (tmp.length >= low && tmp.length <= up) pLenArr.push(db[i][0]) // load phrase
+		}
+	} else {
+		db = userDBlive // live database
+		for (i = 0; i < db.length; i++) {
+			tmp = db[i].split(' ')
+			if (tmp.length >= low && tmp.length <= up) pLenArr.push(db[i]) // load phrase
+		}
 	}
 	var res = ""
 	for (i = 0; i < pLenArr.length; i++) {
@@ -532,4 +560,61 @@ function db_CopyWordRange(low, up) { // copy phrases that have specific amount o
 	res = res.slice(0,-1) // remove last new line
 	copy(res)
 	console.log("Copied to clipboard!")
+}
+
+function db_ConvertProperCase() { // convert current database to Proper Case
+	var i, n; var tmp = []; var tStr = ''; var out = 'CREATE_GEMATRO_DB\n'
+	var db = []
+	if (precalcDBLoaded) {
+		db = userDB // precalculated database
+	} else {
+		db = userDBlive // live database
+	}
+	for (i = 0; i < db.length; i++) {
+		tStr = ''
+		if (precalcDBLoaded) { // current phrase to separate words
+			tmp = db[i][0].split(' ')
+		} else {
+			tmp = db[i].split(' ')
+		}
+		for (n = 0; n < tmp.length; n++) { // build string, each first letter is capitalized
+			tStr += tmp[n].substring(0,1).toUpperCase() + tmp[n].substring(1,tmp[n].length).toLowerCase() + ' '
+		}
+		out += tStr.trim() + '\n'
+	}
+	out = 'data:text/plain;charset=utf-8,'+encodeURIComponent(out.slice(0,-1)) // format as text file, remove last new line
+	download("GEMATRO_DB_PROPER_CASE_"+getTimestamp()+".txt", out); // download file
+}
+
+function createDictFromFile(file) {
+	var i; var reader = new FileReader()
+	var sb = "" // string builder
+	reader.onload = (event) => { // actions to perform after file is read
+		file = event.target.result // full file contents
+		// new line, tabs, sequential spaces, sequential dash, remove punctuation and numbers
+		file = file.replace(/\r\n|\n/g, ' ').replace(/\t/g, ' ').replace(/ +/g, ' ').replace(/\-+/g, '-').replace(/[.,\/#!$%\^&\*;:{}=_`~()"\?\|@\(\)\[\]/<>0123456789]/g, '')
+		var wordList = file.split(' ') // to string array, space as separator
+		
+		var uniqueList = []
+		var lowercaseList = []
+		for (i = 0; i < wordList.length; i++) {
+			if (lowercaseList.indexOf(wordList[i].toLowerCase()) == -1 && wordList[i].length > 0) {
+				lowercaseList.push(wordList[i].toLowerCase()) // avoid "word" and "Word" duplicates
+				uniqueList.push(wordList[i])
+			}
+		}
+		uniqueList.sort( (a, b) => a.localeCompare(b, undefined, {sensitivity: 'base'}) ) // sort ascending, case insensitive
+		if (uniqueList.indexOf('-') > -1) uniqueList.splice(uniqueList.indexOf('-'), 1) // remove '-'
+
+		var o = ''
+		for (i = 0; i < uniqueList.length; i++) {
+			o += uniqueList[i]+'\n'
+		}
+		o = 'data:text/plain;charset=utf-8,'+encodeURIComponent('CREATE_GEMATRO_DB\n' + o.slice(0,-1)) // format as text file
+		download("GEMATRO_DB_DICT_"+getTimestamp()+".txt", o); // download file
+	}
+	reader.onerror = (event) => {
+		alert(event.target.error.name)
+	};
+	reader.readAsText(file) // issue command to start reading file
 }

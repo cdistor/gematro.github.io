@@ -1139,13 +1139,40 @@ body {
 	overflow: auto;
 	z-index: 1000;
 }
-.qgBold, .qgBold2 {
+.contactInfo {
+	background-color: var(--menu-bg-accent2);
+	color: var(--font-white-2);
+	font-family: "Montserrat", "Arial", sans-serif;
+	font-size: 100%;
+	text-align: center;
+	padding: 1em 2em 1em 2em;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: 570px;
+	width: 480px;
+	overflow: auto;
+	z-index: 1000;
+}
+.qgBold, .qgBold2, .qgBoldCoin {
 	font-size: 100%;
 	font-weight: 500;
 	color: var(--font-white-1);
 }
 .qgBold2 {
 	font-size: 150%;
+}
+.qgBoldCoin {
+	font-size: 150%;
+	margin: 1em 0em 0.3em 0em;
+}
+.qgAddr {
+	font-family: "Roboto Mono", monospace;
+	color: var(--font-white-1);
+}
+.qrImg {
+	margin: 1em 0em 2.5em 0em;
 }
 .qgMedium {
 	font-size: 125%;

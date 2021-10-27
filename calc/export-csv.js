@@ -1,12 +1,15 @@
 // =========================== Export CSV ===========================
 
+var dragCounter = 0 // Firefox fix
 $(document).ready(function(){
 	// change element style on drag-enter event
 	$("body").on("dragenter", "#phraseBox", function () {
+		dragCounter++
 		$(this).addClass("dragOver");
 	});
 	$("body").on("dragleave", "#phraseBox", function () {
-		$(this).removeClass("dragOver");
+		dragCounter--
+		if (dragCounter == 0) $(this).removeClass("dragOver");
 	});
 });
 

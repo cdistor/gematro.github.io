@@ -29,7 +29,9 @@
 <link rel="stylesheet" type="text/css" href="calc/styles.css">
 
 <script>
-window.onpaint = updateInterfaceHue(true); // update interface color (first run)
+window.onpaint = function() {
+	updateInterfaceColor(true); // update interface color (first run)
+}
 $(window).load(function(){
 	$("#loader").delay(287).fadeOut("fast");
 });

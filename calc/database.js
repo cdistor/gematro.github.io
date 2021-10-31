@@ -429,6 +429,8 @@ function unloadDatabase() {
 	if (!liveDatabaseMode) { // restore ciphers only when precalculated database is unloaded
 		cipherList = [...cipherListSaved] // restore initial ciphers
 		interfaceHue = interfaceHueDefault // restore hue
+		interfaceLit = interfaceLitDefault // restore saturation
+		interfaceSat = interfaceSatDefault // restore lightness
 		$('#enableExtraCiphOption').removeClass('hideValue') // show "Enable Extra Ciphers" option
 	}
 	userDB = [] // clear previous DB
@@ -447,7 +449,7 @@ function unloadDatabase() {
 		}
 	}
 	updateTables() // update tables
-	updateInterfaceHue() // update interface color
+	updateInterfaceColor() // update interface color
 
 	$("#queryDBbtn").addClass("hideValue") // hide query button
 	$("#clearDBqueryBtn").addClass("hideValue") // clear button

@@ -217,7 +217,7 @@ function exportCiphers() {
 		')\n'+
 		'*/\n\n'
 
-	out += "interfaceHue = "+interfaceHue+"\n" // save current interface color
+	out += "interfaceColor = ["+interfaceHue+","+interfaceSat+","+interfaceLit+"]\n" // save current interface color
 	out += "cipherList = [\n"
 	for (i = 0; i < cipherList.length; i++) {
 		
@@ -257,7 +257,7 @@ function exportCiphers() {
 
 function exportCiphersDB() {
 	var out = '// ciphers.js\n'
-	out += "interfaceHue = "+interfaceHue+"\n" // save current interface color
+	out += "interfaceColor = ["+interfaceHue+","+interfaceSat+","+interfaceLit+"]\n" // save current interface color
 	out += "cipherList = [\n"
 	for (i = 0; i < cipherList.length; i++) {
 		if (cipherList[i].enabled) { // export only enabled ciphers

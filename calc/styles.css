@@ -29,26 +29,28 @@
 
 :root {
 	--global-hue: 222;
-	--menu-bg-accent: hsl(var(--global-hue) 20% 28%);
-	--menu-bg-accent2: hsl(var(--global-hue) 20% 24%);
-	--breakdown-bg-accent: hsl(var(--global-hue) 21% 13%);
-	--btn-bg-accent: hsl(var(--global-hue) 20% 22%);
-	--btn-hover-accent: hsl(var(--global-hue) 13% 33%);
-	--btn-active-accent: hsl(var(--global-hue) 13% 39%);
-	--body-bg-accent: hsl(var(--global-hue) 22% 16%);
-	--query-bg-accent: hsl(var(--global-hue) 20% 19%);
-	--placeholder-color: hsl(var(--global-hue) 20% 35%);
-	--hist-header-gradient: hsl(var(--global-hue) 13% 10%);
-	--table-row-odd: hsl(var(--global-hue) 14% 14%);
-	--table-row-even: hsl(var(--global-hue) 12% 16%);
-	--input-bg-accent: hsl(var(--global-hue) 13% 13%);
+	--global-sat: 1.0;
+	--global-lit: 1.0;
+	--menu-bg-accent: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(28% * var(--global-lit)));
+	--menu-bg-accent2: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(24% * var(--global-lit)));
+	--breakdown-bg-accent: hsl(var(--global-hue) calc(21% * var(--global-sat)) calc(13% * var(--global-lit)));
+	--btn-bg-accent: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(22% * var(--global-lit)));
+	--btn-hover-accent: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(33% * var(--global-lit)));
+	--btn-active-accent: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(39% * var(--global-lit)));
+	--body-bg-accent: hsl(var(--global-hue) calc(22% * var(--global-sat)) calc(16% * var(--global-lit)));
+	--query-bg-accent: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(19% * var(--global-lit)));
+	--placeholder-color: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(35% * var(--global-lit)));
+	--hist-header-gradient: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(10% * var(--global-lit)));
+	--table-row-odd: hsl(var(--global-hue) calc(14% * var(--global-sat)) calc(14% * var(--global-lit)));
+	--table-row-even: hsl(var(--global-hue) calc(12% * var(--global-sat)) calc(16% * var(--global-lit)));
+	--input-bg-accent: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(13% * var(--global-lit)));
 	--font-white-1: rgb(234,234,234);
 	--font-white-2: rgb(209,209,209);
 	--font-white-3: rgb(160,160,160);
 	--border-accent: rgb(105,105,105);
 	--border-dark-accent: rgb(58,58,58);
 	--focus-outline: rgb(192,192,192);
-	--highlight-date: hsla(var(--global-hue) 30% 85% / 0.15);
+	--highlight-date: hsla(var(--global-hue) calc(30% * var(--global-sat)) calc(85% * var(--global-lit)) / 0.15);
 }
 
 html, body { /* full <body> height for <!DOCTYPE html> */
@@ -203,7 +205,7 @@ body {
 	border-spacing: 0em;
 	text-align: left;
 }
-.colSlider {
+.colSlider, .colSlider2 {
 	width: 55px;
 	font-size: 80%;
 	color: var(--font-white-1);
@@ -212,6 +214,9 @@ body {
 	font-family: "Roboto Mono", monospace;
 	line-height: 1.1em;
 	background-color: var(--btn-bg-accent);
+}
+.colSlider2 {
+	width: 65px;
 }
 .cipherColValueBox {
 	width: 85px;

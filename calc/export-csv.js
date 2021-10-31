@@ -109,8 +109,13 @@ function importFileAction(file) {
 				}, 3000)
 				return
 			}
-			var intHue = file.match(/(?<=interfaceHue = )\d+/) // consecutive digits
-			if (intHue !== null) interfaceHue = Number(intHue[0]) // update hue if match is found, use first match
+			var intCol = file.match(/(?<=interfaceColor = \[)[^\]]+/) // array values
+			if (intCol !== null) {
+				colArr = intCol[0].split(',') // split by comma, use first match
+				interfaceHue = Number(colArr[0]) // update hue
+				interfaceSat = Number(colArr[1]) // update saturation
+				interfaceLit = Number(colArr[2]) // update lightness
+			}
 
 			var ciph = file.match(/(?<=cipherList = \[)[\s\S]+/m) // match after "cipherList = [" till end of file, multiple line regex - [\s\S]+
 			file = ciph[0].replace(/(\t|  +|\r|\n)/g, "").slice(10,-1) // remove tabs, consequtive spaces, line breaks - "new cipher" at start, last bracket
@@ -123,7 +128,7 @@ function importFileAction(file) {
 			document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
 			initCalc() // reinit
 			updateTables() // update tables
-			updateInterfaceHue(true) // update interface color (first run)
+			updateInterfaceColor(true) // update interface color (first run)
 			if (userDBlive.length !== 0) { // restore controls if live database is loaded
 				$("#queryDBbtn").removeClass("hideValue") // display query button
 				$("#clearDBqueryBtn").removeClass("hideValue") // clear button
@@ -152,8 +157,13 @@ function importFileAction(file) {
 			liveDatabaseMode = false // disable live database mode
 
 			// import ciphers from database
-			var intHue = file.match(/(?<=interfaceHue = )\d+/) // consecutive digits
-			if (intHue !== null) interfaceHue = Number(intHue[0]) // update hue if match is found, use first match
+			var intCol = file.match(/(?<=interfaceColor = \[)[^\]]+/) // array values
+			if (intCol !== null) {
+				colArr = intCol[0].split(',') // split by comma, use first match
+				interfaceHue = Number(colArr[0]) // update hue
+				interfaceSat = Number(colArr[1]) // update saturation
+				interfaceLit = Number(colArr[2]) // update lightness
+			}
 
 			var ciph = file.match(/(?<=cipherList = \[)[\s\S]+/m) // match after "cipherList = [" till end of file, multiple line regex - [\s\S]+
 			file = ciph[0].replace(/(\t|  +|\r|\n)/g, "").slice(10,-1) // remove tabs, consequtive spaces, line breaks - "new cipher" at start, last bracket
@@ -166,7 +176,7 @@ function importFileAction(file) {
 			document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
 			initCalc() // reinit
 			updateTables() // update tables
-			updateInterfaceHue() // update interface color
+			updateInterfaceColor() // update interface color
 
 			ciphersPos = userHist.indexOf("// ciphers.js") // line number where cipher definition starts
 			userDB = [] // clear previous DB

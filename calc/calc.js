@@ -46,6 +46,10 @@ var liveDatabaseMode = true // live database mode
 
 var interfaceHue = 222 // calculator interface color
 var interfaceHueDefault = 222 // value for reset, updated on first run of updateInterfaceHue()
+var interfaceSat = 1.0 // interface saturation multiplier
+var interfaceSatDefault = 1.0
+var interfaceLit = 1.0  // interface lightness multiplier
+var interfaceLitDefault = 1.0
 
 function initCalc() { // run after page has finished loading
 	saveInitialCiphers()
@@ -455,25 +459,32 @@ function toggleColorControlsMenu(redraw = false) { // display control menu to ad
 		// global color controls
 		o += '<center>'
 		o += '<table class="globColCtrlTable">'
-		o += '<tr><td class="colLabel">Global Colors: </td>'
+		o += '<tr><td class="colLabel">All Ciphers Color: </td>'
 		o += '<td class="colLabelSmall">Hue</td>'
-		o += '<td><input type="number" step="2" min="-360" max="360" value="'+globColors.H+'" class="colSlider" id="globalSliderHue" oninput="changeCipherColors(&quot;globalSliderHue&quot;, &quot;Hue&quot;)"></td>'
+		o += '<td><input type="number" step="2" min="-360" max="360" value="'+globColors.H+'" class="colSlider2" id="globalSliderHue" oninput="changeCipherColors(&quot;globalSliderHue&quot;, &quot;Hue&quot;)"></td>'
 		o += '<td class="colLabelSmall">Saturation</td>'
-		o += '<td><input type="number" step="1" min="-100" max="100" value="'+globColors.S+'" class="colSlider" id="globalSliderSaturation" oninput="changeCipherColors(&quot;globalSliderSaturation&quot;, &quot;Saturation&quot;)"></td>'
+		o += '<td><input type="number" step="1" min="-100" max="100" value="'+globColors.S+'" class="colSlider2" id="globalSliderSaturation" oninput="changeCipherColors(&quot;globalSliderSaturation&quot;, &quot;Saturation&quot;)"></td>'
 		o += '<td class="colLabelSmall">Lightness</td>'
-		o += '<td><input type="number" step="1" min="-100" max="100" value="'+globColors.L+'" class="colSlider" id="globalSliderLightness" oninput="changeCipherColors(&quot;globalSliderLightness&quot;, &quot;Lightness&quot;)"></td>'
-		o += '<td rowspan=2></td>'
-		o += '<td rowspan=2><input id="resetColorsButton" class="intBtn" type="button" value="Reset Colors" style="margin: 0em 0.5em;" onclick="resetColorControls()"></td>'
+		o += '<td><input type="number" step="1" min="-100" max="100" value="'+globColors.L+'" class="colSlider2" id="globalSliderLightness" oninput="changeCipherColors(&quot;globalSliderLightness&quot;, &quot;Lightness&quot;)"></td>'
+		o += '<td rowspan=3></td>'
+		o += '<td rowspan=3><input id="resetColorsButton" class="intBtn" type="button" value="Reset Colors" style="margin: 0em 0.5em;" onclick="resetColorControls()"></td>'
 		o += '</tr>'
 
+		// interface color controls
+		o += '<tr><td class="colLabel" style="padding-right: 0.4em;">Interface Color:</td>'
+		o += '<td class="colLabelSmall">Hue</td>'
+		o += '<td><input type="number" step="1" min="0" max="359" value="'+interfaceHue+'" class="colSlider2" id="interfaceHueSlider" oninput="updateInterfaceHue()"></td>'
+		o += '<td class="colLabelSmall">Saturation</td>'
+		o += '<td><input type="number" step="0.01" min="0" max="10.0" value="'+interfaceSat+'" class="colSlider2" id="interfaceSatSlider" oninput="updateInterfaceSat()"></td>'
+		o += '<td class="colLabelSmall">Lightness</td>'
+		o += '<td><input type="number" step="0.01" min="0" max="10.0" value="'+interfaceLit+'" class="colSlider2" id="interfaceLitSlider" oninput="updateInterfaceLit()"></td>'
+		o += '</tr>'
 		// column controls
 		o += '<tr><td class="colLabel" style="padding-right: 0.4em;">Cipher Columns:</td>'
-		o += '<td class="colLabelSmall">Controls</td>'
-		o += '<td><input type="number" step="1" min="1" max="10" value="'+cipherMenuColumns+'" class="colSlider" id="avail_ciphers_columns" oninput="updColorMenuLayout()"></td>'
+		o += '<td class="colLabelSmall">Control</td>'
+		o += '<td><input type="number" step="1" min="1" max="10" value="'+cipherMenuColumns+'" class="colSlider2" id="avail_ciphers_columns" oninput="updColorMenuLayout()"></td>'
 		o += '<td class="colLabelSmall">Enabled</td>'
-		o += '<td><input type="number" step="1" min="1" max="10" value="'+enabledCiphColumns+'" class="colSlider" id="enabled_ciphers_columns" oninput="updateTables(false)"></td>'
-		o += '<td class="colLabelSmall">Menu Color</td>'
-		o += '<td><input type="number" step="1" min="0" max="359" value="'+interfaceHue+'" class="colSlider" id="interfaceHueSlider" oninput="updateInterfaceHue()"></td>'
+		o += '<td><input type="number" step="1" min="1" max="10" value="'+enabledCiphColumns+'" class="colSlider2" id="enabled_ciphers_columns" oninput="updateTables(false)"></td>'
 		o += '</tr>'
 		o += '</table>'
 		o += '</center>'
@@ -488,12 +499,34 @@ function toggleColorControlsMenu(redraw = false) { // display control menu to ad
 	}
 }
 
-function updateInterfaceHue(firstrun = false) { // change interface color
+function updateInterfaceColor(firstrun = false) { // change interface color
+	updateInterfaceHue(firstrun)
+	updateInterfaceSat(firstrun)
+	updateInterfaceLit(firstrun)
+}
+
+function updateInterfaceHue(firstrun = false) { // change interface hue
 	// update hue from slider if element exists
 	if (document.getElementById("interfaceHueSlider") !== null) interfaceHue = document.getElementById("interfaceHueSlider").value
 	var root = document.documentElement
 	root.style.setProperty("--global-hue", interfaceHue.toString()) // update :root CSS variable
 	if (firstrun) interfaceHueDefault = interfaceHue // set default color for reset
+}
+
+function updateInterfaceSat(firstrun = false) { // change interface saturation
+	// update saturation from slider if element exists
+	if (document.getElementById("interfaceSatSlider") !== null) interfaceSat = document.getElementById("interfaceSatSlider").value
+	var root = document.documentElement
+	root.style.setProperty("--global-sat", interfaceSat.toString()) // update :root CSS variable
+	if (firstrun) interfaceSatDefault = interfaceSat // set default color for reset
+}
+
+function updateInterfaceLit(firstrun = false) { // change interface lightness
+	// update lightness from slider if element exists
+	if (document.getElementById("interfaceLitSlider") !== null) interfaceLit = document.getElementById("interfaceLitSlider").value
+	var root = document.documentElement
+	root.style.setProperty("--global-lit", interfaceLit.toString()) // update :root CSS variable
+	if (firstrun) interfaceLitDefault = interfaceLit // set default color for reset
 }
 
 function updColorMenuLayout() {
@@ -542,8 +575,12 @@ function resetColorControls() { // set all color controls to zero
 	changeCipherColors(0, "Lightness")
 
 	interfaceHue = interfaceHueDefault // reset interface color
+	interfaceSat = interfaceSatDefault
+	interfaceLit = interfaceLitDefault
 	if (document.getElementById("interfaceHueSlider") !== null) document.getElementById("interfaceHueSlider").value = interfaceHue
-	updateInterfaceHue()
+	if (document.getElementById("interfaceSatSlider") !== null) document.getElementById("interfaceSatSlider").value = interfaceSat
+	if (document.getElementById("interfaceLitSlider") !== null) document.getElementById("interfaceLitSlider").value = interfaceLit
+	updateInterfaceColor()
 
 	updateTables() // update
 }

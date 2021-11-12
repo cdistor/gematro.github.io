@@ -128,7 +128,7 @@ function openImageWindow(element, imgName = "", sRatio = window.devicePixelRatio
 	if ( $(element).length ) { // if specified element exists
 		// if browser zoom level is more than passed value, use current zoom level
 		if (typeof sRatio !== 'undefined' && sRatio < window.devicePixelRatio) { sRatio = window.devicePixelRatio}
-		html2canvas($(element)[0], {allowTaint: false, backgroundColor: calcBGhtml2canvas(), width: $(element).outerWidth(), height: $(element).outerHeight(), scale: sRatio} ).then((canvas) => { // e.g. html2canvas($("#ChartTable")[0]).then ...
+		html2canvas($(element)[0], {allowTaint: false, backgroundColor: window.getComputedStyle(document.querySelector('body')).getPropertyValue('background-color'), width: $(element).outerWidth(), height: $(element).outerHeight(), scale: sRatio} ).then((canvas) => { // e.g. html2canvas($("#ChartTable")[0]).then ...
 			//allowTaint: true, backgroundColor: "rgba(22,26,34,1.0)" - render white bg as transparent
 			//backgroundColor: calcBGhtml2canvas()
 			//width: $(element).width(), height: $(element).height() - get proper element dimensions
@@ -413,7 +413,7 @@ function exportCrossCipherMatches(histArr) { // maybe use highlighter mode to co
 // ======================== Color Conversion ========================
 // ------------ html2canvas has no support of HSL values ------------
 
-function calcBGhtml2canvas() {
+function calcBGhtml2canvas() { // not used
 	var element = document.querySelector('body')
 	var compStyles = window.getComputedStyle(element)
 	var bodyBg = compStyles.getPropertyValue('--body-bg-accent') // ' hsl(222 22% 16%)'

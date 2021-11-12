@@ -126,7 +126,7 @@ body {
 body {
 	font-family: "Montserrat", "Arial", sans-serif;
 	color: var(--font-white-2);
-	background: var(--body-bg-accent);
+	background-color: var(--body-bg-accent);
 }
 
 .splitInterface {
@@ -171,7 +171,7 @@ body {
 .colLabel {
 	font-size: 90%;
 	font-weight: 500;
-	color: rgb(186,186,186);
+	color: var(--focus-outline);
 	text-align: center;
 	padding-right: 0.4em;
 }
@@ -370,8 +370,7 @@ body {
 	min-width: 14px;
 }
 .BreakVal {
-	color: var(--font-white-2);
-    color: hsl(0 0% 75% / 1);
+	color: var(--focus-outline);
     font-weight: 600;
 	font-size: 74%;
 	padding-right: 3px;

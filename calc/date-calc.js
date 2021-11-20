@@ -49,6 +49,10 @@ $(document).ready(function(){
 		$(this).parent().remove();
 		return false; // don't show menus
 	});
+	$("body").on("input", "#dateDesc1, #dateDesc2", function () { // store user date descriptions
+		dateDesc1Saved = document.getElementById("dateDesc1").value
+		dateDesc2Saved = document.getElementById("dateDesc2").value
+	});
 });
 
 var saved_d1 = new Date() // initial value - current system time (today)
@@ -56,6 +60,9 @@ var saved_d2 = new Date(saved_d1) // initial value
 
 var reset_d1 = new Date(saved_d1) // values for date reset
 var reset_d2 = new Date(saved_d2)
+
+var dateDesc1Saved = "From" // date descriptions
+var dateDesc2Saved = "to"
 
 var offsetYMWD = [0,0,0,0] // store values for date offset controls
 
@@ -218,9 +225,9 @@ function toggleDateCalcMenu() {
 		o += '</tr>'
 
 		o += '<tr style="line-height: 0.6em;">' // labels
-		o += '<td style="padding-bottom: 0.6em;"><span class="dateInputLabel">Month</span></td>'
-		o += '<td style="padding-bottom: 0.6em;"><span class="dateInputLabel">Day</span></td>'
-		o += '<td colspan=2 style="padding-bottom: 0.6em;"><span class="dateInputLabel">Year</span></td>'
+		o += '<td style="padding-bottom: 1em;"><span class="dateInputLabel">Month</span></td>'
+		o += '<td style="padding-bottom: 1em;"><span class="dateInputLabel">Day</span></td>'
+		o += '<td colspan=2 style="padding-bottom: 1em;"><span class="dateInputLabel">Year</span></td>'
 		o += '</tr>'
 
 		var endCheckedState = "";
@@ -235,8 +242,8 @@ function toggleDateCalcMenu() {
 
 		// add/subtract date
 		o += '<tr>'
-		o += '<td colspan=2><span class="dateInputLabel">Add/Subtract</span></td>'
-		o += '<td colspan=2><input class="intBtnResetDate" type="button" value="Reset All Dates" onclick="resetDateControls()"></td>'
+		o += '<td colspan=2 style="padding: 0.4em 0em;"><span class="dateInputLabel">Add/Subtract</span></td>'
+		o += '<td colspan=2 style="padding: 0.4em 0em;"><input class="intBtnResetDate" type="button" value="Reset All Dates" onclick="resetDateControls()"></td>'
 		o += '</tr>'
 		o += '<tr>'
 		o += '<td><input id="offsetY" class="offsetDateInput" type="number" step="1" min="-9999" max="9999" value="'+offsetYMWD[0]+'"></td>'
@@ -257,7 +264,9 @@ function toggleDateCalcMenu() {
 		o += '<div class="dateCalcBg">'
 
 		o += '<table class="dateCalcTable2"><tbody>'
+		o += '<tr style="line-height: 0.9em;"><td><input class="dateDescription" id="dateDesc1"></td></tr>' // Date 1 label
 		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d1full_t2" class="dateDetailsText"></span></td></tr>' // Date 1
+		o += '<tr style="line-height: 0.9em;"><td><input class="dateDescription" id="dateDesc2"></td></tr>' // Date 2 label
 		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d2full_t2" class="dateDetailsText"></span></td></tr>' // Date 2
 		o += '<tr><td style="background: var(--menu-bg-accent); padding: 0.4em 0.75em 0.5em 0.75em;"><span id="dateDurValues" class="dateDetailsText"></span></td></tr>'
 		o += '</tbody></table>'
@@ -267,6 +276,8 @@ function toggleDateCalcMenu() {
 		o += '</div>' // dateCalcContainer
 
 		document.getElementById("dateCalcMenuArea").innerHTML = o
+		document.getElementById("dateDesc1").value = dateDesc1Saved // set date descriptions
+		document.getElementById("dateDesc2").value = dateDesc2Saved
 		updDates() // update values
 	} else {
 		document.getElementById("dateCalcMenuArea").innerHTML = "" // close Date Calculator
@@ -284,6 +295,9 @@ function resetDateControls() {
 	$('#d2y').val(saved_d2.getFullYear()) // update date2 controls
 	$('#d2m').val(saved_d2.getMonth()+1)
 	$('#d2d').val(saved_d2.getDate())
+
+	document.getElementById("dateDesc1").value = "From" // clear date descriptions
+	document.getElementById("dateDesc2").value = "to"
 
 	endChkEnabled = true // allow to toggle checkbox
 	$('#chkbox_incEndDate').prop("disabled", "") 

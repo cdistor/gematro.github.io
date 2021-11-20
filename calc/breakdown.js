@@ -46,7 +46,18 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 		}
 	}
 	curCipher = cipherList[cSpot]
-	curCipher.calcBreakdown(sVal())
+
+	// if Hebrew Aleph is assigned in current cipher
+	if (curCipher.cArr.indexOf(1488) > -1) {
+		curCipher.calcBreakdown(sVal().replace(/[\u0591-\u05BD\u05BF-\u05C7]/g,"")) // remove Hebrew vowels, exclude dash
+		curCipher.cp.reverse(); curCipher.cv.reverse(); curCipher.sumArr.reverse() // right-to-left direction
+		if (curCipher.WordCount > 1) {
+			curCipher.cp.push(curCipher.cp.shift()) // remove first element and add to the end of array (space, used for word sum)
+			curCipher.cv.push(curCipher.cv.shift())
+		}
+	} else {
+		curCipher.calcBreakdown(sVal())
+	}
 
 	if (curCipher.sumArr.length > 0) {
 		
@@ -79,6 +90,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 			// o += 'background: '+bgCol+' -moz-linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));'
 			// o += 'background: '+bgCol+' linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));">'
 			o += '<tbody><tr>'
+
 			for (x = 0; x < curCipher.cp.length; x++) {
 
 				if (curCipher.cp[x] !== " ") {

@@ -142,7 +142,7 @@ function updateCipherChart(curCipher) {
 	o += 'background: '+bgCol+' -o-linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));'
 	o += 'background: '+bgCol+' -moz-linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));'
 	o += 'background: '+bgCol+' linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));'
-	o += 'min-height: 160px;' // avoid layout shift when Agrippa ciphers are active
+	o += 'min-height: 166px;' // avoid layout shift when Agrippa ciphers are active
 	o += 'margin-top: 1em;'
 	o += 'margin-bottom: 0.5em;'
 	o += 'padding: 0.8em;'

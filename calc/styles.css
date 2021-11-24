@@ -31,6 +31,11 @@
 	--global-hue: 222;
 	--global-sat: 1.0;
 	--global-lit: 1.0;
+	--font-hue: 0;
+	--font-sat: 0;
+	--font-lit: 1.0;
+	--drag-highlight: hsla(var(--global-hue) calc(80% * var(--global-sat)) calc(70% * var(--global-lit)) / 0.2);
+	--drag-highlight-border: hsl(var(--global-hue) calc(80% * var(--global-sat)) calc(70% * var(--global-lit)));
 	--menu-bg-accent: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(28% * var(--global-lit)));
 	--menu-bg-accent2: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(24% * var(--global-lit)));
 	--breakdown-bg-accent: hsl(var(--global-hue) calc(21% * var(--global-sat)) calc(13% * var(--global-lit)));
@@ -44,13 +49,16 @@
 	--table-row-odd: hsl(var(--global-hue) calc(14% * var(--global-sat)) calc(14% * var(--global-lit)));
 	--table-row-even: hsl(var(--global-hue) calc(12% * var(--global-sat)) calc(16% * var(--global-lit)));
 	--input-bg-accent: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(13% * var(--global-lit)));
-	--font-white-1: rgb(234,234,234);
-	--font-white-2: rgb(209,209,209);
-	--font-white-3: rgb(160,160,160);
-	--border-accent: rgb(105,105,105);
-	--border-dark-accent: rgb(58,58,58);
-	--focus-outline: rgb(192,192,192);
 	--highlight-date: hsla(var(--global-hue) calc(30% * var(--global-sat)) calc(85% * var(--global-lit)) / 0.15);
+	--font-white-1: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(92% * var(--font-lit)));
+	--font-white-2: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(82% * var(--font-lit)));
+	--font-white-3: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(63% * var(--font-lit)));
+	--border-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(41% * var(--font-lit)));
+	--separator-accent: hsl(var(--font-hue) 0% calc(50% * var(--font-lit)));
+	--separator-accent2: hsl(var(--font-hue) 0% calc(30% * var(--font-lit)));
+	--border-dark-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(23% * var(--font-lit)));
+	--border-dark-accent2: hsl(var(--font-hue) 0% calc(15% * var(--font-lit)));
+	--focus-outline: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(75% * var(--font-lit)));
 }
 
 html, body { /* full <body> height for <!DOCTYPE html> */
@@ -136,22 +144,6 @@ body {
 	right: 0;
 	overflow: auto;
 	height: 100%;
-}
-#queryArea {
-	width: 30%;
-	position: absolute;
-	/* border-right: 1px solid var(--border-accent); */
-	top: 4%;
-	left: 100px;
-	overflow: auto;
-	max-height: 92%;
-	border: 1px solid var(--border-accent);
-	/* background-color: var(--query-bg-accent); */
-	resize: horizontal;
-}
-.queryTextResult {
-	padding: 1em;
-	line-height: 2em;
 }
 .colorControlsBG {
 	/* width: 70%; */
@@ -292,8 +284,8 @@ body {
 	white-space: nowrap;
 }
 .dragOver {
-	border: 1px solid rgb(97,237,255,1) !important;
-	background-color: rgb(97,237,255,0.2) !important;
+	border: 1px solid var(--drag-highlight-border) !important;
+	background-color: var(--drag-highlight) !important;
 }
 
 /*  Word Breakdown, Cipher Table, Word Count  */
@@ -665,10 +657,10 @@ body {
 	font-weight: 500;
 	border-radius: 15px;
 }
-.intBtn:hover, .intBtn2:hover, .intBtn3:hover, .intBtnResetDate:hover, #queryDBbtn:hover {
+.intBtn:hover, .intBtn2:hover, .intBtn3:hover, .intBtnResetDate:hover, #queryDBbtn:hover, .queryPageBtn:hover {
 	background-color: var(--btn-hover-accent);
 }
-.intBtn:active, .intBtn2:active, .intBtn3:active, .intBtnResetDate:active, #queryDBbtn:active {
+.intBtn:active, .intBtn2:active, .intBtn3:active, .intBtnResetDate:active, #queryDBbtn:active, .queryPageBtn:active {
 	background-color: var(--btn-active-accent);
 }
 
@@ -743,8 +735,8 @@ body {
 	padding: 1em;
 	text-align: left;
 	background-color: var(--menu-bg-accent2);
-	border: 1px solid var(--body-bg-accent);
-	border-top: none;
+	border: 1px solid var(--border-dark-accent2); /* --body-bg-accent */
+	/*border-top: none;*/
 }
 .dropdown-content-opt {
 	padding: 0.5em;
@@ -835,7 +827,7 @@ body {
 	text-align: center;
 }
 .numPropSeparator {
-	background-color: rgb(128,128,128);
+	background-color: var(--separator-accent);
 	border: none;
 	height: 2px;
 }
@@ -862,7 +854,7 @@ body {
 .npSmall {
 	font-size: 70%;
 	font-weight: 500;
-	color: rgb(128,128,128);
+	color: var(--separator-accent);
 }
 .npLine {
 	line-height: 0.9em;
@@ -991,6 +983,10 @@ body {
 	font-size: 80%;
 	color: var(--focus-outline);
 }
+.dateNthLabel {
+	color: var(--separator-accent);
+	font-size: 68%;
+}
 .dateDescription {
 	box-sizing: border-box;
 	width: 100%;
@@ -1028,20 +1024,6 @@ body {
 }
 .dateInputYear {
 	width: 110px;
-}
-#queryPosInput {
-	width: 95px;
-	font-size: 100%;
-	/* background: transparent; */
-	/* border: none; */
-	outline: none; 
-	color: var(--font-white-2);
-	caret-color: transparent !important;
-	background-color: var(--body-bg-accent);
-	border: 1px solid var(--border-dark-accent);
-}
-#queryPosInput:focus {
-	border: 1px solid var(--focus-outline);
 }
 .dateDetailsText {
 }
@@ -1087,6 +1069,28 @@ body {
 /*                Query Table                 */
 /* ########################################## */
 
+#queryArea {
+	width: 30%;
+	position: absolute;
+	/* border-right: 1px solid var(--border-accent); */
+	top: 4%;
+	left: 100px;
+	overflow: auto;
+	max-height: 92%;
+	border: 1px solid var(--border-accent);
+	/* background-color: var(--query-bg-accent); */
+	resize: horizontal;
+}
+.queryPageBtn {
+	font-size: 100%;
+	color: var(--font-white-2);
+	background-color: var(--btn-bg-accent);
+	border: 1px solid var(--border-dark-accent);
+}
+.queryTextResult {
+	padding: 1em;
+	line-height: 2em;
+}
 .qSlider {
 	-webkit-appearance: none;
 	width: 100%;
@@ -1113,6 +1117,22 @@ body {
 	height: 24px;
 	background: var(--border-accent);
 	cursor: pointer;
+}
+#queryPosInput {
+	width: 95px;
+	font-size: 100%;
+	/* background: transparent; */
+	/* border: none; */
+	outline: none; 
+	color: var(--font-white-2);
+	caret-color: transparent !important;
+	background-color: var(--body-bg-accent);
+	border: 1px solid var(--border-dark-accent);
+	border-left: none;
+	border-right: none;
+}
+#queryPosInput:focus {
+	border: 1px solid var(--focus-outline);
 }
 .minimizeQuery {
 	resize: none !important;

@@ -34,29 +34,8 @@ $(document).ready(function(){
 	// Up and Down arrow keys, List table
 	$("body").on("keydown", "#queryPosInput", function (e) {
 		// step="'+nPhr+'" min="0" max="'+queryResult.length+'"
-		if (e.which == 38) { // Up
-			st = Number( $(this).val() ) - nPhr
-			if (st < 0) {
-				st = 0
-				$(this).val(0)
-			}
-			n = $("#QueryTable").data("dispitems")
-			$("#queryArea").html() // clear previous table
-			updateDatabaseQueryTable(st, n) // redraw table at new position
-			document.getElementById("queryPosInput").focus() // restore focus
-		}
-		if (e.which == 40) { // Down
-			st = Number( $(this).val() ) + nPhr
-			if (st >= queryResult.length) {
-				st = queryResult.length - (queryResult.length % nPhr) // last page
-				if (queryResult.length % nPhr == 0) st -= nPhr // if total is divisible, no pagination for last element
-				$(this).val(st);
-			}
-			n = $("#QueryTable").data("dispitems")
-			$("#queryArea").html() // clear previous table
-			updateDatabaseQueryTable(st, n) // redraw table at new position
-			document.getElementById("queryPosInput").focus() // restore focus
-		}
+		if (e.which == 38) queryShowPrevPage() // Up
+		if (e.which == 40) queryShowNextPage() // Down
 	});
 
 	// Enter query starting position
@@ -253,7 +232,12 @@ function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting posi
 			firstPhrase = false
 			ms += '<tr class="cH"><td class="mPQ">'
 			ms += queryResult.length+' matches'
-			ms += '<br><br><input id="queryPosInput" type="tel" autocomplete="off" value="'+curPos+'">'
+			ms += '<br><br>'
+			ms += '<div style="display: inline-flex;">'
+			ms += '<input class="queryPageBtn" id="queryPrevPageBtn" type="button" value="<" onclick="queryShowPrevPage()">'
+			ms += '<input id="queryPosInput" type="tel" autocomplete="off" value="'+curPos+'">'
+			ms += '<input class="queryPageBtn" id="queryNextPageBtn" type="button" value=">" onclick="queryShowNextPage()">'
+			ms += '</div>'
 			ms += '<br>-'
 			ms += '<br>'+nextBlock
 			ms += '</td>'
@@ -308,7 +292,7 @@ function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting posi
 
 	ms += '</tbody>'
 	document.getElementById("QueryTable").innerHTML = ms
-	document.getElementById("queryPosInput").focus() // restore focus
+	if (navigator.maxTouchPoints <= 1) document.getElementById("queryPosInput").focus() // restore focus on desktop devices
 }
 
 function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, total displayed items
@@ -343,7 +327,12 @@ function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, tot
 			firstPhrase = false
 			ms += '<tr class="cH"><td class="mPQ">'
 			ms += queryResult.length+' matches'
-			ms += '<br><br><input id="queryPosInput" type="tel" autocomplete="off" value="'+curPos+'">'
+			ms += '<br><br>'
+			ms += '<div style="display: inline-flex;">'
+			ms += '<input class="queryPageBtn" id="queryPrevPageBtn" type="button" value="<" onclick="queryShowPrevPage()">'
+			ms += '<input id="queryPosInput" type="tel" autocomplete="off" value="'+curPos+'">'
+			ms += '<input class="queryPageBtn" id="queryNextPageBtn" type="button" value=">" onclick="queryShowNextPage()">'
+			ms += '</div>'
 			ms += '<br>-'
 			ms += '<br>'+nextBlock
 			ms += '</td>'
@@ -398,7 +387,7 @@ function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, tot
 
 	ms += '</tbody></table>'
 	document.getElementById("queryArea").innerHTML = ms
-	document.getElementById("queryPosInput").focus() // restore focus
+	if (navigator.maxTouchPoints <= 1) document.getElementById("queryPosInput").focus() // restore focus on desktop devices
 }
 
 function NumberArray() {
@@ -416,6 +405,31 @@ function NumberArray() {
 	return isNum
 }
 
+function queryShowPrevPage() {
+	st = Number( document.getElementById('queryPosInput').value ) - nPhr
+	if (st < 0) {
+		st = 0
+		$(this).val(0)
+	}
+	n = $("#QueryTable").data("dispitems")
+	$("#queryArea").html() // clear previous table
+	updateDatabaseQueryTable(st, n) // redraw table at new position
+	if (navigator.maxTouchPoints <= 1) document.getElementById("queryPosInput").focus() // restore focus on desktop devices
+}
+
+function queryShowNextPage() {
+	st = Number( document.getElementById('queryPosInput').value ) + nPhr
+	if (st >= queryResult.length) {
+		st = queryResult.length - (queryResult.length % nPhr) // last page
+		if (queryResult.length % nPhr == 0) st -= nPhr // if total is divisible, no pagination for last element
+		$(this).val(st);
+	}
+	n = $("#QueryTable").data("dispitems")
+	$("#queryArea").html() // clear previous table
+	updateDatabaseQueryTable(st, n) // redraw table at new position
+	if (navigator.maxTouchPoints <= 1) document.getElementById("queryPosInput").focus() // restore focus on desktop devices
+}
+
 function unloadDatabase() {
 	clearDatabaseQueryTable()
 	var curCiphArr = [] // save currently enabled cipher names (database)
@@ -431,6 +445,10 @@ function unloadDatabase() {
 		interfaceHue = interfaceHueDefault // restore hue
 		interfaceLit = interfaceLitDefault // restore saturation
 		interfaceSat = interfaceSatDefault // restore lightness
+		fontHue = fontHueDefault // restore hue
+		fontLit = fontLitDefault // restore saturation
+		fontSat = fontSatDefault // restore lightness
+		optGradientCharts = optGradientChartsDefault // restore gradient charts
 		$('#enableExtraCiphOption').removeClass('hideValue') // show "Enable Extra Ciphers" option
 	}
 	userDB = [] // clear previous DB

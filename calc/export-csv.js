@@ -109,12 +109,18 @@ function importFileAction(file) {
 				}, 3000)
 				return
 			}
-			var intCol = file.match(/(?<=interfaceColor = \[)[^\]]+/) // array values
-			if (intCol !== null) {
-				colArr = intCol[0].split(',') // split by comma, use first match
-				interfaceHue = Number(colArr[0]) // update hue
-				interfaceSat = Number(colArr[1]) // update saturation
-				interfaceLit = Number(colArr[2]) // update lightness
+			var calcOpt = file.match(/(?<=calcOptions = \[)[^\]]+/) // array values
+			if (calcOpt !== null) {
+				optArr = calcOpt[0].split(',') // split by comma, use first match
+				if (typeof optArr[0] !== 'undefined') interfaceHue = Number(optArr[0])
+				if (typeof optArr[1] !== 'undefined') interfaceSat = Number(optArr[1])
+				if (typeof optArr[2] !== 'undefined') interfaceLit = Number(optArr[2])
+				if (typeof optArr[3] !== 'undefined') fontHue = Number(optArr[3])
+				if (typeof optArr[4] !== 'undefined') fontSat = Number(optArr[4])
+				if (typeof optArr[5] !== 'undefined') fontLit = Number(optArr[5])
+				if (typeof optArr[6] !== 'undefined') optGradientCharts = optArr[6] == "true" ? true : false
+				if (typeof optArr[7] !== 'undefined') cipherMenuColumns = optArr[7]
+				if (typeof optArr[8] !== 'undefined') enabledCiphColumns = optArr[8]
 			}
 
 			var ciph = file.match(/(?<=cipherList = \[)[\s\S]+/m) // match after "cipherList = [" till end of file, multiple line regex - [\s\S]+
@@ -136,6 +142,13 @@ function importFileAction(file) {
 				$("#btn-export-db-query").removeClass("hideValue") // export button
 				$("#liveDBOption").addClass("hideValue") // hide "Live Database Mode"
 			}
+
+			var alertDiv = $('<div />').appendTo('body');
+			alertDiv.attr('id', 'dbAlert');
+			alertDiv.html("<span>Ciphers loaded!</span>")
+			setTimeout(function() {
+				alertDiv.remove()
+			}, 1000)
 			return
 		}
 
@@ -157,12 +170,18 @@ function importFileAction(file) {
 			liveDatabaseMode = false // disable live database mode
 
 			// import ciphers from database
-			var intCol = file.match(/(?<=interfaceColor = \[)[^\]]+/) // array values
-			if (intCol !== null) {
-				colArr = intCol[0].split(',') // split by comma, use first match
-				interfaceHue = Number(colArr[0]) // update hue
-				interfaceSat = Number(colArr[1]) // update saturation
-				interfaceLit = Number(colArr[2]) // update lightness
+			var calcOpt = file.match(/(?<=calcOptions = \[)[^\]]+/) // array values
+			if (calcOpt !== null) {
+				optArr = calcOpt[0].split(',') // split by comma, use first match
+				if (typeof optArr[0] !== 'undefined') interfaceHue = Number(optArr[0])
+				if (typeof optArr[1] !== 'undefined') interfaceSat = Number(optArr[1])
+				if (typeof optArr[2] !== 'undefined') interfaceLit = Number(optArr[2])
+				if (typeof optArr[3] !== 'undefined') fontHue = Number(optArr[3])
+				if (typeof optArr[4] !== 'undefined') fontSat = Number(optArr[4])
+				if (typeof optArr[5] !== 'undefined') fontLit = Number(optArr[5])
+				if (typeof optArr[6] !== 'undefined') optGradientCharts = optArr[6] == "true" ? true : false
+				if (typeof optArr[7] !== 'undefined') cipherMenuColumns = optArr[7]
+				if (typeof optArr[8] !== 'undefined') enabledCiphColumns = optArr[8]
 			}
 
 			var ciph = file.match(/(?<=cipherList = \[)[\s\S]+/m) // match after "cipherList = [" till end of file, multiple line regex - [\s\S]+

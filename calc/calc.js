@@ -44,12 +44,22 @@ var alphaHlt = 0.15 // opacity for values that do not match - change value here 
 var optAllowPhraseComments = true // allow phrase comments, text inside [...] is not evaluated
 var liveDatabaseMode = true // live database mode
 
+var optGradientCharts = true // gradient fill for breakdown/cipher charts
+var optGradientChartsDefault = optGradientCharts
+
 var interfaceHue = 222 // calculator interface color
 var interfaceHueDefault = 222 // value for reset, updated on first run of updateInterfaceHue()
 var interfaceSat = 1.0 // interface saturation multiplier
 var interfaceSatDefault = 1.0
 var interfaceLit = 1.0  // interface lightness multiplier
 var interfaceLitDefault = 1.0
+
+var fontHue = 0 // font and outline hue
+var fontHueDefault = 0 // value for reset, updated on first run of updateFontHue()
+var fontSat = 0 // font saturation
+var fontSatDefault = 0
+var fontLit = 1.0  // font lightness multiplier
+var fontLitDefault = 1.0
 
 function initCalc() { // run after page has finished loading
 	saveInitialCiphers()
@@ -84,7 +94,7 @@ function createCiphersMenu() { // create menu with all cipher catergories
 	o += '<input class="intBtn3" type="button" value="All" onclick="enableAllCiphers()">'
 	o += '</center></div>'
 
-	o += '<hr style="background-color: rgb(77,77,77); height: 1px; border: none; margin: 0.4em;">'
+	o += '<hr style="background-color: var(--separator-accent2); height: 1px; border: none; margin: 0.4em;">'
 
 	o += '<div style="width: 30%; float: left;">'
 	for (i = 0; i < cCat.length; i++) {
@@ -174,7 +184,7 @@ function createOptionsMenu() {
 	o += create_NumCalc() // Number Calculation
 
 	// get checkbox states
-	var CCMstate, SCMstate, SOMstate, CHstate, THstate, EECstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, SWCstate, MCRstate = ""
+	var CCMstate, SCMstate, SOMstate, CHstate, THstate, EECstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, GCstate, SWCstate, MCRstate = ""
 
 	if (optFiltCrossCipherMatch) CCMstate = "checked" // Cross Cipher Match
 	if (optFiltSameCipherMatch) SCMstate = "checked" // Same Cipher Match
@@ -191,6 +201,8 @@ function createOptionsMenu() {
 	if (optSimpleResult) SRstate = "checked" // Simple Result
 	if (optWordBreakdown) WBstate = "checked" // Word Breakdown
 	if (optShowCipherChart) CCstate = "checked" // Cipher Chart
+
+	if (optGradientCharts) GCstate = "checked" // Gradient Charts
 
 	if (optLoadUserHistCiphers) SWCstate = "checked" // Switch Ciphers (CSV)
 	if (!optMatrixCodeRain) MCRstate = "checked" // Matrix Code Rain
@@ -210,6 +222,8 @@ function createOptionsMenu() {
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SR" value="" onclick="conf_SR()" '+SRstate+'><span class="optionElementLabel">Simple Result</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_WB" value="" onclick="conf_WB()" '+WBstate+'><span class="optionElementLabel">Word Breakdown</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CC" value="" onclick="conf_CC()" '+CCstate+'><span class="optionElementLabel">Cipher Chart</span></div>'
+	o += '<div style="margin: 1em"></div>'
+	o += '<div class="optionElement"><input type="checkbox" id="chkbox_GC" value="" onclick="conf_GC()" '+GCstate+'><span class="optionElementLabel">Gradient Charts</span></div>'
 	o += '<div style="margin: 1em"></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SWC" value="" onclick="conf_SWC()" '+SWCstate+'><span class="optionElementLabel">Switch Ciphers (CSV)</span></div>'
 	o += '<div class="optionElement"><input type="checkbox" id="chkbox_MCR" value="" onclick="conf_MCR()" '+MCRstate+'><span class="optionElementLabel">Matrix Code Rain</span></div>'
@@ -326,6 +340,11 @@ function conf_CC() { // Cipher Chart
 	element.classList.toggle("hideValue")
 }
 
+function conf_GC() { // Gradient Charts
+	optGradientCharts = !optGradientCharts
+	updateWordBreakdown()
+}
+
 function conf_SWC() { // Switch Ciphers (CSV)
 	optLoadUserHistCiphers = !optLoadUserHistCiphers
 }
@@ -386,7 +405,7 @@ function createFeaturesMenu() {
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="edCiphBtn" class="intBtn" type="button" value="Edit Ciphers" onclick="toggleEditCiphersMenu()">'
 
-	o += '<hr style="background-color: rgb(77,77,77); height: 1px; border: none; margin: 0.75em;">'
+	o += '<hr style="background-color: var(--separator-accent2); height: 1px; border: none; margin: 0.75em;">'
 
 	o += '<input class="intBtn" type="button" value="Find Matches" onclick="updateHistoryTableAutoHlt()">'
 	o += '<div style="margin: 0.5em;"></div>'
@@ -475,9 +494,18 @@ function toggleColorControlsMenu(redraw = false) { // display control menu to ad
 		o += '<td class="colLabelSmall">Hue</td>'
 		o += '<td><input type="number" step="1" min="0" max="359" value="'+interfaceHue+'" class="colSlider2" id="interfaceHueSlider" oninput="updateInterfaceHue()"></td>'
 		o += '<td class="colLabelSmall">Saturation</td>'
-		o += '<td><input type="number" step="0.01" min="0" max="10.0" value="'+interfaceSat+'" class="colSlider2" id="interfaceSatSlider" oninput="updateInterfaceSat()"></td>'
+		o += '<td><input type="number" step="0.1" min="0" max="10.0" value="'+interfaceSat+'" class="colSlider2" id="interfaceSatSlider" oninput="updateInterfaceSat()"></td>'
 		o += '<td class="colLabelSmall">Lightness</td>'
 		o += '<td><input type="number" step="0.01" min="0" max="10.0" value="'+interfaceLit+'" class="colSlider2" id="interfaceLitSlider" oninput="updateInterfaceLit()"></td>'
+		o += '</tr>'
+		// font and outline color controls
+		o += '<tr><td class="colLabel" style="padding-right: 0.4em;">Font & Outline Color:</td>'
+		o += '<td class="colLabelSmall">Hue</td>'
+		o += '<td><input type="number" step="1" min="0" max="359" value="'+fontHue+'" class="colSlider2" id="fontHueSlider" oninput="updateFontHue()"></td>'
+		o += '<td class="colLabelSmall">Saturation</td>'
+		o += '<td><input type="number" step="0.01" min="0" max="1.0" value="'+fontSat+'" class="colSlider2" id="fontSatSlider" oninput="updateFontSat()"></td>'
+		o += '<td class="colLabelSmall">Lightness</td>'
+		o += '<td><input type="number" step="0.01" min="0" max="10.0" value="'+fontLit+'" class="colSlider2" id="fontLitSlider" oninput="updateFontLit()"></td>'
 		o += '</tr>'
 		// column controls
 		o += '<tr><td class="colLabel" style="padding-right: 0.4em;">Cipher Columns:</td>'
@@ -503,6 +531,9 @@ function updateInterfaceColor(firstrun = false) { // change interface color
 	updateInterfaceHue(firstrun)
 	updateInterfaceSat(firstrun)
 	updateInterfaceLit(firstrun)
+	updateFontHue(firstrun)
+	updateFontSat(firstrun)
+	updateFontLit(firstrun)
 }
 
 function updateInterfaceHue(firstrun = false) { // change interface hue
@@ -512,7 +543,6 @@ function updateInterfaceHue(firstrun = false) { // change interface hue
 	root.style.setProperty("--global-hue", interfaceHue.toString()) // update :root CSS variable
 	if (firstrun) interfaceHueDefault = interfaceHue // set default color for reset
 }
-
 function updateInterfaceSat(firstrun = false) { // change interface saturation
 	// update saturation from slider if element exists
 	if (document.getElementById("interfaceSatSlider") !== null) interfaceSat = document.getElementById("interfaceSatSlider").value
@@ -520,13 +550,34 @@ function updateInterfaceSat(firstrun = false) { // change interface saturation
 	root.style.setProperty("--global-sat", interfaceSat.toString()) // update :root CSS variable
 	if (firstrun) interfaceSatDefault = interfaceSat // set default color for reset
 }
-
 function updateInterfaceLit(firstrun = false) { // change interface lightness
 	// update lightness from slider if element exists
 	if (document.getElementById("interfaceLitSlider") !== null) interfaceLit = document.getElementById("interfaceLitSlider").value
 	var root = document.documentElement
 	root.style.setProperty("--global-lit", interfaceLit.toString()) // update :root CSS variable
 	if (firstrun) interfaceLitDefault = interfaceLit // set default color for reset
+}
+
+function updateFontHue(firstrun = false) { // change font and outline hue
+	// update hue from slider if element exists
+	if (document.getElementById("fontHueSlider") !== null) fontHue = document.getElementById("fontHueSlider").value
+	var root = document.documentElement
+	root.style.setProperty("--font-hue", fontHue.toString()) // update :root CSS variable
+	if (firstrun) fontHueDefault = fontHue // set default color for reset
+}
+function updateFontSat(firstrun = false) { // change font and outline saturation
+	// update saturation from slider if element exists
+	if (document.getElementById("fontSatSlider") !== null) fontSat = document.getElementById("fontSatSlider").value
+	var root = document.documentElement
+	root.style.setProperty("--font-sat", fontSat.toString()) // update :root CSS variable
+	if (firstrun) fontSatDefault = fontSat // set default color for reset
+}
+function updateFontLit(firstrun = false) { // change font and outline lightness
+	// update lightness from slider if element exists
+	if (document.getElementById("fontLitSlider") !== null) fontLit = document.getElementById("fontLitSlider").value
+	var root = document.documentElement
+	root.style.setProperty("--font-lit", fontLit.toString()) // update :root CSS variable
+	if (firstrun) fontLitDefault = fontLit // set default color for reset
 }
 
 function updColorMenuLayout() {
@@ -580,6 +631,13 @@ function resetColorControls() { // set all color controls to zero
 	if (document.getElementById("interfaceHueSlider") !== null) document.getElementById("interfaceHueSlider").value = interfaceHue
 	if (document.getElementById("interfaceSatSlider") !== null) document.getElementById("interfaceSatSlider").value = interfaceSat
 	if (document.getElementById("interfaceLitSlider") !== null) document.getElementById("interfaceLitSlider").value = interfaceLit
+
+	fontHue = fontHueDefault // reset font and outline color
+	fontSat = fontSatDefault
+	fontLit = fontLitDefault
+	if (document.getElementById("fontHueSlider") !== null) document.getElementById("fontHueSlider").value = fontHue
+	if (document.getElementById("fontSatSlider") !== null) document.getElementById("fontSatSlider").value = fontSat
+	if (document.getElementById("fontLitSlider") !== null) document.getElementById("fontLitSlider").value = fontLit
 	updateInterfaceColor()
 
 	updateTables() // update

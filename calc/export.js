@@ -20,7 +20,7 @@ function createExportMenu() {
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-date-calc-png" class="intBtn" type="button" value="Print Date Durations">' // print date durations
 	
-	o += '<hr style="background-color: rgb(77,77,77); height: 1px; border: none; margin: 0.75em;">'
+	o += '<hr style="background-color: var(--separator-accent2); height: 1px; border: none; margin: 0.75em;">'
 
 	o += '<input type="file" id="importFileDummy" style="display: none;">' // dummy item for file import
 	o += '<label for="importFileDummy" class="intBtn" style="text-align: center; box-sizing: border-box;">Import File</label>' // import file
@@ -217,7 +217,7 @@ function exportCiphers() {
 		')\n'+
 		'*/\n\n'
 
-	out += "interfaceColor = ["+interfaceHue+","+interfaceSat+","+interfaceLit+"]\n" // save current interface color
+	out += "calcOptions = ["+interfaceHue+","+interfaceSat+","+interfaceLit+","+fontHue+","+fontSat+","+fontLit+","+optGradientCharts+","+cipherMenuColumns+","+enabledCiphColumns+"]\n" // save current interface color
 	out += "cipherList = [\n"
 	for (i = 0; i < cipherList.length; i++) {
 		
@@ -257,7 +257,7 @@ function exportCiphers() {
 
 function exportCiphersDB() {
 	var out = '// ciphers.js\n'
-	out += "interfaceColor = ["+interfaceHue+","+interfaceSat+","+interfaceLit+"]\n" // save current interface color
+	out += "calcOptions = ["+interfaceHue+","+interfaceSat+","+interfaceLit+","+fontHue+","+fontSat+","+fontLit+","+optGradientCharts+","+cipherMenuColumns+","+enabledCiphColumns+"]\n" // save current interface color
 	out += "cipherList = [\n"
 	for (i = 0; i < cipherList.length; i++) {
 		if (cipherList[i].enabled) { // export only enabled ciphers

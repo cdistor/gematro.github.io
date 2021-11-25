@@ -64,7 +64,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 		o = ""
 
 		if (optLetterWordCount == true) {
-			if (curCipher.LetterCount > 1) {acl = " letters, "} else {acl = " letter, "}
+			if (curCipher.LetterCount > 1 || curCipher.LetterCount == 0) {acl = " letters, "} else {acl = " letter, "}
 			if (curCipher.WordCount > 1) {acw = " words"} else {acw = " word"}
 			o += '<div class="LetterCounts">' + curCipher.LetterCount + acl + curCipher.WordCount + acw + '</div>'
 		}

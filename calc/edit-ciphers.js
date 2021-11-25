@@ -37,7 +37,7 @@ $(document).ready(function(){
 			} else {
 				ignoreDiarciticsCustom = false;
 			}
-			var o = '<input type="checkbox" id="chkbox_IDM" value="" onclick="conf_IDM()" '+IDMstate+'><span class="optionElementLabel">Ignore Diacritical Marks (é=e)</span>';
+			var o = '<label class="chkLabel optionElementLabel">Ignore Diacritical Marks (é=e)<input type="checkbox" id="chkbox_IDM" onclick="conf_IDM()" '+IDMstate+'><span class="custChkBox"></span></label>'
 			document.getElementById("diacrChkbox").innerHTML = o; // update element
 			
 			var CSstate = ""; // case sensitive state
@@ -47,7 +47,7 @@ $(document).ready(function(){
 			} else {
 				caseSensitiveCustom = false;
 			}
-			var o = '<input type="checkbox" id="chkbox_CS" value="" onclick="conf_CS()" '+CSstate+'><span class="optionElementLabel">Case Sensitive Cipher</span>';
+			o = '<label class="chkLabel optionElementLabel">Case Sensitive Cipher<input type="checkbox" id="chkbox_CS" onclick="conf_CS()" '+CSstate+'><span class="custChkBox"></span></label>'
 			document.getElementById("caseSensChkbox").innerHTML = o; // update element
 			
 			createIndLetterControls(); // update
@@ -77,10 +77,10 @@ function toggleEditCiphersMenu() {
 		o += '<div>' // container for checkboxes
 		var IDMstate = ""
 		if (ignoreDiarciticsCustom) IDMstate = "checked" // checkbox state
-		o += '<div id="diacrChkbox"><input type="checkbox" id="chkbox_IDM" value="" onclick="conf_IDM()" '+IDMstate+'><span class="optionElementLabel">Ignore Diacritical Marks (é=e)</span></div>'
+		o += '<div id="diacrChkbox"><label class="chkLabel optionElementLabel">Ignore Diacritical Marks (é=e)<input type="checkbox" id="chkbox_IDM" onclick="conf_IDM()" '+IDMstate+'><span class="custChkBox"></span></label></div>'
 		var CSstate = ""
 		if (caseSensitiveCustom) CSstate = "checked" // checkbox state
-		o += '<div id="caseSensChkbox"><input type="checkbox" id="chkbox_CS" value="" onclick="conf_CS()" '+CSstate+'><span class="optionElementLabel">Case Sensitive Cipher</span></div>'
+		o += '<div id="caseSensChkbox"><label class="chkLabel optionElementLabel">Case Sensitive Cipher<input type="checkbox" id="chkbox_CS" onclick="conf_CS()" '+CSstate+'><span class="custChkBox"></span></label></div>'
 		o += '</div>' // close
 
 		o += '<div id="custCipherIndCtrls"></div>' // individual characters controls

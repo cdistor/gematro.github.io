@@ -97,8 +97,8 @@ function importFileAction(file) {
 	
 		// detect cipher.js, load user ciphers
 		if (uCiph[0] == "// ciphers.js") {
-			optEnableExtraCiphers = false // clear "Enable Extra Ciphers" option
-			document.getElementById('chkbox_EEC').checked = false
+			optShowExtraCiphers = false // clear "Show Extra Ciphers" option
+			document.getElementById('chkbox_SEC').checked = false
 
 			if (precalcDBLoaded) { // return if precalculated database is loaded
 				var alertDiv = $('<div />').appendTo('body');
@@ -110,18 +110,7 @@ function importFileAction(file) {
 				return
 			}
 			var calcOpt = file.match(/(?<=calcOptions = \[)[^\]]+/) // array values
-			if (calcOpt !== null) {
-				optArr = calcOpt[0].split(',') // split by comma, use first match
-				if (typeof optArr[0] !== 'undefined') interfaceHue = Number(optArr[0])
-				if (typeof optArr[1] !== 'undefined') interfaceSat = Number(optArr[1])
-				if (typeof optArr[2] !== 'undefined') interfaceLit = Number(optArr[2])
-				if (typeof optArr[3] !== 'undefined') fontHue = Number(optArr[3])
-				if (typeof optArr[4] !== 'undefined') fontSat = Number(optArr[4])
-				if (typeof optArr[5] !== 'undefined') fontLit = Number(optArr[5])
-				if (typeof optArr[6] !== 'undefined') optGradientCharts = optArr[6] == "true" ? true : false
-				if (typeof optArr[7] !== 'undefined') cipherMenuColumns = optArr[7]
-				if (typeof optArr[8] !== 'undefined') enabledCiphColumns = optArr[8]
-			}
+			importCalcOptions(calcOpt) // load user options
 
 			var ciph = file.match(/(?<=cipherList = \[)[\s\S]+/m) // match after "cipherList = [" till end of file, multiple line regex - [\s\S]+
 			file = ciph[0].replace(/(\t|  +|\r|\n)/g, "").slice(10,-1) // remove tabs, consequtive spaces, line breaks - "new cipher" at start, last bracket
@@ -171,18 +160,7 @@ function importFileAction(file) {
 
 			// import ciphers from database
 			var calcOpt = file.match(/(?<=calcOptions = \[)[^\]]+/) // array values
-			if (calcOpt !== null) {
-				optArr = calcOpt[0].split(',') // split by comma, use first match
-				if (typeof optArr[0] !== 'undefined') interfaceHue = Number(optArr[0])
-				if (typeof optArr[1] !== 'undefined') interfaceSat = Number(optArr[1])
-				if (typeof optArr[2] !== 'undefined') interfaceLit = Number(optArr[2])
-				if (typeof optArr[3] !== 'undefined') fontHue = Number(optArr[3])
-				if (typeof optArr[4] !== 'undefined') fontSat = Number(optArr[4])
-				if (typeof optArr[5] !== 'undefined') fontLit = Number(optArr[5])
-				if (typeof optArr[6] !== 'undefined') optGradientCharts = optArr[6] == "true" ? true : false
-				if (typeof optArr[7] !== 'undefined') cipherMenuColumns = optArr[7]
-				if (typeof optArr[8] !== 'undefined') enabledCiphColumns = optArr[8]
-			}
+			importCalcOptions(calcOpt) // load user options
 
 			var ciph = file.match(/(?<=cipherList = \[)[\s\S]+/m) // match after "cipherList = [" till end of file, multiple line regex - [\s\S]+
 			file = ciph[0].replace(/(\t|  +|\r|\n)/g, "").slice(10,-1) // remove tabs, consequtive spaces, line breaks - "new cipher" at start, last bracket
@@ -215,9 +193,9 @@ function importFileAction(file) {
 			closeAllOpenedMenus() // close "Edit Ciphers"
 			precalcDBLoaded = true // precalculated database loaded, disable cipher rearrangement
 
-			optEnableExtraCiphers = false // disable and hide "Enable Extra Ciphers" option
-			document.getElementById('chkbox_EEC').checked = false
-			$('#enableExtraCiphOption').addClass('hideValue')
+			optShowExtraCiphers = false // disable and hide "Show Extra Ciphers" option
+			document.getElementById('chkbox_SEC').checked = false
+			$('#showExtraCiphOption').addClass('hideValue')
 
 			console.log("Database loaded! ("+userDB.length+" entries)")
 			var alertDiv = $('<div />').appendTo('body');
@@ -261,6 +239,42 @@ function importFileAction(file) {
 	};
 
 	reader.readAsText(file) // issue command to start reading file
+}
+
+function importCalcOptions(calcOpt) { // load user options
+	if (calcOpt !== null) {
+		optArr = calcOpt[0].split(','); var i = 0; // split by comma, use first match
+		if (typeof optArr[i] !== 'undefined') optNumCalcMethod = optArr[i]; i++;
+		if (typeof optArr[i] !== 'undefined') optFiltCrossCipherMatch = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optFiltSameCipherMatch = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optShowOnlyMatching = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optCompactHistoryTable = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optTinyHistoryTable = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optShowExtraCiphers = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optAllowPhraseComments = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') liveDatabaseMode = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optLetterWordCount = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optSimpleResult = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optWordBreakdown = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optShowCipherChart = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optGradientCharts = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optLoadUserHistCiphers = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optMatrixCodeRain = optArr[i] == "true" ? true : false; toggleCodeRain(); i++;
+		if (typeof optArr[i] !== 'undefined') interfaceHue = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') interfaceSat = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') interfaceLit = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') fontHue = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') fontSat = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') fontLit = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') coderainHue = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') coderainSat = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') coderainLit = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') cipherMenuColumns = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') enabledCiphColumns = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') optPhraseLimit = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') dbPageItems = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') dbScrollItems = Number(optArr[i]);
+	}
 }
 
 function dragOverHandler(ev) {

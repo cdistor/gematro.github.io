@@ -15,7 +15,7 @@ var editCiphersMenuOpened = false // edit ciphers menu state
 var dateCalcMenuOpened = false // date calculator menu state
 
 var enabledCiphCount = 0 // number of enabled ciphers
-var optEnableExtraCiphers = false // enable extra ciphers
+var optShowExtraCiphers = false // enable extra ciphers
 
 // Cipher colors
 var origColors = [] // preserve original cipher colors
@@ -28,6 +28,8 @@ var optPhraseLimit = 5 // word limit to enter input as separate phrases, "End" k
 var optTinyHistoryTable = false // tiny mode - hide cipher names, no break each 25 phrases
 var optCompactHistoryTable = false // compact mode - vertical cipher names
 var optLoadUserHistCiphers = true // load ciphers when CSV file is imported
+
+var optMatrixCodeRain = false // code rain
 
 var optShowOnlyMatching = false // set opacity of nonmatching values to zero
 
@@ -43,6 +45,9 @@ var alphaHlt = 0.15 // opacity for values that do not match - change value here 
 
 var optAllowPhraseComments = true // allow phrase comments, text inside [...] is not evaluated
 var liveDatabaseMode = true // live database mode
+
+var dbPageItems = 15 // number of phrases in one section
+var dbScrollItems = 1 // used for scrolling
 
 var optGradientCharts = true // gradient fill for breakdown/cipher charts
 var optGradientChartsDefault = optGradientCharts
@@ -60,6 +65,46 @@ var fontSat = 0 // font saturation
 var fontSatDefault = 0
 var fontLit = 1.0  // font lightness multiplier
 var fontLitDefault = 1.0
+
+var coderainHue = 148 // coderain hue
+var coderainHueDefault = 148 // value for reset, updated on first run of updateCoderainHue()
+var coderainSat = 0.2 // coderain saturation
+var coderainSatDefault = 0.2
+var coderainLit = 0.19  // coderain lightness
+var coderainLitDefault = 0.19
+
+var calcOptionsArr = [ // used to export/import settings
+	"optNumCalcMethod",
+	"optFiltCrossCipherMatch",
+	"optFiltSameCipherMatch",
+	"optShowOnlyMatching",
+	"optCompactHistoryTable",
+	"optTinyHistoryTable",
+	"optShowExtraCiphers",
+	"optAllowPhraseComments",
+	"liveDatabaseMode",
+	"optLetterWordCount",
+	"optSimpleResult",
+	"optWordBreakdown",
+	"optShowCipherChart",
+	"optGradientCharts",
+	"optLoadUserHistCiphers",
+	"optMatrixCodeRain",
+	"interfaceHue",
+	"interfaceSat",
+	"interfaceLit",
+	"fontHue",
+	"fontSat",
+	"fontLit",
+	"coderainHue",
+	"coderainSat",
+	"coderainLit",
+	"cipherMenuColumns",
+	"enabledCiphColumns",
+	"optPhraseLimit",
+	"dbPageItems",
+	"dbScrollItems"
+]
 
 function initCalc() { // run after page has finished loading
 	saveInitialCiphers()
@@ -135,8 +180,7 @@ function displayCipherCatDetailed(curCat) {
 	for (i = 0; i < cipherList.length; i++) {
 		if (cipherList[i].cipherCategory == curCat) {
 			if (cipherList[i].enabled) {chk = " checked";} else {chk = ""} // checkbox state
-			o += '<tr><td><input type="checkbox" id="cipher_chkbox'+i+'" class="ciphCheckbox" value="" onclick="toggleCipher('+i+')"'+chk+'></td>'
-			o += '<td><span class="ciphCheckboxLabel2">'+cipherList[i].cipherName+'</span></td></tr>'
+			o += '<tr><td><label class="chkLabel ciphCheckboxLabel2">'+cipherList[i].cipherName+'<input type="checkbox" id="cipher_chkbox'+i+'" onclick="toggleCipher('+i+')"'+chk+'><span class="custChkBox"></span></label></td>'
 		}
 	}
 	o += '</tbody></table>'
@@ -184,7 +228,7 @@ function createOptionsMenu() {
 	o += create_NumCalc() // Number Calculation
 
 	// get checkbox states
-	var CCMstate, SCMstate, SOMstate, CHstate, THstate, EECstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, GCstate, SWCstate, MCRstate = ""
+	var CCMstate, SCMstate, SOMstate, CHstate, THstate, SECstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, GCstate, SWCstate, MCRstate = ""
 
 	if (optFiltCrossCipherMatch) CCMstate = "checked" // Cross Cipher Match
 	if (optFiltSameCipherMatch) SCMstate = "checked" // Same Cipher Match
@@ -193,7 +237,7 @@ function createOptionsMenu() {
 	if (optCompactHistoryTable) CHstate = "checked" // Compact History
 	if (optTinyHistoryTable) THstate = "checked" // Tiny History
 
-	if (optEnableExtraCiphers) EECstate = "checked" // Enable Extra Ciphers
+	if (optShowExtraCiphers) SECstate = "checked" // Show Extra Ciphers
 	if (optAllowPhraseComments) APCstate = "checked" // Allow Phrase Comments
 	if (liveDatabaseMode) LDMstate = "checked" // Live Database Mode
 
@@ -205,28 +249,35 @@ function createOptionsMenu() {
 	if (optGradientCharts) GCstate = "checked" // Gradient Charts
 
 	if (optLoadUserHistCiphers) SWCstate = "checked" // Switch Ciphers (CSV)
-	if (!optMatrixCodeRain) MCRstate = "checked" // Matrix Code Rain
+	if (optMatrixCodeRain) MCRstate = "checked" // Matrix Code Rain
 
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CCM" value="" onclick="conf_CCM()" '+CCMstate+'><span class="optionElementLabel">Cross Cipher Match</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SCM" value="" onclick="conf_SCM()" '+SCMstate+'><span class="optionElementLabel">Same Cipher Match</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SOM" value="" onclick="conf_SOM()" '+SOMstate+'><span class="optionElementLabel">Show Only Matching</span></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Cross Cipher Match<input type="checkbox" id="chkbox_CCM" onclick="conf_CCM()" '+CCMstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Same Cipher Match<input type="checkbox" id="chkbox_SCM" onclick="conf_SCM()" '+SCMstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Show Only Matching<input type="checkbox" id="chkbox_SOM" onclick="conf_SOM()" '+SOMstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CH" value="" onclick="conf_CH()" '+CHstate+'><span class="optionElementLabel">Compact History</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_TH" value="" onclick="conf_TH()" '+THstate+'><span class="optionElementLabel">Tiny History</span></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Compact History<input type="checkbox" id="chkbox_CH" onclick="conf_CH()" '+CHstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Tiny History<input type="checkbox" id="chkbox_TH" onclick="conf_TH()" '+THstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
-	o += '<div class="optionElement" id="enableExtraCiphOption"><input type="checkbox" id="chkbox_EEC" value="" onclick="conf_EEC()" '+EECstate+'><span class="optionElementLabel">Enable Extra Ciphers</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_APC" value="" onclick="conf_APC()" '+APCstate+'><span class="optionElementLabel">Ignore Comments [...]</span></div>'
-	o += '<div id="liveDBOption" class="optionElement"><input type="checkbox" id="chkbox_LDM" value="" onclick="conf_LDM()" '+LDMstate+'><span class="optionElementLabel">Live Database Mode</span></div>'
+	o += '<div class="optionElement" id="showExtraCiphOption"><label class="chkLabel ciphCheckboxLabel2">Show Extra Ciphers<input type="checkbox" id="chkbox_SEC" onclick="conf_SEC()" '+SECstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Ignore Comments [...]<input type="checkbox" id="chkbox_APC" onclick="conf_APC()" '+APCstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Live Database Mode<input type="checkbox" id="chkbox_LDM" onclick="conf_LDM()" '+LDMstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_LWC" value="" onclick="conf_LWC()" '+LWCstate+'><span class="optionElementLabel">Letter/Word Count</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SR" value="" onclick="conf_SR()" '+SRstate+'><span class="optionElementLabel">Simple Result</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_WB" value="" onclick="conf_WB()" '+WBstate+'><span class="optionElementLabel">Word Breakdown</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_CC" value="" onclick="conf_CC()" '+CCstate+'><span class="optionElementLabel">Cipher Chart</span></div>'
+	o += '<div class="dbOptionsBox" style="border: 1px solid var(--border-accent) !important;">'
+	o += '<span class="optionTableLabel">Phrases on DB page</span><input id="dbPageItemsBox" onchange="conf_DPI()" type="text" value="'+dbPageItems+'">'
+	o += '</div>'
+	o += '<div class="dbOptionsBox">'
+	o += '<span class="optionTableLabel">Scroll DB by lines</span><input id="dbScrollItemsBox" onchange="conf_DSI()" type="text" value="'+dbScrollItems+'">'
+	o += '</div>'
 	o += '<div style="margin: 1em"></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_GC" value="" onclick="conf_GC()" '+GCstate+'><span class="optionElementLabel">Gradient Charts</span></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Letter/Word Count<input type="checkbox" id="chkbox_LWC" onclick="conf_LWC()" '+LWCstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Simple Result<input type="checkbox" id="chkbox_SR" onclick="conf_SR()" '+SRstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Word Breakdown<input type="checkbox" id="chkbox_WB" onclick="conf_WB()" '+WBstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Cipher Chart<input type="checkbox" id="chkbox_CC" onclick="conf_CC()" '+CCstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_SWC" value="" onclick="conf_SWC()" '+SWCstate+'><span class="optionElementLabel">Switch Ciphers (CSV)</span></div>'
-	o += '<div class="optionElement"><input type="checkbox" id="chkbox_MCR" value="" onclick="conf_MCR()" '+MCRstate+'><span class="optionElementLabel">Matrix Code Rain</span></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Gradient Charts<input type="checkbox" id="chkbox_GC" onclick="conf_GC()" '+GCstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div style="margin: 1em"></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Switch Ciphers (CSV)<input type="checkbox" id="chkbox_SWC" onclick="conf_SWC()" '+SWCstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Matrix Code Rain<input type="checkbox" id="chkbox_MCR" onclick="conf_MCR()" '+MCRstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
 
 	o += '</div></div>'
@@ -234,26 +285,25 @@ function createOptionsMenu() {
 	document.getElementById("calcOptionsPanel").innerHTML = o
 }
 
-function conf_EEC() { // Enable Extra Ciphers
-	var i, n
-	var cipherExists = false
-	optEnableExtraCiphers = !optEnableExtraCiphers
-	resetColorControls() // reset color changes (otherwise they become permanent)
-	if (optEnableExtraCiphers) { // load extra ciphers
-		for (i = 0; i < cipherListExtra.length; i++) {
-			for (n = 0; n < cipherList.length; n++) { // check if cipher exists
-				if (cipherListExtra[i].cipherName == cipherList[n].cipherName) {cipherExists = true; return;}
-			}
-			if (!cipherExists) cipherList.push( Object.assign(new cipher(), cipherListExtra[i]) )// copy of a cipher object
-		}
-	} else { // unload extra ciphers
-		for (i = 0; i < cipherListExtra.length; i++) {
-			for (n = 0; n < cipherList.length; n++) {
-				if (cipherListExtra[i].cipherName == cipherList[n].cipherName) cipherList.splice(n,1) // remove cipher
-			}
-		}
+function conf_SEC() { // Show Extra Ciphers
+	optShowExtraCiphers = !optShowExtraCiphers
+	if (optShowExtraCiphers) {
+		if (cCat.indexOf("Extra") == -1) cCat.push("Extra") // add Extra category
+		document.getElementById("calcOptionsPanel").innerHTML = "" // redraw menu
+		createCiphersMenu()
+		createOptionsMenu()
+		createFeaturesMenu()
+		createExportMenu()
+		createAboutMenu()
+	} else {
+		if (cCat.indexOf("Extra") !== -1) cCat.splice(cCat.indexOf("Extra"),1) // remove Extra category
+		document.getElementById("calcOptionsPanel").innerHTML = "" // redraw menu
+		createCiphersMenu()
+		createOptionsMenu()
+		createFeaturesMenu()
+		createExportMenu()
+		createAboutMenu()
 	}
-	initCalcCustCiph(false) // don't update values inside cipher editor
 }
 
 function conf_CCM() { // Cross Cipher Match
@@ -353,21 +403,45 @@ function conf_LDM() { // Live Database Mode
 	liveDatabaseMode = !liveDatabaseMode
 }
 
+function conf_DPI() { // Database Page Items
+	var element = document.getElementById("dbPageItemsBox")
+	dbPageItems = Number(element.value)
+	if (document.getElementById("QueryTable") !== null) { // redraw query table if it exists
+		st = Number( document.getElementById('queryPosInput').value )
+		if (st < 0) {
+			st = 0
+			$(this).val(0)
+		}
+		n = dbPageItems
+		$("#queryArea").html() // clear previous table
+		updateDatabaseQueryTable(st, n) // redraw table at new position
+	}
+}
+
+function conf_DSI() { // Database Scroll Items
+	var element = document.getElementById("dbScrollItemsBox")
+	dbScrollItems = Number(element.value)
+}
+
 function conf_MCR() { // Matrix Code Rain
+	optMatrixCodeRain = !optMatrixCodeRain
 	toggleCodeRain()
 }
 
 function create_NumCalc() { // Number Calculation
 	var o = ""
-	var fullNumCalcState, redNumCalcState, offNumCalcState
+	var fullNumCalcState = ''; var redNumCalcState = ''; var offNumCalcState = '';
 	if (optNumCalcMethod == "Full") { fullNumCalcState = 'checked' }
 	else if (optNumCalcMethod == "Reduced") { redNumCalcState = 'checked' }
 	else if (optNumCalcMethod == "Off") { offNumCalcState = 'checked' }
 	o += '<table class="optionElementTable"><tbody>'
 	o += '<tr><td colspan=3><span>Number Calculation</span></td></tr>'
-	o += '<tr><td><input type="checkbox" id="chkbox_fullNumCalc" onclick="conf_NumCalc(&quot;Full&quot;)" '+fullNumCalcState+'><span class="optionTableLabel">Full</span></td>'
-	o += '<td><input type="checkbox" id="chkbox_redNumCalc" onclick="conf_NumCalc(&quot;Reduced&quot;)" '+redNumCalcState+'><span class="optionTableLabel">Reduced</span></td>'
-	o += '<td><input type="checkbox" id="chkbox_offNumCalc" onclick="conf_NumCalc(&quot;Off&quot;)" '+offNumCalcState+'><span class="optionTableLabel">Off</span></td></tr>'
+	o += '<tr><td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_fullNumCalc" onclick="conf_NumCalc(&quot;Full&quot;)" '+fullNumCalcState+'><span class="custChkBox"></span></label>'
+	o += '<br><span class="optionTableLabel">Full</span></td>'
+	o += '<td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_redNumCalc" onclick="conf_NumCalc(&quot;Reduced&quot;)" '+redNumCalcState+'><span class="custChkBox"></span></label>'
+	o += '<br><span class="optionTableLabel">Reduced</span></td>'
+	o += '<td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_offNumCalc" onclick="conf_NumCalc(&quot;Off&quot;)" '+offNumCalcState+'><span class="custChkBox"></span></label>'
+	o += '<br><span class="optionTableLabel">Off</span></td></tr>'
 	o += '</tbody></table>'
 	return o
 }
@@ -428,7 +502,7 @@ function create_PL() { // Phrase Limit (End)
 }
 function conf_PL() {
 	var pLimit = document.getElementById("phrLimitBox")
-	optPhraseLimit = pLimit.value
+	optPhraseLimit = Number(pLimit.value)
 }
 
 function toggleColorControlsMenu(redraw = false) { // display control menu to adjust each cipher
@@ -507,6 +581,15 @@ function toggleColorControlsMenu(redraw = false) { // display control menu to ad
 		o += '<td class="colLabelSmall">Lightness</td>'
 		o += '<td><input type="number" step="0.01" min="0" max="10.0" value="'+fontLit+'" class="colSlider2" id="fontLitSlider" oninput="updateFontLit()"></td>'
 		o += '</tr>'
+		// font and outline color controls
+		o += '<tr><td class="colLabel" style="padding-right: 0.4em;">Code Rain Color:</td>'
+		o += '<td class="colLabelSmall">Hue</td>'
+		o += '<td><input type="number" step="1" min="0" max="359" value="'+coderainHue+'" class="colSlider2" id="coderainHueSlider" oninput="updateCoderainHue()"></td>'
+		o += '<td class="colLabelSmall">Saturation</td>'
+		o += '<td><input type="number" step="0.01" min="0" max="1.0" value="'+coderainSat+'" class="colSlider2" id="coderainSatSlider" oninput="updateCoderainSat()"></td>'
+		o += '<td class="colLabelSmall">Lightness</td>'
+		o += '<td><input type="number" step="0.01" min="0" max="1.0" value="'+coderainLit+'" class="colSlider2" id="coderainLitSlider" oninput="updateCoderainLit()"></td>'
+		o += '</tr>'
 		// column controls
 		o += '<tr><td class="colLabel" style="padding-right: 0.4em;">Cipher Columns:</td>'
 		o += '<td class="colLabelSmall">Control</td>'
@@ -534,6 +617,9 @@ function updateInterfaceColor(firstrun = false) { // change interface color
 	updateFontHue(firstrun)
 	updateFontSat(firstrun)
 	updateFontLit(firstrun)
+	updateCoderainHue(firstrun)
+	updateCoderainSat(firstrun)
+	updateCoderainLit(firstrun)
 }
 
 function updateInterfaceHue(firstrun = false) { // change interface hue
@@ -578,6 +664,22 @@ function updateFontLit(firstrun = false) { // change font and outline lightness
 	var root = document.documentElement
 	root.style.setProperty("--font-lit", fontLit.toString()) // update :root CSS variable
 	if (firstrun) fontLitDefault = fontLit // set default color for reset
+}
+
+function updateCoderainHue(firstrun = false) { // change coderain hue
+	// update hue from slider if element exists
+	if (document.getElementById("coderainHueSlider") !== null) coderainHue = document.getElementById("coderainHueSlider").value
+	if (firstrun) coderainHueDefault = coderainHue // set default color for reset
+}
+function updateCoderainSat(firstrun = false) { // change coderain saturation
+	// update saturation from slider if element exists
+	if (document.getElementById("coderainSatSlider") !== null) coderainSat = document.getElementById("coderainSatSlider").value
+	if (firstrun) coderainSatDefault = coderainSat // set default color for reset
+}
+function updateCoderainLit(firstrun = false) { // change coderain lightness
+	// update lightness from slider if element exists
+	if (document.getElementById("coderainLitSlider") !== null) coderainLit = document.getElementById("coderainLitSlider").value
+	if (firstrun) coderainLitDefault = coderainLit // set default color for reset
 }
 
 function updColorMenuLayout() {
@@ -728,7 +830,9 @@ function initCiphers(updDefCiph = true) { // list categories, define default (ba
 	cCat = [] // clear categories
 	for (i = 0; i < cipherList.length; i++) {
 		c = cipherList[i].cipherCategory
-		if (cCat.indexOf(c) == -1) cCat.push(c) // list categories
+		if (cCat.indexOf(c) == -1) {
+			if ( c !== "Extra" || (c == "Extra" && optShowExtraCiphers) ) cCat.push(c) // list categories (exclude Extra if not allowed)
+		}
 		if (cipherList[i].enabled && updDefCiph) defaultCipherArray.push(cipherList[i].cipherName) // update default ciphers
 	}
 	if (defaultCipherArraySaved.length == 0) defaultCipherArraySaved = [...defaultCipherArray] // copy of initial default ciphers
@@ -752,9 +856,11 @@ function enableAllCiphers() {
 	prevCiphIndex = -1 // reset cipher selection
 	var cur_chkbox
 	for (i = 0; i < cipherList.length; i++) {
-		cur_chkbox = document.getElementById("cipher_chkbox"+i)
-		cipherList[i].enabled = true
-		if (cur_chkbox !== null) cur_chkbox.checked = true
+		if ( cipherList[i].cipherCategory !== "Extra" || (cipherList[i].cipherCategory == "Extra" && optShowExtraCiphers) ) { // if category is not Extra or is Extra ciphers allowed
+			cur_chkbox = document.getElementById("cipher_chkbox"+i)
+			cipherList[i].enabled = true
+			if (cur_chkbox !== null) cur_chkbox.checked = true
+		}
 	}
 	updateTables() // update
 }
@@ -763,7 +869,11 @@ function enableAllEnglishCiphers() {
 	prevCiphIndex = -1 // reset cipher selection
 	var cur_chkbox
 	for (i = 0; i < cipherList.length; i++) {
-		if (cipherList[i].cArr.indexOf(97) > -1) { // lowercase "a"
+		if (cipherList[i].cipherCategory == "Extra" && optShowExtraCiphers && cipherList[i].cArr.indexOf(97) > -1) { // lowercase "a", "Extra" English ciphers only if allowed
+			cur_chkbox = document.getElementById("cipher_chkbox"+i)
+			cipherList[i].enabled = true
+			if (cur_chkbox !== null) cur_chkbox.checked = true
+		} else if (cipherList[i].cipherCategory !== "Extra" && cipherList[i].cArr.indexOf(97) > -1) { // lowercase "a", other cipher categories
 			cur_chkbox = document.getElementById("cipher_chkbox"+i)
 			cipherList[i].enabled = true
 			if (cur_chkbox !== null) cur_chkbox.checked = true

@@ -50,14 +50,15 @@
 	--table-row-even: hsl(var(--global-hue) calc(12% * var(--global-sat)) calc(16% * var(--global-lit)));
 	--input-bg-accent: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(13% * var(--global-lit)));
 	--highlight-date: hsla(var(--global-hue) calc(30% * var(--global-sat)) calc(85% * var(--global-lit)) / 0.15);
+	--checkmark-accent: hsl(var(--global-hue) calc(75% * var(--global-sat)) calc(85% * var(--font-lit)));
 	--font-white-1: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(92% * var(--font-lit)));
 	--font-white-2: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(82% * var(--font-lit)));
 	--font-white-3: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(63% * var(--font-lit)));
 	--border-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(41% * var(--font-lit)));
-	--separator-accent: hsl(var(--font-hue) 0% calc(50% * var(--font-lit)));
-	--separator-accent2: hsl(var(--font-hue) 0% calc(30% * var(--font-lit)));
+	--separator-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(50% * var(--font-lit)));
+	--separator-accent2: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(30% * var(--font-lit)));
 	--border-dark-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(23% * var(--font-lit)));
-	--border-dark-accent2: hsl(var(--font-hue) 0% calc(15% * var(--font-lit)));
+	--border-dark-accent2: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(15% * var(--font-lit)));
 	--focus-outline: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(75% * var(--font-lit)));
 }
 
@@ -685,10 +686,11 @@ body {
 	color: var(--font-white-2);
 	background-color: var(--btn-bg-accent);
 	font-weight: 500;
+	width: 87%;
 }
 .optionElementTable td {
 	border-bottom: 1px solid var(--border-accent);
-	padding: 0.2em 0.5em 0.2em 0.5em;
+	padding: 0.4em;
 }
 .enterAsWordsLimit {
 	border: 1px solid var(--border-accent);
@@ -700,10 +702,22 @@ body {
 	border-top: none;
 	padding-bottom: 0.1em;
 }
+.dbOptionsBox {
+	margin: auto;
+	border: 1px solid var(--border-accent);
+	text-align: right;
+	color: var(--font-white-2);
+	background-color: var(--btn-bg-accent);
+	font-weight: 500;
+	width: 200px;
+	box-sizing: border-box;
+	border-top: none;
+	padding-bottom: 0.1em;
+}
 .optionTableLabel {
 	font-size: 80%;
 }
-#phrLimitBox {
+#phrLimitBox, #dbPageItemsBox, #dbScrollItemsBox {
 	width: 50px;
 	border: none;
 	color: var(--font-white-2);
@@ -999,6 +1013,12 @@ body {
 	font-weight: 600;
 	font-size: 80%;
 }
+#dateDesc1, #dateDesc2 {
+	resize: none;
+	height: 17px;
+	padding: 0;
+	margin: 0;
+}
 .dateFullTable2 {
 	font-weight: 600;
 	font-size: 128%;
@@ -1217,7 +1237,7 @@ body {
 .qgNote {
 	font-style: italic;
 	font-size: 85%;
-	color: rgb(128,128,128);
+	color: var(--separator-accent);
 }
 .qgLink{
 	font-size: 100%;
@@ -1225,4 +1245,58 @@ body {
 }
 .noScroll {
 	overflow: hidden;
+}
+
+/*               Custom Checkbox              */
+/* ########################################## */
+
+.chkLabel {
+	display: block;
+	position: relative;
+	padding-left: 28px;
+	cursor: pointer;
+}
+/* hide default checkbox */
+input[type=checkbox] {
+	visibility: hidden;
+}
+/* custom checkbox */
+.custChkBox {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 16px;
+	width: 16px;
+	background-color: var(--btn-bg-accent);
+	border: solid 1px var(--border-accent);
+}
+.chkLabel:hover input ~ .custChkBox {
+	background-color: var(--btn-hover-accent);
+}
+.chkLabel input:active ~ .custChkBox {
+	background-color: var(--btn-active-accent);
+}
+.chkLabel:hover input:checked ~ .custChkBox {
+	background-color: var(--btn-hover-accent);
+}
+.chkLabel input:checked ~ .custChkBox {
+	background-color: var(--btn-bg-accent);
+	/*background-color: var(--btn-hover-accent);*/
+}
+/* show checkmark in checkbox when checked*/
+.custChkBox:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+.chkLabel input:checked ~ .custChkBox:after {
+	display: block;
+}
+/* checkmark style */
+.chkLabel .custChkBox:after {
+	left: 4px;
+	bottom: 4px;
+	width: 0px;
+	height: 0px;
+	border: solid 4px var(--checkmark-accent);
 }

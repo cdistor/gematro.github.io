@@ -48,7 +48,7 @@ function displayQuickstartGuide() {
 
 	o += '<li><span class="qgBold">"Tiny History"</span> - no cipher names, seamless history table</li>'
 
-	o += '<li><span class="qgBold">"Enable Extra Ciphers"</span> - toggle <span class="qgBold">"Extra"</span> category with experimental ciphers</li>'
+	o += '<li><span class="qgBold">"Show Extra Ciphers"</span> - toggle <span class="qgBold">"Extra"</span> category with experimental ciphers</li>'
 	
 	o += '<li><span class="qgBold">"Ignore Comments [...]"</span> - exclude any text inside square brackets from gematria calculation<br><span class="qgNote">Note: Comments are preserved on export/import</span></li>'
 

@@ -217,7 +217,7 @@ function exportCiphers() {
 		')\n'+
 		'*/\n\n'
 
-	out += "calcOptions = ["+interfaceHue+","+interfaceSat+","+interfaceLit+","+fontHue+","+fontSat+","+fontLit+","+optGradientCharts+","+cipherMenuColumns+","+enabledCiphColumns+"]\n" // save current interface color
+	out += exportCalcOptions()
 	out += "cipherList = [\n"
 	for (i = 0; i < cipherList.length; i++) {
 		
@@ -257,7 +257,7 @@ function exportCiphers() {
 
 function exportCiphersDB() {
 	var out = '// ciphers.js\n'
-	out += "calcOptions = ["+interfaceHue+","+interfaceSat+","+interfaceLit+","+fontHue+","+fontSat+","+fontLit+","+optGradientCharts+","+cipherMenuColumns+","+enabledCiphColumns+"]\n" // save current interface color
+	out += exportCalcOptions()
 	out += "cipherList = [\n"
 	for (i = 0; i < cipherList.length; i++) {
 		if (cipherList[i].enabled) { // export only enabled ciphers
@@ -290,6 +290,15 @@ function exportCiphersDB() {
 	}
 	out = out.substring(0, out.length-2) + '\n]' // remove last comma and new line, close array
 	return out
+}
+
+function exportCalcOptions() {
+	var o = "calcOptions = ["
+	for (var i = 0; i < calcOptionsArr.length; i++) {
+		o += eval(calcOptionsArr[i])+","
+	}
+	o = o.slice(0,-1) + "]\n" // remove comma, close array, new line
+	return o
 }
 
 function exportHighlighterMatches(histArr) { // highlighter mode controls export mode

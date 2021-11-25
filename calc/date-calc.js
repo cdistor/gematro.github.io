@@ -235,10 +235,8 @@ function toggleDateCalcMenu() {
 		if (endDate == 1) endCheckedState = "checked"
 		if (endDate == -1) startCheckedState = "checked"
 		if (!endChkEnabled) { endCheckedState = "disabled"; startCheckedState = "disabled"; }
-		o += '<tr><td colspan=1 style="text-align: right;"><input type="checkbox" id="chkbox_incEndDate" onclick="toggleEndDateCalc()" '+endCheckedState+'>'
-		o += '<td colspan=3 style="text-align: left;"><span class="endDateLabel">Include End Date</span></td></tr>'
-		o += '<tr><td colspan=1 style="text-align: right; padding-bottom: 0.5em;"><input type="checkbox" id="chkbox_excStartDate" onclick="toggleStartDateCalc()" '+startCheckedState+'>'
-		o += '<td colspan=3 style="text-align: left; padding-bottom: 0.5em;"><span class="endDateLabel">Exclude Start Date</span></td></tr>'
+		o += '<tr><td colspan=3 style="text-align: left;"><label class="chkLabel endDateLabel">Include End Date<input type="checkbox" id="chkbox_incEndDate" onclick="toggleEndDateCalc()" '+endCheckedState+'><span class="custChkBox"></span></label></td></tr>'
+		o += '<tr><td colspan=3 style="text-align: left;"><label class="chkLabel endDateLabel">Exclude Start Date<input type="checkbox" id="chkbox_excStartDate" onclick="toggleStartDateCalc()" '+startCheckedState+'><span class="custChkBox"></span></label></td></tr>'
 
 		// add/subtract date
 		o += '<tr>'
@@ -264,9 +262,9 @@ function toggleDateCalcMenu() {
 		o += '<div class="dateCalcBg">'
 
 		o += '<table class="dateCalcTable2"><tbody>'
-		o += '<tr style="line-height: 0.9em;"><td><input class="dateDescription" id="dateDesc1"></td></tr>' // Date 1 label
+		o += '<tr style="line-height: 0.9em;"><td><textarea class="dateDescription" id="dateDesc1"></textarea></td></tr>' // Date 1 label
 		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d1full_t2" class="dateDetailsText"></span></td></tr>' // Date 1
-		o += '<tr style="line-height: 0.9em;"><td><input class="dateDescription" id="dateDesc2"></td></tr>' // Date 2 label
+		o += '<tr style="line-height: 0.9em;"><td><textarea class="dateDescription" id="dateDesc2"></textarea></td></tr>' // Date 2 label
 		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d2full_t2" class="dateDetailsText"></span></td></tr>' // Date 2
 		o += '<tr><td style="background: var(--menu-bg-accent); padding: 0.4em 0.75em 0.5em 0.75em;"><span id="dateDurValues" class="dateDetailsText"></span></td></tr>'
 		o += '</tbody></table>'

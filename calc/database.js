@@ -9,9 +9,6 @@ var userDBlive = [] // imported live database (phrases only)
 var queryResult = [] // matching phrases
 var precalcDBLoaded = false // if precalculated database is loaded, disable cipher rearrangement
 
-var nPhr = 15 // number of phrases in one section
-var newItems = 1 // used for scrolling
-
 $(document).ready(function(){
 	// Scroll inside table
 	$("body").on("wheel", "#QueryTable", function (event) {
@@ -19,21 +16,21 @@ $(document).ready(function(){
 		n = $("#QueryTable").data("dispitems")
 
 		if (event.originalEvent.deltaY < 0) { // down -100, up 100
-			if (st-newItems >= 0) {
+			if (st-dbScrollItems >= 0) {
 				$("#queryArea").html() // clear previous table
-				updateDatabaseQueryTable(st-newItems, n) // redraw table at new position
+				updateDatabaseQueryTable(st-dbScrollItems, n) // redraw table at new position
 			}
 		} else { // scroll up
-			if (st+nPhr < queryResult.length) {
+			if (st+dbPageItems < queryResult.length) {
 				$("#queryArea").html() // clear previous table
-				updateDatabaseQueryTable(st+newItems, n) // redraw table at new position
+				updateDatabaseQueryTable(st+dbScrollItems, n) // redraw table at new position
 			}
 		}
 	});
 
 	// Up and Down arrow keys, List table
 	$("body").on("keydown", "#queryPosInput", function (e) {
-		// step="'+nPhr+'" min="0" max="'+queryResult.length+'"
+		// step="'+dbPageItems+'" min="0" max="'+queryResult.length+'"
 		if (e.which == 38) queryShowPrevPage() // Up
 		if (e.which == 40) queryShowNextPage() // Down
 	});
@@ -46,8 +43,8 @@ $(document).ready(function(){
 			st = 0
 			$(this).val(0)
 		} else if (st >= queryResult.length) {
-			st = queryResult.length - (queryResult.length % nPhr) // last page
-			if (queryResult.length % nPhr == 0) st -= nPhr // if total is divisible, no pagination for last element
+			st = queryResult.length - (queryResult.length % dbPageItems) // last page
+			if (queryResult.length % dbPageItems == 0) st -= dbPageItems // if total is divisible, no pagination for last element
 			$(this).val(st);
 		}
 		n = $("#QueryTable").data("dispitems")
@@ -57,7 +54,7 @@ $(document).ready(function(){
 
 	// Change of scrollbar position
 	$("body").on("input", "#queryScrollbar", function () {
-		st = $(this).val() * nPhr
+		st = $(this).val() * dbPageItems
 		n = $("#QueryTable").data("dispitems")
 		$("#queryArea").html() // clear previous table
 		updateDatabaseQueryTableScrollbar(st, n) // update only the table at new position
@@ -122,7 +119,7 @@ function queryDatabase() {
 	$("#queryArea").css("width", tWidth) // set initial/minimal width for the table
 	/*var o = 'min-width:'+tWidth+';width:'+tWidth+';'
 	$("#queryArea").attr("style", o) // set minimal/initial width for the table*/
-	updateDatabaseQueryTable(0,nPhr)
+	updateDatabaseQueryTable(0,dbPageItems)
 }
 
 function clearDatabaseQueryTable() {
@@ -204,8 +201,8 @@ function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting posi
 	var ms, x, y, mCross, mSame, curCiph
 
 	// stPos - starting position
-	// nPhr - number of phrases in one section
-	var nextBlock = stPos+nPhr // position for next section
+	// dbPageItems - number of phrases in one section
+	var nextBlock = stPos+dbPageItems // position for next section
 	if (nextBlock > queryResult.length) nextBlock = queryResult.length // out of bounds
 	var valPos = 2 // used to retrive gematria from "gemArr" (no recalculation, [0] - score, [1] - phrase)
 	var firstPhrase = true // display cipher names before the first phrase
@@ -248,7 +245,7 @@ function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting posi
 				ms += curCiph.cipherName+'</span></td>' // color of cipher displayed in the table
 			}
 			ms += "</tr>"
-			curPos += nPhr
+			curPos += dbPageItems
 		}
 
 		if (optAllowPhraseComments) {
@@ -299,8 +296,8 @@ function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, tot
 	var ms, x, y, mCross, mSame, curCiph
 
 	// stPos - starting position
-	// nPhr - number of phrases in one section
-	var nextBlock = stPos+nPhr // position for next section
+	// dbPageItems - number of phrases in one section
+	var nextBlock = stPos+dbPageItems // position for next section
 	if (nextBlock > queryResult.length) nextBlock = queryResult.length // out of bounds
 	var valPos = 2 // used to retrive gematria from "gemArr" (no recalculation, [0] - score, [1] - phrase)
 	var firstPhrase = true // display cipher names before the first phrase
@@ -313,9 +310,9 @@ function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, tot
 
 	$("#queryArea").removeClass("minimizeQuery") // unhide query area
 
-	sliderMax = Math.floor(queryResult.length/nPhr)
-	if (queryResult.length % nPhr == 0) sliderMax -= 1 // if total is divisible, no pagination for last element
-	curSliderPos = Math.round(curPos/nPhr)
+	sliderMax = Math.floor(queryResult.length/dbPageItems)
+	if (queryResult.length % dbPageItems == 0) sliderMax -= 1 // if total is divisible, no pagination for last element
+	curSliderPos = Math.round(curPos/dbPageItems)
 	ms = '<span class="minimizeLabel">Right-click to minimize</span>'
 	ms += '<input type="range" min="0" max="'+sliderMax+'" value="'+curSliderPos+'" class="qSlider" id="queryScrollbar">' // slider/scrollbar
 	ms += '<table id="QueryTable" class="HistoryTable" data-startpos='+stPos+' data-dispitems='+dItems+'>'
@@ -343,7 +340,7 @@ function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, tot
 				ms += curCiph.cipherName+'</span></td>' // color of cipher displayed in the table
 			}
 			ms += "</tr>"
-			curPos += nPhr
+			curPos += dbPageItems
 		}
 
 		if (optAllowPhraseComments) {
@@ -406,7 +403,7 @@ function NumberArray() {
 }
 
 function queryShowPrevPage() {
-	st = Number( document.getElementById('queryPosInput').value ) - nPhr
+	st = Number( document.getElementById('queryPosInput').value ) - dbPageItems
 	if (st < 0) {
 		st = 0
 		$(this).val(0)
@@ -418,10 +415,10 @@ function queryShowPrevPage() {
 }
 
 function queryShowNextPage() {
-	st = Number( document.getElementById('queryPosInput').value ) + nPhr
+	st = Number( document.getElementById('queryPosInput').value ) + dbPageItems
 	if (st >= queryResult.length) {
-		st = queryResult.length - (queryResult.length % nPhr) // last page
-		if (queryResult.length % nPhr == 0) st -= nPhr // if total is divisible, no pagination for last element
+		st = queryResult.length - (queryResult.length % dbPageItems) // last page
+		if (queryResult.length % dbPageItems == 0) st -= dbPageItems // if total is divisible, no pagination for last element
 		$(this).val(st);
 	}
 	n = $("#QueryTable").data("dispitems")
@@ -445,11 +442,14 @@ function unloadDatabase() {
 		interfaceHue = interfaceHueDefault // restore hue
 		interfaceLit = interfaceLitDefault // restore saturation
 		interfaceSat = interfaceSatDefault // restore lightness
-		fontHue = fontHueDefault // restore hue
-		fontLit = fontLitDefault // restore saturation
-		fontSat = fontSatDefault // restore lightness
+		fontHue = fontHueDefault
+		fontLit = fontLitDefault
+		fontSat = fontSatDefault
+		coderainHue = coderainHueDefault
+		coderainLit = coderainLitDefault
+		coderainSat = coderainSatDefault
 		optGradientCharts = optGradientChartsDefault // restore gradient charts
-		$('#enableExtraCiphOption').removeClass('hideValue') // show "Enable Extra Ciphers" option
+		$('#showExtraCiphOption').removeClass('hideValue') // show "Show Extra Ciphers" option
 	}
 	userDB = [] // clear previous DB
 	userDBlive = [] // clear live DB

@@ -1,7 +1,5 @@
 // ================ Matrix code rain (HTML5 canvas) =================
 
-var optMatrixCodeRain = false
-
 var code_rain; // var to clear interval
 var height_html, canvas, ctx
 var w, h, ypos
@@ -18,7 +16,7 @@ function initCodeRain() {
 	h = canvas.height = height_html
 
 	// draw a plain color rectangle of width and height same as that of the canvas
-	ctx.fillStyle = "rgb(22,26,34)"
+	ctx.fillStyle = "hsl("+interfaceHue+","+(22*interfaceSat)+"%,"+(16*interfaceLit)+"%)" // CSS var(--body-bg-accent)
 	ctx.fillRect(0, 0, w, h)
 
 	cols = Math.floor(w / 14) + 1 // px
@@ -30,16 +28,17 @@ function matrix() {
 	// draw a semitransparent black rectangle on top of previous drawing
 	ctx.fillStyle = "#00000010"
 	if(navigator.userAgent.toLowerCase().indexOf('firefox') == -1) { // if not Firefox
-		ctx.shadowColor = "rgba(0,0,0,0)" // reset blurred shadows for old characters
+		// ctx.shadowColor = "rgba(0,0,0,0)" // reset blurred shadows for old characters
+		ctx.shadowColor = "hsla(0,0%,0%,0.0)" // reset blurred shadows for old characters
 		ctx.shadowBlur = 0 // reset blurred shadows
 	}
 	ctx.fillRect(0, 0, w, h)
 
 	// set color and font in the drawing context
-	ctx.fillStyle = "rgb(39,58,57)" // "rgb(0,42,0)"
+	ctx.fillStyle = "hsl("+coderainHue+","+(coderainSat*100)+"%,"+(coderainLit*100)+"%)"
 	ctx.font = "bold 18pt matrix-font"
 	if(navigator.userAgent.toLowerCase().indexOf('firefox') == -1) { // if not Firefox
-		ctx.shadowColor = "rgba(0,255,0,0.4)"
+		ctx.shadowColor = "hsla("+coderainHue+",100%,50%,0.4)"
 		ctx.shadowBlur = 4
 	}
 
@@ -71,13 +70,13 @@ function rndInt(min, max) {  // inclusive
 
 function toggleCodeRain() {
 	if (optMatrixCodeRain) {
-		optMatrixCodeRain = false
+		clearInterval(code_rain) // reset previous instance
+		document.getElementById("canv").style.display = "none"
 		initCodeRain() // recalculate canvas size
 		code_rain = setInterval(matrix, 50)
 		document.getElementById("canv").style.display = ""
 		return
 	} else {
-		optMatrixCodeRain = true
 		clearInterval(code_rain)
 		document.getElementById("canv").style.display = "none"
 		return

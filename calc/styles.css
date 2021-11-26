@@ -1137,6 +1137,7 @@ body {
 	border: 1px solid var(--border-accent);
 	border-bottom: 2px solid var(--border-accent);
 	cursor: pointer;
+	user-select: none;
 }
 #queryMinBtn:hover {
 	background-color: var(--btn-bg-accent);

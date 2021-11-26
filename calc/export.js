@@ -55,6 +55,8 @@ $(document).ready(function(){
 		openImageWindow(".HistoryTable", fileName);
 	});
 	$("body").on("click", "#btn-date-calc-png", function () {
+		$('#dateDesc1Area').html('<span class="dateDescription">'+dateDesc1Saved+'</span>') // input to fixed text
+		$('#dateDesc2Area').html('<span class="dateDescription">'+dateDesc2Saved+'</span>')
 		// phrase-with-spaces_2021-03-26_10-23-52_table.png
 		var fileName = (saved_d1.getMonth()+1)+'-'+saved_d1.getDate()+'-'+saved_d1.getFullYear()+'_'+
 			(saved_d2.getMonth()+1)+'-'+saved_d2.getDate()+'-'+saved_d2.getFullYear()+"_date_durations.png";
@@ -136,6 +138,12 @@ function openImageWindow(element, imgName = "", sRatio = window.devicePixelRatio
 			//$("#previewImage").append(canvas);
 			
 			imageDataURL = canvas.toDataURL("image/png"); // canvas to "data:image/png;base64, ..."
+
+			if (element == '.dateCalcTable2') { // restore date labels as input
+				$('#dateDesc1Area').html('<input class="dateDescription" id="dateDesc1" value="'+dateDesc1Saved+'">')
+				$('#dateDesc2Area').html('<input class="dateDescription" id="dateDesc2" value="'+dateDesc2Saved+'">')
+			}
+
 			if (imgName == "" || imgName.length >= 200) imgName = getTimestamp()+".png"; // filename for download button (200 char limit)
 
 			// add download button and image data inside centered <div>

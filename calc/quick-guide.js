@@ -39,23 +39,24 @@ function displayQuickstartGuide() {
 
 	o += '<li><span class="qgBold">"Show Only Matching"</span> - when highlighter is active, sets opacity of nonmatching values to zero</li>'
 
+	o += '<li><span class="qgBold">"Compact History"</span> - use vertical cipher names inside history table</li>'
+	o += '<li><span class="qgBold">"Tiny History"</span> - no cipher names, seamless history table</li>'
+
+	o += '<li><span class="qgBold">"Show Extra Ciphers"</span> - toggle <span class="qgBold">"Extra"</span> category with experimental ciphers</li>'
+	o += '<li><span class="qgBold">"Ignore Comments [...]"</span> - exclude any text inside square brackets from gematria calculation<br><span class="qgNote">Note: Comments are preserved on export/import</span></li>'
+	o += '<li><span class="qgBold">"Live Database Mode"</span> - disable this option to generate a precalculated database on file import<br><span class="qgNote">Note: More information is available in the "Databases" section of this guide</span></li>'
+	
+	o += '<li><span class="qgBold">"Phrases on DB page"</span> - specify the amount of phrases on one page of <span class="qgBold">Database</span> query results</span></li>'
+	o += '<li><span class="qgBold">"Scroll DB by lines"</span> - set scrolling speed inside <span class="qgBold">Database</span> query results</span></li>'
+
 	o += '<li><span class="qgBold">"Letter/Word Count"</span> - show number of recognized (by current cipher) letters and words</li>'
 	o += '<li><span class="qgBold">"Simple Result"</span> - display gematria of current phrase in text format</li>'
 	o += '<li><span class="qgBold">"Word Breakdown"</span> - show detailed breakdown for current phrase</li>'
 	o += '<li><span class="qgBold">"Cipher Chart"</span> - show a table of correspondences between letters and values for current cipher</li>'
 
-	o += '<li><span class="qgBold">"Compact History"</span> - use vertical cipher names inside history table</li>'
-
-	o += '<li><span class="qgBold">"Tiny History"</span> - no cipher names, seamless history table</li>'
-
-	o += '<li><span class="qgBold">"Show Extra Ciphers"</span> - toggle <span class="qgBold">"Extra"</span> category with experimental ciphers</li>'
-	
-	o += '<li><span class="qgBold">"Ignore Comments [...]"</span> - exclude any text inside square brackets from gematria calculation<br><span class="qgNote">Note: Comments are preserved on export/import</span></li>'
-
-	o += '<li><span class="qgBold">"Live Database Mode"</span> - disable this option to generate a precalculated database on file import<br><span class="qgNote">Note: More information is available in the "Databases" section of this guide</span></li>'
+	o += '<li><span class="qgBold">"Gradient Charts"</span> - toggle fill style for <span class="qgBold">"Word Breakdown"</span> and <span class="qgBold">"Cipher Chart"</span></li>'
 
 	o += '<li><span class="qgBold">"Switch Ciphers (CSV)"</span> - enable previously selected ciphers on history file import</li>'
-
 	o += '<li><span class="qgBold">"Matrix Code Rain"</span> - use dynamic background</li></ul>'
 
 	o += '<hr class="numPropSeparator">'
@@ -84,7 +85,7 @@ function displayQuickstartGuide() {
 
 	o += '<li><span class="qgBold">"Export Matches (TXT)"</span> - export all available matches from current history table as a text file, current highlighter mode (<span class="qgBold">"Cross Cipher Match"</span> or <span class="qgBold">"Same Cipher Match"</span>) is used during export<br><span class="qgNote">Note: Matches can be imported back into calculator</span></li>'
 
-	o += '<li><span class="qgBold">"Export Ciphers"</span> - ciphers active at the time of export will become the new default ones on next import, file can have any name or extension<br><span class="qgNote">Note: You can edit file manually with a text editor, make sure to keep formatting<br>If you want to permanently change ciphers, you can download an offline version of calculator from GitHub repository and replace "ciphers.js" file inside "calc" directory<br>Online and offline versions are identical</span></li></ul>'
+	o += '<li><span class="qgBold">"Export Ciphers"</span> - ciphers active at the time of export will become the new default ones on next import, file can have any name or extension<br><span class="qgNote">Note: You can edit file manually with a text editor, make sure to keep formatting<br>Any changes made to options or menu settings are saved as well<br>If you want to permanently change ciphers, you can download an offline version of calculator from GitHub repository and replace "ciphers.js" file inside "calc" directory<br>Online and offline versions are identical</span></li></ul>'
 
 	o += '<hr class="numPropSeparator">'
 	o += '<p><span class="qgBold2">Databases</p>'

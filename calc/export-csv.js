@@ -15,6 +15,7 @@ $(document).ready(function(){
 
 function dropHandler(ev) {
 	// console.log('File(s) dropped')
+	dragCounter = 0 // reset counter
 	$("#phraseBox").removeClass("dragOver")
 	
 	ev.preventDefault() // prevent default behavior (Prevent file from being opened)

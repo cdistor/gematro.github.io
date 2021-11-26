@@ -138,20 +138,17 @@ function updDates(offsetMode = false, ctrlClass = '') { // offsetMode - add/subt
 	if (WD_arr.W !== 0) o += dDurLine( dFmt(WD_arr.W,2) + dFmt(WD_arr.D,3) )
 	o += dDurLine( dFmt(getDayDiff(d_max, d_min),3) )
 
+	if (endDate == 1) o += '<div><span class="dateOffsetLabel">(including end date)</span></div>'
+	else if (endDate == -1) o += '<div><span class="dateOffsetLabel">(excluding start date)</span></div>'
+
 	if (d_min.getTime() == d_max.getTime()) o = dDurLine('<span class="durVal">0</span> days') // same dates
 	$('#dateDurValues').html(o)
 }
 
 function dDurLine(val) { // build string to display date duration
 	val = val.trim() // remove spaces
-	if (endDate !== 0) val = endDateDisp(val) // display day offset
 	val = '<div><span class="dateDurLine">'+val+'</span></div>'// add class for highlighting
 	return val
-}
-
-function endDateDisp(val) {
-	if (endDate == 1) return '<span class="dayOffDisp">+1&nbsp;&nbsp;&nbsp;</span>'+val+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-	else if (endDate == -1) return '<span class="dayOffDisp">-1&nbsp;&nbsp;&nbsp;</span>'+val+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 }
 
 function dFmt(val, mode) { // formatting and label for date durations, y,m,w,d is 0,1,2,3 (optional)
@@ -262,9 +259,9 @@ function toggleDateCalcMenu() {
 		o += '<div class="dateCalcBg">'
 
 		o += '<table class="dateCalcTable2"><tbody>'
-		o += '<tr style="line-height: 0.9em;"><td><textarea class="dateDescription" id="dateDesc1"></textarea></td></tr>' // Date 1 label
+		o += '<tr style="line-height: 0.9em;"><td><div id="dateDesc1Area"><input class="dateDescription" id="dateDesc1" value="'+dateDesc1Saved+'"></div></td></tr>' // Date 1 label
 		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d1full_t2" class="dateDetailsText"></span></td></tr>' // Date 1
-		o += '<tr style="line-height: 0.9em;"><td><textarea class="dateDescription" id="dateDesc2"></textarea></td></tr>' // Date 2 label
+		o += '<tr style="line-height: 0.9em;"><td><div id="dateDesc2Area"><input class="dateDescription" id="dateDesc2" value="'+dateDesc2Saved+'"></div></td></tr>' // Date 2 label
 		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d2full_t2" class="dateDetailsText"></span></td></tr>' // Date 2
 		o += '<tr><td style="background: var(--menu-bg-accent); padding: 0.4em 0.75em 0.5em 0.75em;"><span id="dateDurValues" class="dateDetailsText"></span></td></tr>'
 		o += '</tbody></table>'
@@ -274,8 +271,6 @@ function toggleDateCalcMenu() {
 		o += '</div>' // dateCalcContainer
 
 		document.getElementById("dateCalcMenuArea").innerHTML = o
-		document.getElementById("dateDesc1").value = dateDesc1Saved // set date descriptions
-		document.getElementById("dateDesc2").value = dateDesc2Saved
 		updDates() // update values
 	} else {
 		document.getElementById("dateCalcMenuArea").innerHTML = "" // close Date Calculator

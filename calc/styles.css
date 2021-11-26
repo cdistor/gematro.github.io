@@ -34,8 +34,6 @@
 	--font-hue: 0;
 	--font-sat: 0;
 	--font-lit: 1.0;
-	--drag-highlight: hsla(var(--global-hue) calc(80% * var(--global-sat)) calc(70% * var(--global-lit)) / 0.2);
-	--drag-highlight-border: hsl(var(--global-hue) calc(80% * var(--global-sat)) calc(70% * var(--global-lit)));
 	--menu-bg-accent: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(28% * var(--global-lit)));
 	--menu-bg-accent2: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(24% * var(--global-lit)));
 	--breakdown-bg-accent: hsl(var(--global-hue) calc(21% * var(--global-sat)) calc(13% * var(--global-lit)));
@@ -44,12 +42,14 @@
 	--btn-active-accent: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(39% * var(--global-lit)));
 	--body-bg-accent: hsl(var(--global-hue) calc(22% * var(--global-sat)) calc(16% * var(--global-lit)));
 	--query-bg-accent: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(19% * var(--global-lit)));
-	--placeholder-color: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(35% * var(--global-lit)));
 	--hist-header-gradient: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(10% * var(--global-lit)));
 	--table-row-odd: hsl(var(--global-hue) calc(14% * var(--global-sat)) calc(14% * var(--global-lit)));
 	--table-row-even: hsl(var(--global-hue) calc(12% * var(--global-sat)) calc(16% * var(--global-lit)));
 	--input-bg-accent: hsl(var(--global-hue) calc(13% * var(--global-sat)) calc(13% * var(--global-lit)));
 	--highlight-date: hsla(var(--global-hue) calc(30% * var(--global-sat)) calc(85% * var(--global-lit)) / 0.15);
+	--drag-highlight: hsla(var(--global-hue) calc(80% * var(--global-sat)) calc(70% * var(--font-lit)) / 0.2);
+	--drag-highlight-border: hsl(var(--global-hue) calc(80% * var(--global-sat)) calc(70% * var(--font-lit)));
+	--placeholder-color: hsl(var(--global-hue) calc(20% * var(--global-sat)) calc(45% * var(--font-lit)));
 	--checkmark-accent: hsl(var(--global-hue) calc(75% * var(--global-sat)) calc(85% * var(--font-lit)));
 	--font-white-1: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(92% * var(--font-lit)));
 	--font-white-2: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(82% * var(--font-lit)));
@@ -58,7 +58,6 @@
 	--separator-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(50% * var(--font-lit)));
 	--separator-accent2: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(30% * var(--font-lit)));
 	--border-dark-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(23% * var(--font-lit)));
-	--border-dark-accent2: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(15% * var(--font-lit)));
 	--focus-outline: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(75% * var(--font-lit)));
 }
 
@@ -73,6 +72,7 @@ body { /* disable Chromium's Text Autosizer (mobile text inflation algorithm) */
 	-webkit-text-size-adjust: none;
 	-moz-text-size-adjust: none;
 	text-size-adjust: none;
+	font-size: 95%;
 }
 
 /*               Text Selection               */
@@ -80,7 +80,7 @@ body { /* disable Chromium's Text Autosizer (mobile text inflation algorithm) */
 
 ::selection {
 	color: rgb(23,23,23);
-	background: rgb(255,255,255);
+	background: rgb(158,158,158);
 }
 
 ::-moz-selection {
@@ -138,6 +138,18 @@ body {
 	background-color: var(--body-bg-accent);
 }
 
+.gematroLogo {
+	display: flex;
+	justify-content: center;
+	padding-bottom: 0.4em;
+}
+.gematroLogo svg {
+	height: 10px !important;
+	width: auto !important;
+}
+.gematroLogo svg path {
+	fill: var(--font-white-2) !important;
+}
 .splitInterface {
 	width: 70%;
 	position: absolute;
@@ -154,6 +166,7 @@ body {
 	width: -moz-fit-content;
 	padding: 0.5em 0em 0.75em 1em;
 	margin: 0.5em 0em 0.5em 0em;
+	border: 1px solid var(--border-dark-accent);
 }
 .colLabelSmall {
 	font-size: 80%;
@@ -596,7 +609,7 @@ body {
 	display: inline-block;
 	color: var(--font-white-1);
 	color: var(--font-white-2);
-	padding: 0.5em 0.75em 0.5em 0.75em;
+	padding: 0.4em 0.75em;
 	border: 1px solid var(--border-accent);
 	width: 100%;
 	font-size: 100%;
@@ -749,7 +762,7 @@ body {
 	padding: 1em;
 	text-align: left;
 	background-color: var(--menu-bg-accent2);
-	border: 1px solid var(--border-dark-accent2); /* --body-bg-accent */
+	border: 1px solid var(--border-dark-accent); /* --body-bg-accent */
 	/*border-top: none;*/
 }
 .dropdown-content-opt {
@@ -822,6 +835,7 @@ body {
 	position: absolute;
 	z-index: 101;
 	font-family: "Montserrat", "Arial", sans-serif;
+	border: 1px solid var(--border-dark-accent);
 }
 .numPropTable {
 	text-align: center;
@@ -883,6 +897,7 @@ body {
 	background: var(--menu-bg-accent);
 	width: -webkit-fit-content;
 	width: -moz-fit-content;
+	border: 1px solid var(--border-dark-accent);
 }
 .custCipherMainTable {
 	margin: 0.5em 0em 0.5em 0em;
@@ -893,18 +908,17 @@ body {
 }
 #custCipherNameInput, #custCipherCatInput {
 	background: var(--btn-bg-accent);
-	border: 1px solid var(--border-accent);
 	font-size: 125%;
 	color: var(--font-white-2);
 	font-family: "Montserrat", "Arial", sans-serif;
 	font-weight: 500;
 	text-align: center;
 	width: 100%;
-	border: none;
+	box-sizing: border-box;
+	border: 1px solid var(--border-dark-accent);
 }
 #custCipherAlphabet, #custCipherGlobVals {
 	background: var(--btn-bg-accent);
-	border: 1px solid var(--border-accent);
 	font-size: 125%;
 	color: var(--font-white-2);
 	font-family: "Montserrat", "Arial", sans-serif;
@@ -913,7 +927,8 @@ body {
 	text-align: center;
 	resize: none;
 	width: 100%;
-	border: none;
+	box-sizing: border-box;
+	border: 1px solid var(--border-dark-accent);
 }
 #custCipherGlobVals {
 	font-size: 100%;
@@ -922,7 +937,10 @@ body {
 #custCipherAlphabet:focus, #custCipherGlobVals:focus,
 #custCipherNameInput:focus, #custCipherCatInput:focus {
 	outline: none;
-	border: 1px solid var(--focus-outline);
+	border: 1px solid var(--border-dark-accent);
+}
+.custCharInd:focus, .custCharIndValue:focus {
+	outline: none;
 	border: none;
 }
 #diacrChkbox, #caseSensChkbox {
@@ -931,16 +949,15 @@ body {
 }
 .custCharIndTable {
 	width: 40px;
-	border: 1px solid var(--border-accent);
 	border-spacing: 0px;
 	border: none;
 }
 .custCharIndLabel {
 	text-align: center;
-	border-bottom: 1px solid var(--border-accent);
 	background: var(--btn-bg-accent);
 	height: 38px;
-	border: none;
+	box-sizing: border-box;
+	border: 1px solid var(--border-dark-accent);
 }
 .custCharInd {
 	width: 40px;
@@ -974,10 +991,14 @@ body {
 	width: -webkit-fit-content;
 	width: -moz-fit-content;
 	display: flex;
-	height: 330px;
+	height: 340px;
+	border: 1px solid var(--border-dark-accent);
 }
 .dateCalcTable, .dateCalcTable2 {
 	text-align: center;
+}
+.dateCalcTable {
+	margin: auto;
 }
 .dateCalcTable2 {
 	line-height: 0.8em;
@@ -991,15 +1012,20 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	border: 1px solid var(--border-dark-accent);
+	box-sizing: border-box;
 }
 .dateInputLabel {
 	font-weight: 500;
 	font-size: 80%;
 	color: var(--focus-outline);
 }
-.dateNthLabel {
+.dateNthLabel, .dateOffsetLabel {
 	color: var(--separator-accent);
 	font-size: 68%;
+}
+.dateOffsetLabel {
+	font-weight: 500;
 }
 .dateDescription {
 	box-sizing: border-box;
@@ -1012,12 +1038,8 @@ body {
 	font-family: "Montserrat", "Arial", sans-serif;
 	font-weight: 600;
 	font-size: 80%;
-}
-#dateDesc1, #dateDesc2 {
-	resize: none;
-	height: 17px;
-	padding: 0;
-	margin: 0;
+	padding: 0em;
+	line-height: normal !important;
 }
 .dateFullTable2 {
 	font-weight: 600;
@@ -1081,10 +1103,6 @@ body {
 	background: var(--highlight-date);
 	padding: 0em 0.5em;
 }
-.dayOffDisp {
-	font-weight: 600;
-	color: var(--btn-active-accent);
-}
 
 /*                Query Table                 */
 /* ########################################## */
@@ -1118,8 +1136,10 @@ body {
 	background: var(--hist-header-gradient);
 	outline: none;
 	margin: 0;
-	border-bottom: 1px solid var(--border-accent);
+	border: 1px solid var(--border-accent);
+	border-bottom: 2px solid var(--border-accent);
 	display: block;
+	box-sizing: border-box;
 }
 .qSlider:hover {
 	opacity: 1;
@@ -1195,6 +1215,7 @@ body {
 	width: 40%;
 	overflow: auto;
 	z-index: 1000;
+	border: 1px solid var(--border-dark-accent);
 }
 .contactInfo {
 	background-color: var(--menu-bg-accent2);
@@ -1207,10 +1228,11 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	height: 570px;
+	height: 560px;
 	width: 480px;
 	overflow: auto;
 	z-index: 1000;
+	border: 1px solid var(--border-dark-accent);
 }
 .qgBold, .qgBold2, .qgBoldCoin {
 	font-size: 100%;
@@ -1263,7 +1285,8 @@ input[type=checkbox] {
 /* custom checkbox */
 .custChkBox {
 	position: absolute;
-	top: 0;
+	top: 50%;
+	transform: translate(0, -50%);
 	left: 0;
 	height: 16px;
 	width: 16px;
@@ -1291,6 +1314,9 @@ input[type=checkbox] {
 }
 .chkLabel input:checked ~ .custChkBox:after {
 	display: block;
+}
+.chkLabel input[type="checkbox"]:disabled ~ .custChkBox {
+	background-color: var(--btn-active-accent);
 }
 /* checkmark style */
 .chkLabel .custChkBox:after {

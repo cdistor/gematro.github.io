@@ -196,9 +196,7 @@ function createAboutMenu() { // create menu with all cipher catergories
 	o += '<button class="dropbtn">About</button>'
 	o += '<div class="dropdown-content">'
 
-	o += '<center>'
-	o += '<div style="display: flex; justify-content: center; padding-bottom: 0.4em;"><img src="res/logo.svg" style="height: 10px"></div>'
-	o += '</center>'
+	o += '<center><div class="gematroLogo">'+gematroSvgLogo()+'</div></center>'
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="GitHub Repository" onclick="gotoGitHubRepo()">'
 	o += '<div style="margin: 0.5em;"></div>'
@@ -213,6 +211,10 @@ function createAboutMenu() { // create menu with all cipher catergories
 
 function gotoGitHubRepo() {
 	window.open("https://github.com/gematro/gematro.github.io", "_blank")
+}
+
+function gematroSvgLogo() {
+	return '<svg xmlns="http://www.w3.org/2000/svg" width="802.4" height="76.4" viewBox="0 0 2006 191"><defs><style>.cls-1 {fill: #bababa;fill-rule: evenodd;}</style></defs><path id="gematro_svg" data-name="gematroSVG" class="cls-1" d="M192.556,55.8L238,56l0.143-12.972q0-24.223-10.351-33.474T188.592,0.3H50.512q-29.07,0-39.31,9.47T0.961,45.23V145.873q0,26.21,10.24,35.676t39.31,9.47h138.08q29.07,0,39.31-9.47t10.241-35.676V80.026H116.8V113.94h75.757v40.522H47.429V35.32H192.556V55.8Zm332.1,135.218V155.343h-160.1V108.435h91.833V75.621H364.552V34h157.68V0.3H317.644V191.019H524.655Zm104.386,0V62.848l86.328,105.268h9.03L809.625,59.765V191.019h43.164V0.3H815.351L722.417,113.5,629.041,0.3H591.823V191.019h37.218Zm326.153,0,24-41.843H1105.39l24,41.843h52.19L1066.63,0.3h-44.71L908.726,191.019h46.468ZM1041.96,34.88l44.49,79.5H999.018Zm368.44-.44V0.3H1179.6V34.439h92.06v156.58h46.46V34.439h92.28Zm228.7,2.2q4.515,3.525,4.52,11.892V70.556q0,8.372-4.52,11.892t-16.63,3.524H1516.33V33.118h106.14Q1634.59,33.118,1639.1,36.642ZM1516.33,191.019V118.785h43.82l79.94,72.234h66.73l-90.73-72.234h26.2q23.565,0,34.14-8.588T1687,82.228V37.3q0-19.6-10.57-28.3t-34.14-8.7H1470.52V191.019h45.81Zm289.15-155.7H1959.2V154.462H1805.48V35.32Zm-46.47,110.553q0,26.21,10.13,35.676t39.42,9.47h147.55q29.07,0,39.31-9.47t10.24-35.676V45.23q0-25.983-10.02-35.456T1956.11,0.3H1808.56q-29.28,0-39.42,9.47T1759.01,45.23V145.873Z"/></svg>'
 }
 
 // ========================= Options Menu ===========================
@@ -961,8 +963,11 @@ function sValNoComments() {
 	return document.getElementById("phraseBox").value.replace(/\[.+\]/g, '').replace(/\[/g, '').replace(/\]/g, '').trim()
 }
 
+// 100% font size
+// var chWidthArr = [["a",8.13],["b",9.28],["c",7.66],["d",9.28],["e",8.32],["f",4.8],["g",9.38],["h",9.26],["i",3.79],["j",3.86],["k",8.38],["l",3.79],["m",14.38],["n",9.26],["o",8.64],["p",9.28],["q",9.28],["r",5.48],["s",6.81],["t",5.46],["u",9.21],["v",7.49],["w",12.12],["x",7.51],["y",7.49],["z",7.09],["A",10.13],["B",10.3],["C",9.63],["D",11.23],["E",9.11],["F",8.64],["G",10.5],["H",11.04],["I",4.22],["J",6.98],["K",9.78],["L",8.08],["M",12.99],["N",11.04],["O",11.42],["P",9.68],["Q",11.42],["R",9.89],["S",8.45],["T",8.12],["U",10.76],["V",9.68],["W",15.31],["X",8.9],["Y",8.76],["Z",8.94],["1",5.03],["2",7.81],["3",7.71],["4",9.1],["5",7.74],["6",8.39],["7",8.13],["8",8.76],["9",8.39],["0",9.07],["-",5.25],["(",4.58],[")",4.6],[" ",3.66]]
+// 95% font size
+var chWidthArr = [["a",7.72],["b",8.82],["c",7.27],["d",8.82],["e",7.9],["f",4.57],["g",8.92],["h",8.8],["i",3.6],["j",3.67],["k",7.95],["l",3.6],["m",13.65],["n",8.8],["o",8.2],["p",8.82],["q",8.82],["r",5.2],["s",6.47],["t",5.19],["u",8.75],["v",7.12],["w",11.52],["x",7.13],["y",7.12],["z",6.73],["A",9.62],["B",9.78],["C",9.15],["D",10.67],["E",8.65],["F",8.2],["G",9.97],["H",10.48],["I",4],["J",6.63],["K",9.28],["L",7.67],["M",12.33],["N",10.48],["O",10.85],["P",9.2],["Q",10.85],["R",9.38],["S",8.02],["T",7.72],["U",10.22],["V",9.2],["W",14.55],["X",8.45],["Y",8.32],["Z",8.48],["1",4.78],["2",7.42],["3",7.32],["4",8.63],["5",7.35],["6",7.97],["7",7.72],["8",8.32],["9",7.97],["0",8.62],["-",4.98],["(",4.35],[")",4.37],[" ",3.66]]
 function calcCipherNameWidthPx(str) { // calculate column width inside table based on cipher name length
-	chWidthArr = [["a",8.13],["b",9.28],["c",7.66],["d",9.28],["e",8.32],["f",4.8],["g",9.38],["h",9.26],["i",3.79],["j",3.86],["k",8.38],["l",3.79],["m",14.38],["n",9.26],["o",8.64],["p",9.28],["q",9.28],["r",5.48],["s",6.81],["t",5.46],["u",9.21],["v",7.49],["w",12.12],["x",7.51],["y",7.49],["z",7.09],["A",10.13],["B",10.3],["C",9.63],["D",11.23],["E",9.11],["F",8.64],["G",10.5],["H",11.04],["I",4.22],["J",6.98],["K",9.78],["L",8.08],["M",12.99],["N",11.04],["O",11.42],["P",9.68],["Q",11.42],["R",9.89],["S",8.45],["T",8.12],["U",10.76],["V",9.68],["W",15.31],["X",8.9],["Y",8.76],["Z",8.94],["1",5.03],["2",7.81],["3",7.71],["4",9.1],["5",7.74],["6",8.39],["7",8.13],["8",8.76],["9",8.39],["0",9.07],["-",5.25],["(",4.58],[")",4.6],[" ",3.66]]
 	var i, n, m
 	var tmp = 0; var curChar = ''; var lenArr = [];
 	var arr = str.split(' ') // split string by words
@@ -980,12 +985,11 @@ function calcCipherNameWidthPx(str) { // calculate column width inside table bas
 	for (i = 0; i < lenArr.length; i++) {
 		if (lenArr[i] > tmp) tmp = lenArr[i] // find max value
 	}
-	if (tmp+6 >= 80) return Math.ceil(tmp+6) // 6px padding
-	return 80
+	if (tmp+6 >= 74) return Math.ceil(tmp+6) // 6px padding, 80px for 100% font
+	return 74
 }
 
 function calcCipherNameHeightPx(str) { // calculate row height inside compact table based on cipher name length
-	chWidthArr = [["a",8.13],["b",9.28],["c",7.66],["d",9.28],["e",8.32],["f",4.8],["g",9.38],["h",9.26],["i",3.79],["j",3.86],["k",8.38],["l",3.79],["m",14.38],["n",9.26],["o",8.64],["p",9.28],["q",9.28],["r",5.48],["s",6.81],["t",5.46],["u",9.21],["v",7.49],["w",12.12],["x",7.51],["y",7.49],["z",7.09],["A",10.13],["B",10.3],["C",9.63],["D",11.23],["E",9.11],["F",8.64],["G",10.5],["H",11.04],["I",4.22],["J",6.98],["K",9.78],["L",8.08],["M",12.99],["N",11.04],["O",11.42],["P",9.68],["Q",11.42],["R",9.89],["S",8.45],["T",8.12],["U",10.76],["V",9.68],["W",15.31],["X",8.9],["Y",8.76],["Z",8.94],["1",5.03],["2",7.81],["3",7.71],["4",9.1],["5",7.74],["6",8.39],["7",8.13],["8",8.76],["9",8.39],["0",9.07],["-",5.25],["(",4.58],[")",4.6],[" ",3.66]]
 	var i, n
 	var tmp = 0; var curChar = '';
 	for (i = 0; i < str.length; i++) { // for each character in string
@@ -994,7 +998,7 @@ function calcCipherNameHeightPx(str) { // calculate row height inside compact ta
 			if (chWidthArr[n][0] == curChar) tmp += chWidthArr[n][1] // add width for correspondent character
 		}
 	}
-	return Math.ceil(tmp+20) // 20px padding
+	return Math.ceil(tmp+18) // 20px padding for 100% font
 }
 
 function updateEnabledCipherTable() { // draws a table with phrase gematria for enabled ciphers (odd/even)

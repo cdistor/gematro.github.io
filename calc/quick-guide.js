@@ -110,13 +110,13 @@ function displayQuickstartGuide() {
 
 	o += '<p class="qgMedium">Query Table</p>\n'
 
-	o += '<ul><li>Use <span class="qgBold">"Up"</span> and <span class="qgBold">"Down"</span> arrow keys to scroll one page at a time or use the mouse wheel</li><li>A horizontal scroll bar above the table can be used for navigation as well or you can input the exact position inside the box with index<br><span class="qgNote">Note: Up/Down arrow keys work only when input is focused inside textbox with current position</span></li>'
+	o += '<ul><li>Use <span class="qgBold">"Up"</span> and <span class="qgBold">"Down"</span> arrow keys to scroll one page at a time or use the mouse wheel</li><li>A horizontal scroll bar above the table can be used for navigation as well or you can input the exact position inside the box with index<br><span class="qgNote">Note: Up/Down arrow keys work only when input is focused inside textbox with current index</span></li>'
 
 	o += '<li>Drag the bottom-right corner of the <span class="qgBold">Query Table</span> to resize it<br><span class="qgNote">Hint: Extend the table in case if long phrases do not fit on one line</span></li>'
 
 	o += '<li><span class="qgBold">"Ctrl + Left Click"</span> on phrase - load phrase from <span class="qgBold">Query Table</span> into <span class="qgBold">Phrase Box</span> and add it to <span class="qgBold">History Table</span></li>'
 
-	o += '<li><span class="qgBold">"Right Click"</span> on horizontal scroll bar to temporarily minimize the table if it obstructs the interface (right click again to bring the table back)<br><span class="qgNote">Hint: You can zoom out the page if too many ciphers are active</span></ul>'
+	o += '<li><span class="qgBold">"Left Click"</span> on button in the top right corner to temporarily minimize the table if it obstructs the interface (left click again to bring the table back)<br><span class="qgNote">Hint: You can zoom out the page if too many ciphers are active</span></ul>'
 
 	o += '</div>'
 

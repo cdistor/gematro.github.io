@@ -1125,13 +1125,32 @@ body {
 	background-color: var(--btn-bg-accent);
 	border: 1px solid var(--border-dark-accent);
 }
+#queryMinBtn {
+	position: absolute;
+	width: 24px;
+	left: calc(100% - 24px);
+	height: 24px;
+	text-align: center;
+	box-sizing: border-box;
+	color: var(--border-accent);
+	background: var(--hist-header-gradient);
+	border: 1px solid var(--border-accent);
+	border-bottom: 2px solid var(--border-accent);
+	cursor: pointer;
+}
+#queryMinBtn:hover {
+	background-color: var(--btn-bg-accent);
+}
+#queryMinBtn:active {
+	background-color: var(--btn-hover-accent);
+}
 .queryTextResult {
 	padding: 1em;
 	line-height: 2em;
 }
 .qSlider {
 	-webkit-appearance: none;
-	width: 100%;
+	width: calc(100% - 24px);
 	height: 24px;
 	background: var(--hist-header-gradient);
 	outline: none;
@@ -1182,7 +1201,7 @@ body {
 .minimizeLabel {
 	position: absolute;
 	margin: 0.3em 1em 0.15em 0.15em;
-	right: 0;
+	right: 24px;
 	user-select: none;
 	pointer-events: none;
 	font-size: 75%;

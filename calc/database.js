@@ -60,10 +60,9 @@ $(document).ready(function(){
 		updateDatabaseQueryTableScrollbar(st, n) // update only the table at new position
 	});
 
-	// Right click on scrollbar
-	$("body").on("contextmenu", "#queryScrollbar", function () {
+	// Click on minimize button
+	$("body").on("click", "#queryMinBtn", function () {
 		$("#queryArea").toggleClass("minimizeQuery")
-		return false
 	});
 });
 
@@ -313,7 +312,8 @@ function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, tot
 	sliderMax = Math.floor(queryResult.length/dbPageItems)
 	if (queryResult.length % dbPageItems == 0) sliderMax -= 1 // if total is divisible, no pagination for last element
 	curSliderPos = Math.round(curPos/dbPageItems)
-	ms = '<span class="minimizeLabel">Right-click to minimize</span>'
+	ms = '<span class="minimizeLabel">Click to minimize</span>'
+	ms += '<div id="queryMinBtn">_</div>' // minimize button
 	ms += '<input type="range" min="0" max="'+sliderMax+'" value="'+curSliderPos+'" class="qSlider" id="queryScrollbar">' // slider/scrollbar
 	ms += '<table id="QueryTable" class="HistoryTable" data-startpos='+stPos+' data-dispitems='+dItems+'>'
 	ms += '<tbody>'

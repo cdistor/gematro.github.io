@@ -457,9 +457,7 @@ body {
 	background-color: var(--input-bg-accent);
 	color: var(--font-white-1);
 	font-weight: 500;
-	border-style: solid;
-	border-width: 1px;
-	border-color: var(--border-accent);
+	border: 1px solid var(--border-accent);
 	font-family: "Montserrat", "Arial", sans-serif;
 	margin-left: 0.25em;
 	width: 200px;
@@ -470,9 +468,7 @@ body {
 	background-color: var(--input-bg-accent);
 	color: var(--font-white-1);
 	font-weight: 500;
-	border-style: solid;
-	border-width: 1px;
-	border-color: var(--border-accent);
+	border: 1px solid var(--border-accent);
 	font-family: "Montserrat", "Arial", sans-serif;
 	width: 500px;
 	min-width: 500px;
@@ -1005,6 +1001,9 @@ body {
 	padding: 1em 1em 0.9em 1em;
 	background: var(--btn-bg-accent);
 }
+.elemBorderScr {
+	border: 1px solid var(--border-dark-accent);
+}
 .dateCalcBg {
 	min-width: 370px;
 	margin: 0em 0em 0em 0.9em;
@@ -1311,7 +1310,7 @@ input[type=checkbox] {
 	height: 16px;
 	width: 16px;
 	background-color: var(--btn-bg-accent);
-	border: solid 1px var(--border-accent);
+	border: 1px solid var(--border-accent);
 }
 .chkLabel:hover input ~ .custChkBox {
 	background-color: var(--btn-hover-accent);

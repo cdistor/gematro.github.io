@@ -291,20 +291,19 @@ function conf_SEC() { // Show Extra Ciphers
 	optShowExtraCiphers = !optShowExtraCiphers
 	if (optShowExtraCiphers) {
 		if (cCat.indexOf("Extra") == -1) cCat.push("Extra") // add Extra category
-		document.getElementById("calcOptionsPanel").innerHTML = "" // redraw menu
-		createCiphersMenu()
-		createOptionsMenu()
-		createFeaturesMenu()
-		createExportMenu()
-		createAboutMenu()
 	} else {
 		if (cCat.indexOf("Extra") !== -1) cCat.splice(cCat.indexOf("Extra"),1) // remove Extra category
-		document.getElementById("calcOptionsPanel").innerHTML = "" // redraw menu
-		createCiphersMenu()
-		createOptionsMenu()
-		createFeaturesMenu()
-		createExportMenu()
-		createAboutMenu()
+	}
+	document.getElementById("calcOptionsPanel").innerHTML = "" // redraw menu
+	createCiphersMenu()
+	createOptionsMenu()
+	createFeaturesMenu()
+	createExportMenu()
+	createAboutMenu()
+	if (userDBlive.length !== 0) { // restore controls if live database is loaded
+		$("#clearDBqueryBtn").removeClass("hideValue") // clear button
+		$("#unloadDBBtn").removeClass("hideValue") // unload database button
+		$("#btn-export-db-query").removeClass("hideValue") // export button
 	}
 }
 

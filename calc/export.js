@@ -57,6 +57,7 @@ $(document).ready(function(){
 	$("body").on("click", "#btn-date-calc-png", function () {
 		$('#dateDesc1Area').html('<span class="dateDescription">'+dateDesc1Saved+'</span>') // input to fixed text
 		$('#dateDesc2Area').html('<span class="dateDescription">'+dateDesc2Saved+'</span>')
+		$('.dateCalcTable2').addClass('elemBorderScr') // add outline
 		// phrase-with-spaces_2021-03-26_10-23-52_table.png
 		var fileName = (saved_d1.getMonth()+1)+'-'+saved_d1.getDate()+'-'+saved_d1.getFullYear()+'_'+
 			(saved_d2.getMonth()+1)+'-'+saved_d2.getDate()+'-'+saved_d2.getFullYear()+"_date_durations.png";
@@ -86,13 +87,14 @@ $(document).ready(function(){
 		//$("#BreakdownDetails").attr("style", "padding-top: 1.25em;"); // more padding
 		// $(".LetterCounts").html('<br><hr style="background-color: rgb(105,105,105); height: 2px; border: none;">');
 		$(".LetterCounts").html('');
-		$("#BreakdownDetails").attr("style", "padding-top: 0.75em;"); // more padding
 		updateCipherChartGemCard(); // redraw cipher chart for current cipher (with borders)
+		$('#BreakdownDetails').addClass('elemBorderScr') // add outline for breakdown area
+		$("#BreakdownDetails").attr("style", "padding-top: 0.75em;"); // more padding
 
 		// phrase-with-spaces_English-Ordinal_190_card.png
 		var fileName = sVal().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/ /g, "-").replace(/["|']/g, "")+
 			"_"+breakCipher.replace(/ /g, "-")+"_"+cipherList[i].calcGematria(sVal())+"_card.png";
-		openImageWindow("#BreakdownDetails", fileName, 1.5); // scale 1.5x
+		openImageWindow("#BreakdownDetails", fileName);
 	});
 
 	$("body").on("click", "#btn-num-props-png", function () {
@@ -142,6 +144,12 @@ function openImageWindow(element, imgName = "", sRatio = window.devicePixelRatio
 			if (element == '.dateCalcTable2') { // restore date labels as input
 				$('#dateDesc1Area').html('<input class="dateDescription" id="dateDesc1" value="'+dateDesc1Saved+'">')
 				$('#dateDesc2Area').html('<input class="dateDescription" id="dateDesc2" value="'+dateDesc2Saved+'">')
+				$('.dateCalcTable2').removeClass('elemBorderScr') // add outline
+			}
+
+			if (element == '#BreakdownDetails') { // restore chart style, remove outline
+				$('#BreakdownDetails').removeClass('elemBorderScr') // remove outline for breakdown area
+				updateWordBreakdown() // redraw cipher chart
 			}
 
 			if (imgName == "" || imgName.length >= 200) imgName = getTimestamp()+".png"; // filename for download button (200 char limit)

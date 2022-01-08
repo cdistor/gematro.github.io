@@ -79,7 +79,7 @@ class cipher { // cipher constructor class
 		var i, cIndex, wordSum //
 		var lastSpace = true
 		var n, nv // n - character for display, nv - charcode for calculation
-		
+
 		 // remove [...], separate brackets, leading/trailing spaces
 		if (optAllowPhraseComments == true) { gemPhrase = gemPhrase.replace(/\[.+\]/g, '').replace(/\[/g, '').replace(/\]/g, '').trim() }
 
@@ -139,7 +139,7 @@ class cipher { // cipher constructor class
 					this.cp.push(n)
 					this.LetterCount++
 					this.cv.push(this.vArr[cIndex])
-				} else if (n !== 39 && lastSpace == false) { // 39 = '
+				} else if (n !== 39 && lastSpace == false) {
 					this.sumArr.push(wordSum)
 					wordSum = 0
 					this.cp.push(" ")

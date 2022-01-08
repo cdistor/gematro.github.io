@@ -47,16 +47,23 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 	}
 	curCipher = cipherList[cSpot]
 
-	// if Hebrew Aleph is assigned in current cipher
+ 	// if Hebrew Aleph is assigned in current cipher
 	if (curCipher.cArr.indexOf(1488) > -1) {
 		curCipher.calcBreakdown(sVal().replace(/[\u0591-\u05BD\u05BF-\u05C7]/g,"")) // remove Hebrew vowels, exclude dash
+	}
+ 	// if Arabic Alef is assigned in current cipher
+	if (curCipher.cArr.indexOf(1575) > -1) {
+		curCipher.calcBreakdown(sVal().replace(/[\u0600-\u061F\u0640\u064B-\u066D\u06D4\u06D6-\u06ED\u06F0-\u06F9]/g,"")) // remove Arabic marks and non letter characters
+	}
+	// use right to left writing (Hebrew, Arabic)
+	if (curCipher.cArr.indexOf(1488) > -1 || curCipher.cArr.indexOf(1575) > -1) {
 		curCipher.cp.reverse(); curCipher.cv.reverse(); curCipher.sumArr.reverse() // right-to-left direction
 		if (curCipher.WordCount > 1) {
 			curCipher.cp.push(curCipher.cp.shift()) // remove first element and add to the end of array (space, used for word sum)
 			curCipher.cv.push(curCipher.cv.shift())
 		}
-	} else {
-		curCipher.calcBreakdown(sVal())
+	} else { // left to right, use regular word breakdown
+		curCipher.calcBreakdown(sVal()) // calculate breakdown for current phrase
 	}
 
 	if (curCipher.sumArr.length > 0) {

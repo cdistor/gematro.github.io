@@ -39,6 +39,10 @@ var optSimpleResult = true // Simple Result - phrase = 67 (English Ordinal)
 var optWordBreakdown = true // word breakdown
 var optShowCipherChart = true // cipher breakdown chart
 
+var optGemSubstitutionMode = true // simple substitution of characters with correspondent values
+var optGemMultCharPos = false // value of each character is multiplied by character index
+var optGemMultCharPosReverse = false // value of each character is multiplied by character index in reverse order
+
 var optFiltSameCipherMatch = false // filter shows only phrases that match in the same cipher
 var optFiltCrossCipherMatch = true // filter shows only ciphers that have matching values
 var alphaHlt = 0.15 // opacity for values that do not match - change value here and in conf_SOM()
@@ -103,7 +107,10 @@ var calcOptionsArr = [ // used to export/import settings
 	"enabledCiphColumns",
 	"optPhraseLimit",
 	"dbPageItems",
-	"dbScrollItems"
+	"dbScrollItems",
+	"optGemSubstitutionMode",
+	"optGemMultCharPos",
+	"optGemMultCharPosReverse"
 ]
 
 function initCalc() { // run after page has finished loading
@@ -228,6 +235,7 @@ function createOptionsMenu() {
 	o += '<div class="dropdown-content-opt">'
 
 	o += create_NumCalc() // Number Calculation
+	o += create_GemCalc() // Gematria Calculation method
 
 	// get checkbox states
 	var CCMstate, SCMstate, SOMstate, CHstate, THstate, SECstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, GCstate, SWCstate, MCRstate = ""
@@ -460,6 +468,50 @@ function conf_NumCalc(mode) { // Number Calculation
 		document.getElementById("chkbox_offNumCalc").checked = true
 		document.getElementById("chkbox_fullNumCalc").checked = false
 		document.getElementById("chkbox_redNumCalc").checked = false
+	}
+	updateWordBreakdown()
+	updateTables()
+}
+
+function create_GemCalc() { // Gematria Calculation method
+	var o = ""
+	var subGemCalcState = ''; var multGemCalcState = ''; var multRevGemCalcState = '';
+	if (optGemSubstitutionMode) { subGemCalcState = 'checked' }
+	else if (optGemMultCharPos) { multGemCalcState = 'checked' }
+	else if (optGemMultCharPosReverse) { multRevGemCalcState = 'checked' }
+	o += '<table class="optionElementTable"><tbody>'
+	o += '<tr><td colspan=3><span>Gematria Calculation</span></td></tr>'
+	o += '<tr><td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_subGemCalc" onclick="conf_GemCalc(&quot;sub&quot;)" '+subGemCalcState+'><span class="custChkBox"></span></label>'
+	o += '<br><span class="optionTableLabel">Regular</span></td>'
+	o += '<td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_multGemCalc" onclick="conf_GemCalc(&quot;mult&quot;)" '+multGemCalcState+'><span class="custChkBox"></span></label>'
+	o += '<br><span class="optionTableLabel">Multiply</span></td>'
+	o += '<td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_multRevGemCalc" onclick="conf_GemCalc(&quot;multRev&quot;)" '+multRevGemCalcState+'><span class="custChkBox"></span></label>'
+	o += '<br><span class="optionTableLabel">Rev. Mult.</span></td></tr>'
+	o += '</tbody></table>'
+	return o
+}
+function conf_GemCalc(mode) { // Gematria Calculation
+	if (mode == "sub") {
+		document.getElementById("chkbox_subGemCalc").checked = true
+		document.getElementById("chkbox_multGemCalc").checked = false
+		document.getElementById("chkbox_multRevGemCalc").checked = false
+		optGemSubstitutionMode = true
+		optGemMultCharPos = false
+		optGemMultCharPosReverse = false
+	} else if (mode == "mult") {
+		document.getElementById("chkbox_subGemCalc").checked = false
+		document.getElementById("chkbox_multGemCalc").checked = true
+		document.getElementById("chkbox_multRevGemCalc").checked = false
+		optGemSubstitutionMode = false
+		optGemMultCharPos = true
+		optGemMultCharPosReverse = false
+	} else if (mode == "multRev") {
+		document.getElementById("chkbox_subGemCalc").checked = false
+		document.getElementById("chkbox_multGemCalc").checked = false
+		document.getElementById("chkbox_multRevGemCalc").checked = true
+		optGemSubstitutionMode = false
+		optGemMultCharPos = false
+		optGemMultCharPosReverse = true
 	}
 	updateWordBreakdown()
 	updateTables()
@@ -1093,18 +1145,18 @@ function phraseBoxKeypress(e) { // run on each keystroke inside text box - onkey
 			pBox.value = "" // clear textbox on Enter
 			break
 		case 38: // Up Arrow
-			if (phrPos > 0) {
-				phr = sHistory[phrPos - 1]
+			if (sHistory.length > 0) {
+				if (phrPos > 0) {phr = sHistory[phrPos - 1]} // load previous phrase
+				else if (phrPos <= 0) {phr = sHistory[sHistory.length-1]} // back to last phrase
+				pBox.value = phr; updateWordBreakdown(); updateEnabledCipherTable()
 			}
-			if (phr !== "") {pBox.value = phr; updateWordBreakdown(); updateTables()}
 			break
 		case 40: // Down Arrow
-			if (phrPos > -1) {
-				if (sHistory.length > (phrPos + 1)) {phr = sHistory[phrPos + 1]}
-			} else {
-				if (sHistory.length > 0) {phr = sHistory[0]}
+			if (sHistory.length > 0) {
+				if (phrPos < sHistory.length-1 && phrPos > -1) {phr = sHistory[phrPos + 1]} // load next phrase
+				else if (phrPos == -1 || phrPos == sHistory.length-1) {phr = sHistory[0]} // back to the first phrase
+				pBox.value = phr; updateWordBreakdown(); updateEnabledCipherTable()
 			}
-			if (phr !== "") {pBox.value = phr; updateWordBreakdown(); updateTables()}
 			break
 		case 46: // Delete - remove entries from history
 			if (sHistory.length == 1 && phrPos > -1) { // if one entry and matches box contents
@@ -1131,26 +1183,38 @@ function phraseBoxKeypress(e) { // run on each keystroke inside text box - onkey
 			wordArr = phr.split(" ") // split string to array, space delimiter
 			phrLimit = optPhraseLimit // max phrase length
 			var phrase = ""; var k = 1;
+
 			// for (i = 0; i < wordArr.length; i++) { // phrases in normal order
-				// k = 1 // init variable
-				// phrase = wordArr[i]
-				// addPhraseToHistory(phrase, false)
-				// while (k < phrLimit && i+k < wordArr.length) { // add words to a phrase, check it is within array size
-					// phrase += " "+wordArr[i+k]
-					// addPhraseToHistory(phrase, false)
-					// k++
-				// }
+			// 	k = 1 // word count
+			// 	phrase = wordArr[i]
+			// 	addPhraseToHistory(phrase, false)
+			// 	while (k < phrLimit && i+k < wordArr.length) { // add words to a phrase, check it is within array size
+			// 		phrase += " "+wordArr[i+k]
+			// 		addPhraseToHistory(phrase, false)
+			// 		k++
+			// 	}
 			// }
+
+			var tArr = []; var phrasePos; // temporary history array
 			for (i = wordArr.length-1; i > -1; i--) { // add phrases in reverse order, so you don't have to read backwards
 				k = 1 // word count
 				phrase = wordArr[i]
-				addPhraseToHistory(phrase, false) // don't recalculate table yet
+				if (isNaN(phrase)) { // add first word if not a number
+					phrasePos = tArr.indexOf(phrase);
+					if (phrasePos > -1) tArr.splice(phrasePos, 1) // remove existing phrase
+					tArr.unshift(phrase) // add new phrase in the beginning (since building is in reverse order)
+				}
 				while (k < phrLimit && i-k > -1) { // add words to a phrase, check it is within wordArr size
 					phrase = wordArr[i-k]+" "+phrase
-					addPhraseToHistory(phrase, false)
+					if (isNaN(phrase)) {
+						phrasePos = tArr.indexOf(phrase);
+						if (phrasePos > -1) tArr.splice(phrasePos, 1) // remove existing phrase
+						tArr.unshift(phrase) // add new phrase in the beginning (since building is in reverse order)
+					}
 					k++
 				}
 			}
+			for (i = 0; i < tArr.length; i++) sHistory.push(tArr[i]) // add phrases to history table
 			updateHistoryTable() // update table only once after all phrases are added
 			break
 	}
@@ -1158,15 +1222,12 @@ function phraseBoxKeypress(e) { // run on each keystroke inside text box - onkey
 
 function addPhraseToHistory(phr, upd) { // add new phrase to search history
 	var phrPos
-	if (phr !== "") { // if input is not empty
-		if (Number(phr) > 0) { // if a number is entered, do not add it to history
-		} else {
-			phrPos = sHistory.indexOf(phr);
-			if (phrPos > -1) { // if phrase is in history
-				sHistory.splice(phrPos, 1) // first remove it from array
-			}
-			sHistory.unshift(phr) // insert it in the beginning
+	if (phr !== "" && isNaN(phr)) { // if input is not empty and not a number
+		phrPos = sHistory.indexOf(phr);
+		if (phrPos > -1) { // if phrase is in history
+			sHistory.splice(phrPos, 1) // first remove it from array
 		}
+		sHistory.push(phr) // insert it in the end
 	}
 	if (upd) updateHistoryTable() // table update condition
 }

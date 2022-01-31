@@ -7,6 +7,12 @@ function getSum(total, num) { // used to .reduce() array, adds all values
     return total + num;
 }
 
+function gemCalcModeLabel(letterCount) {
+	if (optGemMultCharPos) return ' - x1 ... x'+letterCount
+	else if (optGemMultCharPosReverse) return ' - x'+letterCount+' ... x1'
+	return ""
+}
+
 $(document).ready(function(){
 	// update breakdown on mouse enter/leave/click events
 	$("body").on("mouseenter", ".phraseGemCiphName", function () {
@@ -84,8 +90,8 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 				simplePhr = sVal() // display full phrase
 			}
 			o += '<div id="SimpleBreak">'
-			o += '<div class="breakPhrase">' + simplePhr + ' = </div><div class="breakSum">' + curCipher.sumArr.reduce(getSum) + '</div>' // add all values in array
-			o += '<div class="breakCipher"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"> (' + curCipher.cipherName + ')</font></div>'
+			o += '<span class="breakPhrase">' + simplePhr + ' = </span><span class="breakSum">' + curCipher.sumArr.reduce(getSum) + '</span>' // add all values in array
+			o += '<span class="breakCipher"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher.LetterCount) + ')</font></span>'
 		}
 
 		if (optWordBreakdown == true && curCipher.cp.length <= 80 ) { // 80 character limit, calculated even if out of screen bounds
@@ -120,7 +126,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 					o += '<td class="BreakVal">' + curCipher.cv[z] + '</td>'
 				}
 			}
-			o += '</tr><tr><td colspan=' + tdCount + ' class="CipherEnd"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + '</font></td></tr></table></div>'
+			o += '</tr><tr><td colspan=' + tdCount + ' class="CipherEnd"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + gemCalcModeLabel(curCipher.LetterCount) + '</font></td></tr></table></div>'
 		}
 	} else {
 		o = ""

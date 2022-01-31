@@ -18,6 +18,7 @@ class cipher { // cipher constructor class
 	calcGematria(gemPhrase) { // calculate gematria of a phrase
 		var i, ch_pos, cur_char
 		var gemValue = 0
+		var n = 0
 		
 		if (optAllowPhraseComments == true) { gemPhrase = gemPhrase.replace(/\[.+\]/g, '').trim() } // remove [...], leading/trailing spaces
 		/*if (this.diacriticsAsRegular) {
@@ -28,11 +29,31 @@ class cipher { // cipher constructor class
 		if (this.diacriticsAsRegular) gemPhrase = gemPhrase.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
 		if (this.caseSensitive == false) gemPhrase = gemPhrase.toLowerCase()
 
-		for (i = 0; i < gemPhrase.length; i++) {
-			cur_char = gemPhrase.charCodeAt(i)
-			ch_pos = this.cArr.indexOf(cur_char)
-			if (ch_pos > -1) { // append value for each found character
-				gemValue += this.vArr[ch_pos]
+		if (optGemSubstitutionMode) { // each character is substituted with a correspondent value
+			for (i = 0; i < gemPhrase.length; i++) {
+				cur_char = gemPhrase.charCodeAt(i)
+				ch_pos = this.cArr.indexOf(cur_char)
+				if (ch_pos > -1) { // append value for each found character
+					gemValue += this.vArr[ch_pos]
+				}
+			}
+		} else if (optGemMultCharPos) { // multiply each charater value based on character index
+			for (i = 0; i < gemPhrase.length; i++) {
+				cur_char = gemPhrase.charCodeAt(i)
+				ch_pos = this.cArr.indexOf(cur_char)
+				if (ch_pos > -1) { // append value for each found character
+					n++
+					gemValue += this.vArr[ch_pos] * n
+				}
+			}
+		} else if (optGemMultCharPosReverse) { // multiply each charater value (reverse index)
+			for (i = gemPhrase.length; i >= 0; i--) {
+				cur_char = gemPhrase.charCodeAt(i)
+				ch_pos = this.cArr.indexOf(cur_char)
+				if (ch_pos > -1) { // append value for each found character
+					n++
+					gemValue += this.vArr[ch_pos] * n
+				}
 			}
 		}
 
@@ -166,6 +187,47 @@ class cipher { // cipher constructor class
 		}
 
 		this.WordCount = this.sumArr.length // word count
+
+		if (optGemMultCharPos) { // multiply each charater value based on character index
+			this.sumArr = [] // clear word sums
+			wordSum = 0
+			n = 0 // vaild character index (defined in cipher)
+			for (i = 0; i < this.cp.length; i++) {
+				if (typeof(this.cp[i]) == "number") { // character value, not "numXX"
+					n++
+					this.cv[i] *= n // multiply character value by position
+					wordSum += this.cv[i]
+				} else if (this.cp[i] == " ") { // space
+					this.sumArr.push(wordSum)
+					wordSum = 0 // reset
+				} else if (typeof(this.cp[i]) == "string") { // numerical value "numXX"
+					this.sumArr.push(this.cv[i]) // push number itself
+					wordSum = 0 // reset
+				}
+			}
+			if (wordSum !== 0) this.sumArr.push(wordSum) // last word value
+		} else if (optGemMultCharPosReverse) { // multiply each charater value (reverse index)
+			this.sumArr = [] // clear word sums
+			wordSum = 0
+			n = 0 // vaild character index (defined in cipher)
+			var count = this.cp.length-1 // array index is one less
+			if (this.cp[this.cp.length - 1] == " ") count = this.cp.length-2 // exclude last character if a space
+
+			for (i = count; i >= 0; i--) {
+				if (typeof(this.cp[i]) == "number") { // character value, not "numXX"
+					n++
+					this.cv[i] *= n // multiply character value by position
+					wordSum += this.cv[i]
+				} else if (this.cp[i] == " ") { // space
+					this.sumArr.unshift(wordSum) // insert in the beginning of array
+					wordSum = 0 // reset
+				} else if (typeof(this.cp[i]) == "string") { // numerical value "numXX"
+					this.sumArr.unshift(this.cv[i]) // number itself
+					wordSum = 0 // reset
+				}
+			}
+			if (wordSum !== 0) this.sumArr.unshift(wordSum) // last word value
+		}
 	}
 
 }

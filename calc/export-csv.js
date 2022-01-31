@@ -145,7 +145,7 @@ function importFileAction(file) {
 		// detect previously exported matches
 		if ( uCiph[0] == '======= Same Cipher Match =======' || uCiph[0] == '============ Cross Cipher Match ============' ) {
 			var phrMatch
-			for (i = userHist.length-1; i > -1; i--) { // add lines in reverse order, so you don't have to read backwards
+			for (i = 0; i < userHist.length; i++) {
 				phrMatch = userHist[i].match(/^\".+\"/) // grab phrase between a quote in the beginning and the last quote found in line (with quotes)
 				if (phrMatch !== null) {
 					addPhraseToHistory(phrMatch[0].slice(1,-1), false) // remove quotes, load extracted phrase (first item), false flag doesn't update history
@@ -219,14 +219,13 @@ function importFileAction(file) {
 		}
 
 		var uPhr = ''; var plainTxt = true
-		var a = -1 // i > -1 to add all phrases, i > 0 to ignore first line (table header)
+		var a = 0 // i = 0 to add all phrases, i = 1 to ignore first line (table header)
 		if (uCiph[0] == "Word or Phrase") {
-			a = 0  // ignore table header if present
+			a = 1  // ignore table header if present
 			plainTxt = false // use substring to extract phrase from CSV later
 		}
 
-
-		for (i = userHist.length-1; i > a; i--) { // add lines in reverse order, so you don't have to read backwards
+		for (i = a; i < userHist.length; i++) {
 			uPhr = userHist[i] // load line, phrase with gematria
 			if (!plainTxt) uPhr = uPhr.substring(0, uPhr.indexOf(';')) // CSV, get text before the first semicolon (faster)
 			addPhraseToHistory(uPhr, false) // load phrase (first item), false flag doesn't update history
@@ -274,7 +273,10 @@ function importCalcOptions(calcOpt) { // load user options
 		if (typeof optArr[i] !== 'undefined') enabledCiphColumns = Number(optArr[i]); i++;
 		if (typeof optArr[i] !== 'undefined') optPhraseLimit = Number(optArr[i]); i++;
 		if (typeof optArr[i] !== 'undefined') dbPageItems = Number(optArr[i]); i++;
-		if (typeof optArr[i] !== 'undefined') dbScrollItems = Number(optArr[i]);
+		if (typeof optArr[i] !== 'undefined') dbScrollItems = Number(optArr[i]); i++;
+		if (typeof optArr[i] !== 'undefined') optGemSubstitutionMode = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optGemMultCharPos = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optGemMultCharPosReverse = optArr[i] == "true" ? true : false;
 	}
 }
 

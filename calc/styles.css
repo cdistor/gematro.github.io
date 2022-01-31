@@ -1123,6 +1123,7 @@ body {
 	color: var(--font-white-2);
 	background-color: var(--btn-bg-accent);
 	border: 1px solid var(--border-dark-accent);
+	padding: 0em 0.35em;
 }
 #queryMinBtn {
 	position: absolute;

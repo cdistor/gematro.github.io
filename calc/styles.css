@@ -281,7 +281,7 @@ body {
 	height: 100%;
 	top:0;
 	left:0;
-	z-index : -1; /* behind all elements */
+	z-index : -1; /* behind all elements */ 
 }
 .ciphCheckbox {
 }
@@ -338,26 +338,33 @@ body {
 	width: -moz-fit-content;
 }
 .BreakChar {
-	font-size: 114%;
+	font-size: 115%;
 	font-weight: 500;
 	padding-right: 2px;
 	padding-left: 2px;
 	font-family: "Roboto Mono", "Arial", sans-serif;
 }
 .breakCipher {
-	display: inline;
 	font-size: 110%;
+	font-weight: 500;
 }
 .breakSum {
-	display: inline;
 	font-size: 150%;
 	color: var(--font-white-1);
 	font-weight: 500;
 }
 .breakPhrase {
-	display: inline;
 	font-size: 130%;
 	color: var(--font-white-1);
+}
+.breakPhraseChart {
+	font-size: 115%;
+	font-weight: 500;
+	color: var(--font-white-2);
+}
+.breakPhraseChartCiphName {
+	font-size: 115%;
+	font-weight: 500;
 }
 .BreakPhraseSum {
 	font-weight: 500;
@@ -428,8 +435,9 @@ body {
 	padding-right: 0.5em;
 }
 .LetterCounts {
-	color: var(--font-white-1);
+	color: var(--font-white-2);
 	font-size: 90%;
+	font-weight: 500;
 	text-align: center;
 	padding-bottom: 0.5em;
 }

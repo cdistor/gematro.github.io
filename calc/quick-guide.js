@@ -35,7 +35,7 @@ function displayQuickstartGuide() {
 
 	o += '<ul><li><span class="qgBold">"Number Calculation"</span><ul><li>Full (123 = 123) - <span class="qgBold">default</span></li><li>Reduced (123 = 1+2+3 = 6)</li><li>Off</li></ul></li>'
 
-	o += '<li><span class="qgBold">"Gematria Calculation"</span><ul><li><span class="qgBold">Standard (default)</span> - each character is substituted with a correspondent value and values for all characters in phrase are simply added together</li><li><span class="qgBold">Multiplication</span> - each character value is multiplied by its position in a phrase (based on Mispar Ha&#39;achor)</li><li><span class="qgBold">Reversed Multiplication</span> - each character value is multiplied by its position in a phrase counting from the last character (based on Mispar Bone&#39;eh)<br><span class="qgNote">More information on these methods - <a class="qgNote" href="https://torahcalc.com/info/gematria/">https://torahcalc.com/info/gematria/</a></span></li></ul></li>'
+	o += '<li><span class="qgBold">"Gematria Calculation"</span><ul><li><span class="qgBold">Standard (default)</span> - each character is substituted with a corresponding value and values for all characters in phrase are simply added together</li><li><span class="qgBold">Multiplication</span> - each character value is multiplied by its position in a phrase (based on Mispar Ha&#39;achor)</li><li><span class="qgBold">Reversed Multiplication</span> - each character value is multiplied by its position in a phrase counting from the last character (based on Mispar Bone&#39;eh)<br><span class="qgNote">More information on these methods - <a class="qgNote" href="https://torahcalc.com/info/gematria/">https://torahcalc.com/info/gematria/</a></span></li></ul></li>'
 
 	o += '<li><span class="qgBold">Highlighter</span> has two different modes:<ul><li><span class="qgBold">"Cross Cipher Match"</span></li><li><span class="qgBold">"Same Cipher Match"</span><br><span class="qgNote">Note: If there is just one value, only "Cross Cipher Match" will pick that</span></li></ul></li>'
 
@@ -52,8 +52,8 @@ function displayQuickstartGuide() {
 	o += '<li><span class="qgBold">"Scroll DB by lines"</span> - set scrolling speed inside <span class="qgBold">Database</span> query results</span></li>'
 
 	o += '<li><span class="qgBold">"Letter/Word Count"</span> - show number of recognized (by current cipher) letters and words</li>'
-	o += '<li><span class="qgBold">"Simple Result"</span> - display gematria of current phrase in text format</li>'
 	o += '<li><span class="qgBold">"Word Breakdown"</span> - show detailed breakdown for current phrase</li>'
+	o += '<li><span class="qgBold">"Compact Breakdown"</span> - do not show full phrase (plain text) inside breakdown table</li>'
 	o += '<li><span class="qgBold">"Cipher Chart"</span> - show a table of correspondences between letters and values for current cipher</li>'
 
 	o += '<li><span class="qgBold">"Gradient Charts"</span> - toggle fill style for <span class="qgBold">"Word Breakdown"</span> and <span class="qgBold">"Cipher Chart"</span></li>'

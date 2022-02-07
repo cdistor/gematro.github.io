@@ -254,8 +254,8 @@ function importCalcOptions(calcOpt) { // load user options
 		if (typeof optArr[i] !== 'undefined') optAllowPhraseComments = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') liveDatabaseMode = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optLetterWordCount = optArr[i] == "true" ? true : false; i++;
-		if (typeof optArr[i] !== 'undefined') optSimpleResult = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optWordBreakdown = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') optCompactBreakdown = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optShowCipherChart = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optGradientCharts = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optLoadUserHistCiphers = optArr[i] == "true" ? true : false; i++;

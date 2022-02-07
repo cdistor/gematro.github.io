@@ -11,6 +11,8 @@ function initCodeRain() {
 	canvas = document.getElementById("canv")
 	ctx = canvas.getContext("2d")
 
+	if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) $('#canv').css({'filter':'blur(1px)'}) // blur effect for Firefox
+
 	// set width and height of the canvas
 	w = canvas.width = document.body.offsetWidth
 	h = canvas.height = height_html

@@ -35,7 +35,7 @@ var optShowOnlyMatching = false // set opacity of nonmatching values to zero
 
 var optNumCalcMethod = "Full" // "Reduced", "Full", "Off" or anything - default option to calculate 19 as 1+9
 var optLetterWordCount = true // show word/letter count
-var optSimpleResult = true // Simple Result - phrase = 67 (English Ordinal)
+var optCompactBreakdown = true // compact breakdown - "phrase = 67 (English Ordinal)" is not included inside the chart
 var optWordBreakdown = true // word breakdown
 var optShowCipherChart = true // cipher breakdown chart
 
@@ -88,8 +88,8 @@ var calcOptionsArr = [ // used to export/import settings
 	"optAllowPhraseComments",
 	"liveDatabaseMode",
 	"optLetterWordCount",
-	"optSimpleResult",
 	"optWordBreakdown",
+	"optCompactBreakdown",
 	"optShowCipherChart",
 	"optGradientCharts",
 	"optLoadUserHistCiphers",
@@ -238,7 +238,7 @@ function createOptionsMenu() {
 	o += create_GemCalc() // Gematria Calculation method
 
 	// get checkbox states
-	var CCMstate, SCMstate, SOMstate, CHstate, THstate, SECstate, APCstate, LDMstate, LWCstate, SRstate, WBstate, CCstate, GCstate, SWCstate, MCRstate = ""
+	var CCMstate, SCMstate, SOMstate, CHstate, THstate, SECstate, APCstate, LDMstate, LWCstate, WBstate, CBstate, CCstate, GCstate, SWCstate, MCRstate = ""
 
 	if (optFiltCrossCipherMatch) CCMstate = "checked" // Cross Cipher Match
 	if (optFiltSameCipherMatch) SCMstate = "checked" // Same Cipher Match
@@ -252,8 +252,8 @@ function createOptionsMenu() {
 	if (liveDatabaseMode) LDMstate = "checked" // Live Database Mode
 
 	if (optLetterWordCount) LWCstate = "checked" // Letter/Word Count
-	if (optSimpleResult) SRstate = "checked" // Simple Result
 	if (optWordBreakdown) WBstate = "checked" // Word Breakdown
+	if (optCompactBreakdown) CBstate = "checked" // Compact Breakdown
 	if (optShowCipherChart) CCstate = "checked" // Cipher Chart
 
 	if (optGradientCharts) GCstate = "checked" // Gradient Charts
@@ -280,8 +280,8 @@ function createOptionsMenu() {
 	o += '</div>'
 	o += '<div style="margin: 1em"></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Letter/Word Count<input type="checkbox" id="chkbox_LWC" onclick="conf_LWC()" '+LWCstate+'><span class="custChkBox"></span></label></div>'
-	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Simple Result<input type="checkbox" id="chkbox_SR" onclick="conf_SR()" '+SRstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Word Breakdown<input type="checkbox" id="chkbox_WB" onclick="conf_WB()" '+WBstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Compact Breakdown<input type="checkbox" id="chkbox_CB" onclick="conf_CB()" '+CBstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Cipher Chart<input type="checkbox" id="chkbox_CC" onclick="conf_CC()" '+CCstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Gradient Charts<input type="checkbox" id="chkbox_GC" onclick="conf_GC()" '+GCstate+'><span class="custChkBox"></span></label></div>'
@@ -379,16 +379,13 @@ function conf_LWC() { // Letter/Word Count
 	updateWordBreakdown()
 }
 
-function conf_SR() { // Simple Result
-	optSimpleResult = !optSimpleResult
-	updateWordBreakdown()
-	element = document.getElementById("SimpleBreak")
-	if (element !== null && optSimpleResult) element.classList.remove("hideValue")
-	if (element !== null && !optSimpleResult) element.classList.add("hideValue")
-}
-
 function conf_WB() { // Word Breakdown
 	optWordBreakdown = !optWordBreakdown
+	updateWordBreakdown()
+}
+
+function conf_CB() { // Compact Breakdown
+	optCompactBreakdown = !optCompactBreakdown
 	updateWordBreakdown()
 }
 

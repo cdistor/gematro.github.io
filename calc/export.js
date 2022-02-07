@@ -88,8 +88,9 @@ $(document).ready(function(){
 		// $(".LetterCounts").html('<br><hr style="background-color: rgb(105,105,105); height: 2px; border: none;">');
 		$(".LetterCounts").html('');
 		updateCipherChartGemCard(); // redraw cipher chart for current cipher (with borders)
-		$('#BreakdownDetails').addClass('elemBorderScr') // add outline for breakdown area
-		$("#BreakdownDetails").attr("style", "padding-top: 0.75em;"); // more padding
+		$('#BreakdownDetails').addClass('elemBorderScr'); // add outline for breakdown area
+		if (optCompactBreakdown) { $("#BreakdownDetails").attr("style", "padding-top: 0.75em;"); } // more padding
+		else { $("#BreakdownDetails").attr("style", "padding-top: 1.5em;"); }
 
 		// phrase-with-spaces_English-Ordinal_190_card.png
 		var fileName = sVal().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/ /g, "-").replace(/["|']/g, "")+

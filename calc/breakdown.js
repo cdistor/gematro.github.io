@@ -82,7 +82,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 			o += '<div class="LetterCounts">' + curCipher.LetterCount + acl + curCipher.WordCount + acw + '</div>'
 		}
 
-		if (optSimpleResult == true) {
+		if (optCompactBreakdown == true) {
 			var simplePhr = ""
 			if (optAllowPhraseComments) {
 				simplePhr = sValNoComments() // exclude text inside [...]
@@ -126,13 +126,27 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 					o += '<td class="BreakVal">' + curCipher.cv[z] + '</td>'
 				}
 			}
-			o += '</tr><tr><td colspan=' + tdCount + ' class="CipherEnd"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + gemCalcModeLabel(curCipher.LetterCount) + '</font></td></tr></table></div>'
+			if (optCompactBreakdown == true) o += '</tr><tr><td colspan=' + tdCount + ' class="CipherEnd"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + gemCalcModeLabel(curCipher.LetterCount) + '</font></td></tr></table></div>'
 		}
 	} else {
 		o = ""
 	}
 
 	document.getElementById("BreakdownSpot").innerHTML = o
+
+	if (curCipher.sumArr.length > 0 && optCompactBreakdown == false) { // include plain phrase inside breakdown chart 
+		var simplePhr = ""
+		if (optAllowPhraseComments) {
+			simplePhr = sValNoComments() // exclude text inside [...]
+		} else {
+			simplePhr = sVal() // display full phrase
+		}
+		o = '<tr><td colspan=' + tdCount + '>'
+		o += '<span class="breakPhraseChart">' + simplePhr + ' = ' + curCipher.sumArr.reduce(getSum) + '</span>' // add all values in array
+		o += '<span class="breakPhraseChartCiphName" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher.LetterCount) + ')</span></td></tr>'
+		$('#BreakTableContainer').prepend(o) // insert in the beginning of the table
+	}
+
 	oo = 'background: var(--body-bg-accent);'
 	if (optGradientCharts) {
 		oo = 'background: '+bgCol+' -webkit-linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));'
@@ -142,7 +156,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 	}
 	$("#BreakTableContainer").attr("style", oo);
 
-	if ( $(window).width() <= $("#BreakTableContainer").outerWidth() + 50 ) { // breakdown doesn't fit viewport
+	if ( $(window).width() <= $("#BreakTableContainer").outerWidth() + 50) { // breakdown doesn't fit viewport
 		$("#BreakTableContainer").addClass("hideValue") // hide element
 	}
 }

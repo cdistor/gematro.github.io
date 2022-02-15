@@ -7,9 +7,9 @@ function getSum(total, num) { // used to .reduce() array, adds all values
     return total + num;
 }
 
-function gemCalcModeLabel(letterCount) {
-	if (optGemMultCharPos) return ' - x1 ... x'+letterCount
-	else if (optGemMultCharPosReverse) return ' - x'+letterCount+' ... x1'
+function gemCalcModeLabel(curCipher) {
+	if (optGemMultCharPos && curCipher.LetterCount > 0) return ' - x1 ... x'+curCipher.LetterCount
+	else if (optGemMultCharPosReverse && curCipher.LetterCount > 0) return ' - x'+curCipher.LetterCount+' ... x1'
 	return ""
 }
 
@@ -29,6 +29,7 @@ $(document).ready(function(){
 function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = true) { // false - preview temporary (hover), true - lock breakdown to a specific cipher
 	var x, curCipher, cSpot
 	var o, oo, acw, acl
+	var chLimit = 30 // character limit, used to switch to a long breakdown style
 
 	updateEnabledCipherCount()
 	$("#BreakTableContainer").removeClass("hideValue") // unhide breakdown
@@ -90,11 +91,11 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 				simplePhr = sVal() // display full phrase
 			}
 			o += '<div id="SimpleBreak">'
-			o += '<span class="breakPhrase">' + simplePhr + ' = </span><span class="breakSum">' + curCipher.sumArr.reduce(getSum) + '</span>' // add all values in array
-			o += '<span class="breakCipher"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher.LetterCount) + ')</font></span>'
+			o += '<span class="breakPhrase">' + simplePhr + ' = </span><span class="breakSum">' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
+			o += '<span class="breakCipher"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher) + ')</font></span>'
 		}
 
-		if (optWordBreakdown == true && curCipher.cp.length <= 80 ) { // 80 character limit, calculated even if out of screen bounds
+		if (optWordBreakdown == true && curCipher.cp.length <= chLimit ) { // character limit, calculated even if out of screen bounds
 			var tdCount = 0; var wCount = 0;
 
 			o += '</div><div id="BreakTableContainer"><table class="BreakTable">'
@@ -126,7 +127,51 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 					o += '<td class="BreakVal">' + curCipher.cv[z] + '</td>'
 				}
 			}
-			if (optCompactBreakdown == true) o += '</tr><tr><td colspan=' + tdCount + ' class="CipherEnd"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + gemCalcModeLabel(curCipher.LetterCount) + '</font></td></tr></table></div>'
+			if (optCompactBreakdown == true) o += '</tr><tr><td colspan=' + tdCount + ' class="CipherEnd"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + gemCalcModeLabel(curCipher) + '</font></td></tr></table></div>'
+			else o += '</tr></tbody></table></div>'
+
+		} else if (optWordBreakdown == true && curCipher.cp.length > chLimit) { // breakdown for long phrases
+
+			var wrdCount = 0; var z = 0;
+			var breakArr = buildLongBreakdown(curCipher) // index of word in phraseBox, used to mark table end
+
+			o += '</div><div id="BreakTableContainer"><table class="BreakTableRow" style="padding-top: 0.5em;"><tbody><tr>'
+			for (x = 0; x < curCipher.cp.length; x++) {
+
+				if (curCipher.cp[x] !== " ") {
+					if (String(curCipher.cp[x]).substring(0, 3) == "num") {
+						o += '<td class="BreakChar">' + curCipher.cp[x].substring(3, curCipher.cp[x].length) + '</td>'
+					} else {
+						o += '<td class="BreakChar">' + String.fromCharCode(curCipher.cp[x]) + '</td>'
+					}
+				} else {
+					o += '<td class="BreakWordSum" rowspan="2"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.sumArr[wrdCount] + '</font></td>'
+
+					if (breakArr.indexOf(wrdCount) > -1) {
+						o += '</tr><tr>'
+						for (z; z < x; z++) {
+							if (curCipher.cv[z] !== " ") {
+								o += '<td class="BreakValDark">' + curCipher.cv[z] + '</td>'
+							}
+						}
+						o += '</tr></tbody></table><table class="BreakTableRow"><tbody><tr>'
+					}
+					wrdCount++
+				}
+			}
+			o += '</tr><tr>'
+			for (z; z < x; z++) {
+				if (curCipher.cv[z] !== " ") {
+					o += '<td class="BreakValDark">' + curCipher.cv[z] + '</td>'
+				}
+			}
+			o += '</tr></tbody></table>'
+			if (optCompactBreakdown == true) {
+				o += '<div id="BreakSumLong"><span class="breakSumDark">' + curCipher.sumArr.reduce(getSum) + ' </span>'
+				o += '<span class="breakCipher" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + gemCalcModeLabel(curCipher) + '</span></div></div>'
+			} else {
+				o += '<div style="padding: 0.5em"></div>'
+			}
 		}
 	} else {
 		o = ""
@@ -141,9 +186,11 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 		} else {
 			simplePhr = sVal() // display full phrase
 		}
+		var chartClass = 'SimpleBreakChart'
+		if (curCipher.cp.length > chLimit) chartClass = 'SimpleBreakChartLong'
 		o = '<tr><td colspan=' + tdCount + '>'
-		o += '<span class="breakPhraseChart">' + simplePhr + ' = ' + curCipher.sumArr.reduce(getSum) + '</span>' // add all values in array
-		o += '<span class="breakPhraseChartCiphName" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher.LetterCount) + ')</span></td></tr>'
+		o += '<div class="'+chartClass+'"><span class="breakPhraseChart">' + simplePhr + ' = ' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
+		o += '<span class="breakPhraseChartCiphName" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">(' + curCipher.cipherName + gemCalcModeLabel(curCipher) + ')</span></div></td></tr>'
 		$('#BreakTableContainer').prepend(o) // insert in the beginning of the table
 	}
 
@@ -159,6 +206,35 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 	if ( $(window).width() <= $("#BreakTableContainer").outerWidth() + 50) { // breakdown doesn't fit viewport
 		$("#BreakTableContainer").addClass("hideValue") // hide element
 	}
+}
+
+function buildLongBreakdown(curCipher) {
+	var i; var maxRowWidth = 36
+	var newLine = true; words = 0; n = "";
+	var breakArr = []; var widthCount = 0;
+
+	for (i = 0; i < curCipher.cv.length; i++) {
+		if (curCipher.cv[i] !== " ") {
+			if (n == "") {n = i}
+			if (curCipher.cv[i] > 99) {
+				widthCount += 1.5
+			} else {
+				widthCount++
+			}
+			if (widthCount > maxRowWidth && newLine == false) {
+				breakArr.push(words - 1)
+				widthCount = 0
+				i = n - 1
+				newLine = true
+			}
+		} else {
+			widthCount += 2
+			words++
+			n = ""
+			newLine = false
+		}
+	}
+	return breakArr
 }
 
 function updateCipherChart(curCipher) {
@@ -203,7 +279,7 @@ function updateCipherChart(curCipher) {
 			}
 			o += '</tr><tr>'
 		}
-		o += '<td class="ChartChar" font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + String.fromCharCode(curCipher.cArr[x]) + '</td>'
+		o += '<td class="ChartChar" font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + String.fromCodePoint(curCipher.cArr[x]) + '</td>'
 	}
 	if (curCipher.cArr.length % 2 == 1) { o += '<td class="ChartChar" font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"></td>' } // empty character cell to make even rows
 	o += '</tr><tr>'
@@ -252,7 +328,7 @@ function updateCipherChartGemCard(impName = breakCipher) {
 			}
 			o += '</tr><tr>'
 		}
-		o += '<td class="ChartChar" font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + String.fromCharCode(curCipher.cArr[x]) + '</td>'
+		o += '<td class="ChartChar" font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + String.fromCodePoint(curCipher.cArr[x]) + '</td>'
 	}
 	if (curCipher.cArr.length % 2 == 1) { o += '<td class="ChartChar" font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"></td>' } // empty character cell to make even rows
 	o += '</tr><tr>'

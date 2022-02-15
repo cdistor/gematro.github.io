@@ -59,6 +59,7 @@
 	--separator-accent2: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(30% * var(--font-lit)));
 	--border-dark-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(23% * var(--font-lit)));
 	--focus-outline: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(75% * var(--font-lit)));
+	--break-val-accent: hsl(var(--font-hue) calc(100% * var(--font-sat)) calc(35% * var(--font-lit)));
 }
 
 html, body { /* full <body> height for <!DOCTYPE html> */
@@ -328,7 +329,20 @@ body {
 #SimpleBreak {
 	max-width: 800px;
 	margin: auto;
-	padding-bottom: 0.5em;
+	padding-bottom: 1em;
+	text-align: center;
+}
+#BreakSumLong {
+	margin: auto;
+	padding: 0.5em 0em;
+	text-align: center;
+}
+.SimpleBreakChart {
+	max-width: 800px;
+}
+.SimpleBreakChartLong {
+	max-width: 800px;
+	padding: 1em 1em 0.35em 1em;
 	text-align: center;
 }
 #BreakTableContainer {
@@ -345,17 +359,22 @@ body {
 	font-family: "Roboto Mono", "Arial", sans-serif;
 }
 .breakCipher {
-	font-size: 110%;
+	font-size: 115%;
 	font-weight: 500;
+	display: inline-block;
 }
-.breakSum {
-	font-size: 150%;
+.breakSum, .breakSumDark {
+	font-size: 125%;
 	color: var(--font-white-1);
-	font-weight: 500;
+	font-weight: 600;
+}
+.breakSumDark {
+	color: var(--font-white-2);
 }
 .breakPhrase {
-	font-size: 130%;
-	color: var(--font-white-1);
+	font-size: 125%;
+	color: var(--font-white-2);
+	font-weight: 500;
 }
 .breakPhraseChart {
 	font-size: 115%;
@@ -365,6 +384,7 @@ body {
 .breakPhraseChartCiphName {
 	font-size: 115%;
 	font-weight: 500;
+	display: inline-block;
 }
 .BreakPhraseSum {
 	font-weight: 500;
@@ -372,27 +392,34 @@ body {
 	padding-left: 10px;
 	padding-right: 10px;
 }
-.BreakTable {
+.BreakTable, .BreakTableRow {
 	text-align: center;
 	border-spacing: 0px;
 	margin: auto;
 	width: -webkit-fit-content;
 	width: -moz-fit-content;
 }
-.BreakTable td {
+.BreakTable td, .BreakTableRow td {
 	min-width: 14px;
 }
-.BreakVal {
+.BreakTableRow {
+	padding: 0em 0.5em;
+}
+.BreakVal, .BreakValDark {
 	color: var(--focus-outline);
     font-weight: 600;
 	font-size: 74%;
 	padding-right: 3px;
 	padding-left: 3px;
 }
+.BreakValDark {
+	color: var(--break-val-accent);
+}
 .BreakWordSum {
 	font-size: 115%;
 	padding-right: 5px;
 	padding-left: 5px;
+	font-weight: 500;
 }
 #ChartTable {
 	border-spacing: 0px;
@@ -439,7 +466,7 @@ body {
 	font-size: 90%;
 	font-weight: 500;
 	text-align: center;
-	padding-bottom: 0.5em;
+	padding-bottom: 1em;
 }
 
 /*        Buttons, Text Boxes, Controls       */

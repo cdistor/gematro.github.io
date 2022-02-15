@@ -57,14 +57,7 @@ class cipher { // cipher constructor class
 			}
 		}
 
-		if (optNumCalcMethod == "Reduced") { // add each digit separately
-			for (i = 0; i < gemPhrase.length; i++) {
-				cur_char = gemPhrase.charCodeAt(i)
-				if (cur_char > 47 && cur_char < 58) { // 48 to 57, 0-9
-					gemValue += cur_char - 48
-				}
-			}
-		} else if (optNumCalcMethod == "Full") { // treat consecutive digits as one number
+		if (optNumCalcMethod == "Full") { // treat consecutive digits as one number
 			var cur_num = ""
 			var digitArr = [48,49,50,51,52,53,54,55,56,57] // 0-9
 			var nArr = [0,1,2,3,4,5,6,7,8,9]
@@ -79,6 +72,13 @@ class cipher { // cipher constructor class
 			}
 			if (cur_num.length > 0) {
 				gemValue += Number(cur_num) // add last number if present
+			}
+		} else if (optNumCalcMethod == "Reduced") { // add each digit separately
+			for (i = 0; i < gemPhrase.length; i++) {
+				cur_char = gemPhrase.charCodeAt(i)
+				if (cur_char > 47 && cur_char < 58) { // 48 to 57, 0-9
+					gemValue += cur_char - 48
+				}
 			}
 		}
 

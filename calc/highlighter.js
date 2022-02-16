@@ -87,11 +87,8 @@ $(document).ready(function(){
 		}
 	});
 	
-	// cipher table letter/number clicked
-	$("body").on("click", ".ChartChar", function () {
-		$(this).toggleClass('highlightCipherTable'); 
-	});
-	$("body").on("click", ".ChartVal", function () {
+	// breakdown or cipher table letter/number clicked
+	$("body").on("click", ".ChartChar, .ChartVal, .BreakChar, .BreakVal, .BreakValDark, .BreakWordSum", function () {
 		$(this).toggleClass('highlightCipherTable'); 
 	});
 

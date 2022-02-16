@@ -54,6 +54,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 	}
 	curCipher = cipherList[cSpot]
 
+	var leftToRightBreak = true
  	// if Hebrew Aleph is assigned in current cipher
 	if (curCipher.cArr.indexOf(1488) > -1) {
 		curCipher.calcBreakdown(sVal().replace(/[\u0591-\u05BD\u05BF-\u05C7]/g,"")) // remove Hebrew vowels, exclude dash
@@ -69,18 +70,22 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 			curCipher.cp.push(curCipher.cp.shift()) // remove first element and add to the end of array (space, used for word sum)
 			curCipher.cv.push(curCipher.cv.shift())
 		}
+		leftToRightBreak = false
 	} else { // left to right, use regular word breakdown
 		curCipher.calcBreakdown(sVal()) // calculate breakdown for current phrase
 	}
 
 	if (curCipher.sumArr.length > 0) {
 		
-		o = ""
+		var oStart = ''; var o ='';
+
+		var RTLclass = '';
+		if (!leftToRightBreak) RTLclass = 'BreakRTL' // use different container padding for right to left direction
 
 		if (optLetterWordCount == true) {
 			if (curCipher.LetterCount > 1 || curCipher.LetterCount == 0) {acl = " letters, "} else {acl = " letter, "}
 			if (curCipher.WordCount > 1) {acw = " words"} else {acw = " word"}
-			o += '<div class="LetterCounts">' + curCipher.LetterCount + acl + curCipher.WordCount + acw + '</div>'
+			oStart += '<div class="LetterCounts">' + curCipher.LetterCount + acl + curCipher.WordCount + acw + '</div>'
 		}
 
 		if (optCompactBreakdown == true) {
@@ -90,82 +95,135 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 			} else {
 				simplePhr = sVal() // display full phrase
 			}
-			o += '<div id="SimpleBreak">'
-			o += '<span class="breakPhrase">' + simplePhr + ' = </span><span class="breakSum">' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
-			o += '<span class="breakCipher"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher) + ')</font></span>'
+			oStart += '<div id="SimpleBreak">'
+			oStart += '<span class="breakPhrase">' + simplePhr + '</span><span class="breakPhrase"> = </span><span class="breakSum">' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
+			oStart += '<span class="breakCipher"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher) + ')</font></span>'
 		}
 
 		if (optWordBreakdown == true && curCipher.cp.length <= chLimit ) { // character limit, calculated even if out of screen bounds
 			var tdCount = 0; var wCount = 0;
 
-			o += '</div><div id="BreakTableContainer"><table class="BreakTable">'
+			o += '</div><div id="BreakTableContainer" class="'+RTLclass+'"><table class="BreakTable">'
 			// o += ' style="background: '+bgCol+' -webkit-linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));'
 			// o += 'background: '+bgCol+' -o-linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));'
 			// o += 'background: '+bgCol+' -moz-linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));'
 			// o += 'background: '+bgCol+' linear-gradient(0deg,hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 0.2), rgba(0,0,0,0.0));">'
 			o += '<tbody><tr>'
 
-			for (x = 0; x < curCipher.cp.length; x++) {
-
-				if (curCipher.cp[x] !== " ") {
-					if (String(curCipher.cp[x]).substring(0, 3) == "num") {
-						o += '<td class="BreakChar" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cp[x].substring(3, curCipher.cp[x].length) + '</td>'
+			if (leftToRightBreak) { // left to right
+				for (x = 0; x < curCipher.cp.length; x++) {
+					if (curCipher.cp[x] !== " ") {
+						if (String(curCipher.cp[x]).substring(0, 3) == "num") {
+							o += '<td class="BreakChar" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cp[x].substring(3, curCipher.cp[x].length) + '</td>'
+						} else {
+							o += '<td class="BreakChar" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + String.fromCharCode(curCipher.cp[x]) + '</td>'
+						}
 					} else {
-						o += '<td class="BreakChar" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + String.fromCharCode(curCipher.cp[x]) + '</td>'
+						o += '<td class="BreakWordSum" rowspan="2">' + curCipher.sumArr[wCount] + '</td>'
+						wCount++
 					}
-				} else {
-					o += '<td class="BreakWordSum" rowspan="2">' + curCipher.sumArr[wCount] + '</td>'
-					wCount++
+					tdCount++
 				}
+				o += '<td class="BreakPhraseSum" rowspan="2"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.sumArr.reduce(getSum) + '</font></td>'
+				o += '</tr><tr>'
 				tdCount++
-			}
-			o += '<td class="BreakPhraseSum" rowspan="2"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.sumArr.reduce(getSum) + '</font></td>'
-			o += '</tr><tr>'
-			tdCount++
-			for (z = 0; z < x; z++) {
-				if (curCipher.cv[z] !== " ") {
-					o += '<td class="BreakVal">' + curCipher.cv[z] + '</td>'
+				for (z = 0; z < x; z++) {
+					if (curCipher.cv[z] !== " ") {
+						o += '<td class="BreakVal">' + curCipher.cv[z] + '</td>'
+					}
+				}
+			} else { // right to left (Hebrew, Arabic)
+				o += '<td class="BreakPhraseSum" rowspan="2"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.sumArr.reduce(getSum) + '</font></td>'
+				var curBreakWord = '' // current word, added to main 'o' string
+				for (x = 0; x < curCipher.cp.length; x++) {
+					if (curCipher.cp[x] !== " ") {
+						if (String(curCipher.cp[x]).substring(0, 3) == "num") {
+							curBreakWord += '<td class="BreakChar" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cp[x].substring(3, curCipher.cp[x].length) + '</td>'
+						} else {
+							curBreakWord += '<td class="BreakChar" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + String.fromCharCode(curCipher.cp[x]) + '</td>'
+						}
+					} else {
+						curBreakWord = '<td class="BreakWordSum" rowspan="2">' + curCipher.sumArr[wCount] + '</td>' + curBreakWord // prepend word sum (displayed on the left)
+						o += curBreakWord
+						curBreakWord = ''
+						wCount++
+					}
+					tdCount++
+				}
+				if (curCipher.WordCount == 1) o += curBreakWord // single word
+				o += '</tr><tr>'
+				tdCount++
+				for (z = 0; z < x; z++) {
+					if (curCipher.cv[z] !== " ") {
+						o += '<td class="BreakVal">' + curCipher.cv[z] + '</td>'
+					}
 				}
 			}
 			if (optCompactBreakdown == true) o += '</tr><tr><td colspan=' + tdCount + ' class="CipherEnd"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + gemCalcModeLabel(curCipher) + '</font></td></tr></table></div>'
 			else o += '</tr></tbody></table></div>'
 
+			o = oStart + o // prepend phrase, word/letter count
+
 		} else if (optWordBreakdown == true && curCipher.cp.length > chLimit) { // breakdown for long phrases
 
 			var wrdCount = 0; var z = 0;
 			var breakArr = buildLongBreakdown(curCipher) // index of word in phraseBox, used to mark table end
+			var curBreakRow = '' // current row, added to main 'o' string
 
-			o += '</div><div id="BreakTableContainer"><table class="BreakTableRow" style="padding-top: 0.5em;"><tbody><tr>'
-			for (x = 0; x < curCipher.cp.length; x++) {
-
-				if (curCipher.cp[x] !== " ") {
-					if (String(curCipher.cp[x]).substring(0, 3) == "num") {
-						o += '<td class="BreakChar">' + curCipher.cp[x].substring(3, curCipher.cp[x].length) + '</td>'
-					} else {
-						o += '<td class="BreakChar">' + String.fromCharCode(curCipher.cp[x]) + '</td>'
-					}
-				} else {
-					o += '<td class="BreakWordSum" rowspan="2"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.sumArr[wrdCount] + '</font></td>'
-
-					if (breakArr.indexOf(wrdCount) > -1) {
-						o += '</tr><tr>'
-						for (z; z < x; z++) {
-							if (curCipher.cv[z] !== " ") {
-								o += '<td class="BreakValDark">' + curCipher.cv[z] + '</td>'
-							}
+			if (leftToRightBreak) { // left to right
+				curBreakRow = '<table class="BreakTableRow" style="padding-top: 0.5em;"><tbody><tr>'
+				for (x = 0; x < curCipher.cp.length; x++) {
+					if (curCipher.cp[x] !== " ") {
+						if (String(curCipher.cp[x]).substring(0, 3) == "num") {
+							curBreakRow += '<td class="BreakChar">' + curCipher.cp[x].substring(3, curCipher.cp[x].length) + '</td>'
+						} else {
+							curBreakRow += '<td class="BreakChar">' + String.fromCharCode(curCipher.cp[x]) + '</td>'
 						}
-						o += '</tr></tbody></table><table class="BreakTableRow"><tbody><tr>'
+					} else {
+						curBreakRow += '<td class="BreakWordSum" rowspan="2"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.sumArr[wrdCount] + '</font></td>'
+						if (breakArr.indexOf(wrdCount) > -1 || wrdCount == curCipher.WordCount-1) { // include values for last word
+							curBreakRow += '</tr><tr>'
+							for (z; z < x; z++) {
+								if (curCipher.cv[z] !== " ") {
+									curBreakRow += '<td class="BreakValDark">' + curCipher.cv[z] + '</td>'
+								}
+							}
+							curBreakRow += '</tr></tbody></table>'
+							if (wrdCount !== curCipher.WordCount-1) curBreakRow += '<table class="BreakTableRow"><tbody><tr>'
+						}
+						wrdCount++
 					}
-					wrdCount++
 				}
-			}
-			o += '</tr><tr>'
-			for (z; z < x; z++) {
-				if (curCipher.cv[z] !== " ") {
-					o += '<td class="BreakValDark">' + curCipher.cv[z] + '</td>'
+				o = '</div><div id="BreakTableContainer" class="'+RTLclass+'">' + curBreakRow
+			} else { // right to left (Hebrew, Arabic)
+				curBreakRow = '<table class="BreakTableRow"><tbody><tr>'
+				curBreakRow += '<td class="BreakWordSum" rowspan="2"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.sumArr[wrdCount] + '</font></td>'
+				for (x = 0; x < curCipher.cp.length; x++) {
+					if (curCipher.cp[x] !== " ") {
+						if (String(curCipher.cp[x]).substring(0, 3) == "num") {
+							curBreakRow += '<td class="BreakChar">' + curCipher.cp[x].substring(3, curCipher.cp[x].length) + '</td>'
+						} else {
+							curBreakRow += '<td class="BreakChar">' + String.fromCharCode(curCipher.cp[x]) + '</td>'
+						}
+					} else {
+						if (breakArr.indexOf(wrdCount) > -1 || wrdCount == curCipher.WordCount-1) { // include values for last word
+							curBreakRow += '</tr><tr>'
+							for (z; z < x; z++) {
+								if (curCipher.cv[z] !== " ") {
+									curBreakRow += '<td class="BreakValDark">' + curCipher.cv[z] + '</td>'
+								}
+							}
+							curBreakRow += '</tr></tbody></table>'
+							o = curBreakRow + o // prepend current row to main table
+							if (wrdCount !== curCipher.WordCount-1) curBreakRow = '<table class="BreakTableRow"><tbody><tr>'
+						}
+						wrdCount++
+						if (wrdCount !== curCipher.WordCount) curBreakRow += '<td class="BreakWordSum" rowspan="2"><font style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.sumArr[wrdCount] + '</font></td>'
+					}
 				}
+				o = '</div><div id="BreakTableContainer" class="'+RTLclass+'"><div style="padding: 0.25em"></div>' + o // prepend opening div, include padding
 			}
-			o += '</tr></tbody></table>'
+			o = oStart + o // prepend phrase, word/letter count
 			if (optCompactBreakdown == true) {
 				o += '<div id="BreakSumLong"><span class="breakSumDark">' + curCipher.sumArr.reduce(getSum) + ' </span>'
 				o += '<span class="breakCipher" style="color: hsl('+curCipher.H+' '+curCipher.S+'% '+curCipher.L+'% / 1)">' + curCipher.cipherName + gemCalcModeLabel(curCipher) + '</span></div></div>'

@@ -280,6 +280,43 @@ function importCalcOptions(calcOpt) { // load user options
 	}
 }
 
+function importCalcOptionsLocal() { // load default options from ciphers.js
+	var i = 0;
+	if (typeof calcOptions[i] !== 'undefined') optNumCalcMethod = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optFiltCrossCipherMatch = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optFiltSameCipherMatch = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optShowOnlyMatching = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') compactHistoryTable = calcOptions[i]; i++; // not used, compatibility
+	if (typeof calcOptions[i] !== 'undefined') optNewPhrasesGoFirst = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optShowExtraCiphers = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optAllowPhraseComments = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') liveDatabaseMode = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optLetterWordCount = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optWordBreakdown = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optCompactBreakdown = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optShowCipherChart = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optGradientCharts = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optLoadUserHistCiphers = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optMatrixCodeRain = calcOptions[i]; toggleCodeRain(); i++;
+	if (typeof calcOptions[i] !== 'undefined') interfaceHue = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') interfaceSat = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') interfaceLit = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') fontHue = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') fontSat = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') fontLit = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') coderainHue = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') coderainSat = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') coderainLit = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') cipherMenuColumns = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') enabledCiphColumns = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optPhraseLimit = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') dbPageItems = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') dbScrollItems = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optGemSubstitutionMode = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optGemMultCharPos = calcOptions[i]; i++;
+	if (typeof calcOptions[i] !== 'undefined') optGemMultCharPosReverse = calcOptions[i];
+}
+
 function dragOverHandler(ev) {
 	//console.log('File(s) in drop zone')
 	ev.preventDefault() // Prevent default drag behavior (Prevent file from being opened)

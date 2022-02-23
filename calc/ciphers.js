@@ -13,7 +13,6 @@ new cipher(
 )
 */
 
-interfaceHue = 222
 cipherList = [
 	new cipher(
 		"English Ordinal",

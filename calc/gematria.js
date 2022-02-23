@@ -57,7 +57,7 @@ class cipher { // cipher constructor class
 			}
 		}
 
-		if (optNumCalcMethod == "Full") { // treat consecutive digits as one number
+		if (optNumCalcMethod == 1) { // treat consecutive digits as one number
 			var cur_num = ""
 			var digitArr = [48,49,50,51,52,53,54,55,56,57] // 0-9
 			var nArr = [0,1,2,3,4,5,6,7,8,9]
@@ -73,7 +73,7 @@ class cipher { // cipher constructor class
 			if (cur_num.length > 0) {
 				gemValue += Number(cur_num) // add last number if present
 			}
-		} else if (optNumCalcMethod == "Reduced") { // add each digit separately
+		} else if (optNumCalcMethod == 2) { // add each digit separately
 			for (i = 0; i < gemPhrase.length; i++) {
 				cur_char = gemPhrase.charCodeAt(i)
 				if (cur_char > 47 && cur_char < 58) { // 48 to 57, 0-9
@@ -126,7 +126,7 @@ class cipher { // cipher constructor class
 			nv = nv.charCodeAt(0)
 
 			if (n > 47 && n < 58) { // 0-9 digits
-				if (optNumCalcMethod == "Full") {
+				if (optNumCalcMethod == 1) {
 					this.curNum = String(this.curNum) + String(n - 48) // append digits
 					if (lastSpace == false) {
 						this.cp.push(" ")
@@ -135,7 +135,7 @@ class cipher { // cipher constructor class
 						wordSum = 0
 						lastSpace = true
 					}
-				} else if (optNumCalcMethod == "Reduced") {
+				} else if (optNumCalcMethod == 2) {
 					this.cp.push("num" + String(n - 48))
 					this.cv.push(n - 48)
 					this.curNum = String(n - 48)
@@ -144,7 +144,7 @@ class cipher { // cipher constructor class
 				}
 				
 			} else {
-				if (optNumCalcMethod == "Full") {
+				if (optNumCalcMethod == 1) {
 					if (this.curNum.length > 0 & n !== 44) { // character is not "44" comma (digit separator)
 						this.cp.push("num" + String(this.curNum), " ")
 						this.cv.push(Number(this.curNum), " ")
@@ -171,7 +171,7 @@ class cipher { // cipher constructor class
 		}
 		if (lastSpace == false) {this.sumArr.push(wordSum)} // add number value to phrase gematria
 		if (this.curNum !== "") {
-			if (optNumCalcMethod == "Full") {
+			if (optNumCalcMethod == 1) {
 				this.cp.push("num" + String(this.curNum))
 				this.cv.push(Number(this.curNum))
 				this.sumArr.push(Number(this.curNum)) // value of full number

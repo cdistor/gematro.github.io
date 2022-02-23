@@ -34,7 +34,7 @@ var optMatrixCodeRain = false // code rain
 
 var optShowOnlyMatching = false // set opacity of nonmatching values to zero
 
-var optNumCalcMethod = "Full" // "Reduced", "Full", "Off" or anything - default option to calculate 19 as 1+9
+var optNumCalcMethod = 1 // 0 - "Off", 1 - "Full", 2 - "Reduced"
 var optLetterWordCount = true // show word/letter count
 var optCompactBreakdown = true // compact breakdown - "phrase = 67 (English Ordinal)" is not included inside the chart
 var optWordBreakdown = true // word breakdown
@@ -114,7 +114,8 @@ var calcOptionsArr = [ // used to export/import settings
 	"optGemMultCharPosReverse"
 ]
 
-function initCalc() { // run after page has finished loading
+function initCalc(defSet = false) { // run after page has finished loading
+	if (defSet && typeof calcOptions !== 'undefined') importCalcOptionsLocal(); // load settings from ciphers.js
 	generateRndColors()
 	saveInitialCiphers()
 	initCiphers() // update default ciphers
@@ -433,31 +434,31 @@ function conf_MCR() { // Matrix Code Rain
 function create_NumCalc() { // Number Calculation
 	var o = ""
 	var fullNumCalcState = ''; var redNumCalcState = ''; var offNumCalcState = '';
-	if (optNumCalcMethod == "Full") { fullNumCalcState = 'checked' }
-	else if (optNumCalcMethod == "Reduced") { redNumCalcState = 'checked' }
-	else if (optNumCalcMethod == "Off") { offNumCalcState = 'checked' }
+	if (optNumCalcMethod == 1) { fullNumCalcState = 'checked' }
+	else if (optNumCalcMethod == 2) { redNumCalcState = 'checked' }
+	else if (optNumCalcMethod == 0) { offNumCalcState = 'checked' }
 	o += '<table class="optionElementTable"><tbody>'
 	o += '<tr><td colspan=3><span>Number Calculation</span></td></tr>'
-	o += '<tr><td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_fullNumCalc" onclick="conf_NumCalc(&quot;Full&quot;)" '+fullNumCalcState+'><span class="custChkBox"></span></label>'
+	o += '<tr><td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_fullNumCalc" onclick="conf_NumCalc(1)" '+fullNumCalcState+'><span class="custChkBox"></span></label>'
 	o += '<br><span class="optionTableLabel">Full</span></td>'
-	o += '<td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_redNumCalc" onclick="conf_NumCalc(&quot;Reduced&quot;)" '+redNumCalcState+'><span class="custChkBox"></span></label>'
+	o += '<td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_redNumCalc" onclick="conf_NumCalc(2)" '+redNumCalcState+'><span class="custChkBox"></span></label>'
 	o += '<br><span class="optionTableLabel">Reduced</span></td>'
-	o += '<td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_offNumCalc" onclick="conf_NumCalc(&quot;Off&quot;)" '+offNumCalcState+'><span class="custChkBox"></span></label>'
+	o += '<td><label class="chkLabel" style="display: initial; padding-left: 0;"><input type="checkbox" id="chkbox_offNumCalc" onclick="conf_NumCalc(0)" '+offNumCalcState+'><span class="custChkBox"></span></label>'
 	o += '<br><span class="optionTableLabel">Off</span></td></tr>'
 	o += '</tbody></table>'
 	return o
 }
 function conf_NumCalc(mode) { // Number Calculation
 	optNumCalcMethod = mode
-	if (mode == "Full") {
+	if (mode == 1) {
 		document.getElementById("chkbox_fullNumCalc").checked = true
 		document.getElementById("chkbox_redNumCalc").checked = false
 		document.getElementById("chkbox_offNumCalc").checked = false
-	} else if (mode == "Reduced") {
+	} else if (mode == 2) {
 		document.getElementById("chkbox_redNumCalc").checked = true
 		document.getElementById("chkbox_fullNumCalc").checked = false
 		document.getElementById("chkbox_offNumCalc").checked = false
-	} else if (mode == "Off") {
+	} else if (mode == 0) {
 		document.getElementById("chkbox_offNumCalc").checked = true
 		document.getElementById("chkbox_fullNumCalc").checked = false
 		document.getElementById("chkbox_redNumCalc").checked = false

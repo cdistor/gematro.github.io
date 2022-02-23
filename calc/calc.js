@@ -25,8 +25,9 @@ var globColors = [] // global color modifiers
 var sHistory = [] // user search history (history table)
 var optPhraseLimit = 5 // word limit to enter input as separate phrases, "End" key
 
-var optTinyHistoryTable = false // tiny mode - hide cipher names, no break each 25 phrases
-var optCompactHistoryTable = false // compact mode - vertical cipher names
+var compactHistoryTable = false // compact mode - vertical cipher names
+var optNewPhrasesGoFirst = false // new phrases are inserted at the beginning of history table
+var optCompactCiphCount = 8 // compact mode threshold
 var optLoadUserHistCiphers = true // load ciphers when CSV file is imported
 
 var optMatrixCodeRain = false // code rain
@@ -82,8 +83,8 @@ var calcOptionsArr = [ // used to export/import settings
 	"optFiltCrossCipherMatch",
 	"optFiltSameCipherMatch",
 	"optShowOnlyMatching",
-	"optCompactHistoryTable",
-	"optTinyHistoryTable",
+	"compactHistoryTable", // not used, compatibility
+	"optNewPhrasesGoFirst",
 	"optShowExtraCiphers",
 	"optAllowPhraseComments",
 	"liveDatabaseMode",
@@ -114,6 +115,7 @@ var calcOptionsArr = [ // used to export/import settings
 ]
 
 function initCalc() { // run after page has finished loading
+	generateRndColors()
 	saveInitialCiphers()
 	initCiphers() // update default ciphers
 	createCiphersMenu()
@@ -130,7 +132,14 @@ function closeAllOpenedMenus() {
 	if (editCiphersMenuOpened) toggleEditCiphersMenu() // Edit Ciphers
 }
 
-// ========================= Ciphers Menu ===========================
+// ========================= Random Colors ==========================
+
+var rndCol = { H: [], S: [], L: [] } // random colors for new ciphers
+function generateRndColors() { rndCol.H = fillColArr(0, 359, 360/12); rndCol.S = fillColArr(20, 70, 10); rndCol.L = fillColArr(55, 70, 5) }
+function fillColArr(min, max, step) { var i; var a = []; for (i = min; i <= max; i += step) a.push(i); return a } // inclusive
+function getRndIndex(a) { return a[rndInt(0, a.length-1)] }
+
+// ========================== Ciphers Menu ==========================
 
 function createCiphersMenu() { // create menu with all cipher catergories
 	var o = document.getElementById("calcOptionsPanel").innerHTML
@@ -238,18 +247,20 @@ function createOptionsMenu() {
 	o += create_GemCalc() // Gematria Calculation method
 
 	// get checkbox states
-	var CCMstate, SCMstate, SOMstate, CHstate, THstate, SECstate, APCstate, LDMstate, LWCstate, WBstate, CBstate, CCstate, GCstate, SWCstate, MCRstate = ""
+	var CCMstate = ""; var SCMstate = ""; var SOMstate = ""; var SECstate = "";
+	var APCstate = ""; var LDMstate = ""; var NPGFstate = ""; var LWCstate = "";
+	var WBstate = ""; var CBstate = ""; var CCstate = ""; var GCstate = "";
+	var SWCstate = ""; var MCRstate = "";
 
 	if (optFiltCrossCipherMatch) CCMstate = "checked" // Cross Cipher Match
 	if (optFiltSameCipherMatch) SCMstate = "checked" // Same Cipher Match
 	if (optShowOnlyMatching) SOMstate = "checked" // Show Only Matching
 
-	if (optCompactHistoryTable) CHstate = "checked" // Compact History
-	if (optTinyHistoryTable) THstate = "checked" // Tiny History
-
 	if (optShowExtraCiphers) SECstate = "checked" // Show Extra Ciphers
 	if (optAllowPhraseComments) APCstate = "checked" // Allow Phrase Comments
 	if (liveDatabaseMode) LDMstate = "checked" // Live Database Mode
+
+	if (optNewPhrasesGoFirst) NPGFstate = "checked" // New Phrases Go First
 
 	if (optLetterWordCount) LWCstate = "checked" // Letter/Word Count
 	if (optWordBreakdown) WBstate = "checked" // Word Breakdown
@@ -265,12 +276,11 @@ function createOptionsMenu() {
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Same Cipher Match<input type="checkbox" id="chkbox_SCM" onclick="conf_SCM()" '+SCMstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Show Only Matching<input type="checkbox" id="chkbox_SOM" onclick="conf_SOM()" '+SOMstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
-	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Compact History<input type="checkbox" id="chkbox_CH" onclick="conf_CH()" '+CHstate+'><span class="custChkBox"></span></label></div>'
-	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Tiny History<input type="checkbox" id="chkbox_TH" onclick="conf_TH()" '+THstate+'><span class="custChkBox"></span></label></div>'
-	o += '<div style="margin: 1em"></div>'
 	o += '<div class="optionElement" id="showExtraCiphOption"><label class="chkLabel ciphCheckboxLabel2">Show Extra Ciphers<input type="checkbox" id="chkbox_SEC" onclick="conf_SEC()" '+SECstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Ignore Comments [...]<input type="checkbox" id="chkbox_APC" onclick="conf_APC()" '+APCstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">Live Database Mode<input type="checkbox" id="chkbox_LDM" onclick="conf_LDM()" '+LDMstate+'><span class="custChkBox"></span></label></div>'
+	o += '<div style="margin: 1em"></div>'
+	o += '<div class="optionElement"><label class="chkLabel ciphCheckboxLabel2">New Phrases Go First<input type="checkbox" id="chkbox_NPGF" onclick="conf_NPGF()" '+NPGFstate+'><span class="custChkBox"></span></label></div>'
 	o += '<div style="margin: 1em"></div>'
 	o += '<div class="dbOptionsBox" style="border: 1px solid var(--border-accent) !important;">'
 	o += '<span class="optionTableLabel">Phrases on DB page</span><input id="dbPageItemsBox" onchange="conf_DPI()" type="text" value="'+dbPageItems+'">'
@@ -351,24 +361,6 @@ function conf_SOM() { // Show Only Matching
 	}
 }
 
-function conf_CH() { // Compact History
-	optCompactHistoryTable = !optCompactHistoryTable
-	if (optTinyHistoryTable) { // only one option is allowed
-		optTinyHistoryTable = false
-		if (chkbox_TH !== null) chkbox_TH.checked = false
-	}
-	updateTables()
-}
-
-function conf_TH() { // Tiny History
-	optTinyHistoryTable = !optTinyHistoryTable
-	if (optCompactHistoryTable) { // only one option is allowed
-		optCompactHistoryTable = false
-		if (chkbox_CH !== null) chkbox_CH.checked = false
-	}
-	updateTables()
-}
-
 function conf_APC() { // Allow Phrase Comments
 	optAllowPhraseComments = !optAllowPhraseComments
 	updateTables()
@@ -407,6 +399,10 @@ function conf_SWC() { // Switch Ciphers (CSV)
 
 function conf_LDM() { // Live Database Mode
 	liveDatabaseMode = !liveDatabaseMode
+}
+
+function conf_NPGF() { // New Phrases Go First
+	optNewPhrasesGoFirst = !optNewPhrasesGoFirst
 }
 
 function conf_DPI() { // Database Page Items
@@ -571,6 +567,8 @@ function toggleColorControlsMenu(redraw = false) { // display control menu to ad
 		var ciph_in_row = 0 // count ciphers in current row
 
 		var o = '<div class="colorControlsBG">'
+		o += '<input class="closeMenuBtn" type="button" value="&#215;" onclick="closeAllOpenedMenus()">'
+
 		o += '<table class="ciphToggleContainer"><tbody>'
 		
 		for (i = 0; i < cipherList.length; i++) {
@@ -991,8 +989,13 @@ function updateTables(updColorLayout = true) {
 	}
 	if (colorControlsMenuOpened && updColorLayout) updColorMenuLayout() // update color controls if menu is opened
 	updateEnabledCipherTable() // update enabled cipher table
+	autoHistoryTableLayout() // use Compact History if necessary
 	updateHistoryTable() // update history table
 	updateWordBreakdown(breakCipher, true) // update word breakdown and choose first enabled cipher
+}
+
+function autoHistoryTableLayout() { // use Compact History
+	if (enabledCiphCount > optCompactCiphCount) { compactHistoryTable = true } else { compactHistoryTable = false }
 }
 
 function updateEnabledCipherCount() {
@@ -1138,7 +1141,8 @@ function phraseBoxKeypress(e) { // run on each keystroke inside text box - onkey
 	phrPos = sHistory.indexOf(phr) // position of phrase in History array
 	switch (e) { // keypress event
 		case 13: // Enter
-			addPhraseToHistory(phr, true) // enter as single phrase
+			if (!optNewPhrasesGoFirst) { addPhraseToHistory(phr, true) } // enter as single phrase
+			else { addPhraseToHistoryUnshift (phr, true) } // insert in the beginning
 			pBox.value = "" // clear textbox on Enter
 			break
 		case 38: // Up Arrow
@@ -1229,12 +1233,24 @@ function addPhraseToHistory(phr, upd) { // add new phrase to search history
 	if (upd) updateHistoryTable() // table update condition
 }
 
+function addPhraseToHistoryUnshift(phr, upd) { // add new phrase to the beginning
+	var phrPos
+	if (phr !== "" && isNaN(phr)) { // if input is not empty and not a number
+		phrPos = sHistory.indexOf(phr);
+		if (phrPos > -1) { // if phrase is in history
+			sHistory.splice(phrPos, 1) // first remove it from array
+		}
+		sHistory.unshift(phr) // insert it in the beginning
+	}
+	if (upd) updateHistoryTable() // table update condition
+}
+
 function updateHistoryTable(hltBoolArr) {
 	var ms, i, x, y, z, curCiph, gemVal
 	var ciphCount = 0 // count enabled ciphers (for hltBoolArr)
 	histTable = document.getElementById("HistoryTableArea")
 	
-	if (sHistory.length == 0) {return}
+	if (sHistory.length == 0) { return }
 
 	prevPhrID = -1 // reset phrase selection
 	ms = '<table class="HistoryTable"><tbody>'
@@ -1253,11 +1269,11 @@ function updateHistoryTable(hltBoolArr) {
 	var tmpComment = ""; var commentMatch;
 	for (x = 0; x < sHistory.length; x++) {
 
-		if (x % 25 == 0 && !optTinyHistoryTable) {
+		if (x % 25 == 0) {
 			ms += '<tr class="cH"><td class="mP"></td>'
 			for (z = 0; z < cipherList.length; z++) {
 				if (cipherList[z].enabled) {
-					if (optCompactHistoryTable) {
+					if (compactHistoryTable) {
 						ms += '<td class="hCV" style="height: '+calcCipherNameHeightPx(cipherList[z].cipherName)+'px;"><span class="hCV2" style="color: hsl('+cipherList[z].H+' '+cipherList[z].S+'% '+cipherList[z].L+'% / 1);">'+cipherList[z].cipherName+'</span></td>' // color of cipher displayed in the table
 					} else {
 						ms += '<td class="hC" style="color: hsl('+cipherList[z].H+' '+cipherList[z].S+'% '+cipherList[z].L+'% / 1); max-width: '+calcCipherNameWidthPx(cipherList[z].cipherName)+'px; min-width: '+calcCipherNameWidthPx(cipherList[z].cipherName)+'px;">'+cipherList[z].cipherName+'</td>' // color of cipher displayed in the table

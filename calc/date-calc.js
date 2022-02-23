@@ -196,6 +196,7 @@ function toggleDateCalcMenu() {
 		var d1 = new Date(saved_d1)
 
 		var o = '<div class="dateCalcContainer">'
+		o += '<input class="closeMenuBtn" type="button" value="&#215;" onclick="closeAllOpenedMenus()">'
 
 		// table with date selection
 		o += '<table class="dateCalcTable"><tbody>'

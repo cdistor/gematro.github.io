@@ -248,8 +248,8 @@ function importCalcOptions(calcOpt) { // load user options
 		if (typeof optArr[i] !== 'undefined') optFiltCrossCipherMatch = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optFiltSameCipherMatch = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optShowOnlyMatching = optArr[i] == "true" ? true : false; i++;
-		if (typeof optArr[i] !== 'undefined') optCompactHistoryTable = optArr[i] == "true" ? true : false; i++;
-		if (typeof optArr[i] !== 'undefined') optTinyHistoryTable = optArr[i] == "true" ? true : false; i++;
+		if (typeof optArr[i] !== 'undefined') compactHistoryTable = optArr[i] == "true" ? true : false; i++; // not used, compatibility
+		if (typeof optArr[i] !== 'undefined') optNewPhrasesGoFirst = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optShowExtraCiphers = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') optAllowPhraseComments = optArr[i] == "true" ? true : false; i++;
 		if (typeof optArr[i] !== 'undefined') liveDatabaseMode = optArr[i] == "true" ? true : false; i++;

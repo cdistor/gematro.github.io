@@ -41,12 +41,11 @@ function displayQuickstartGuide() {
 
 	o += '<li><span class="qgBold">"Show Only Matching"</span> - when highlighter is active, sets opacity of nonmatching values to zero</li>'
 
-	o += '<li><span class="qgBold">"Compact History"</span> - use vertical cipher names inside history table</li>'
-	o += '<li><span class="qgBold">"Tiny History"</span> - no cipher names, seamless history table</li>'
-
 	o += '<li><span class="qgBold">"Show Extra Ciphers"</span> - toggle <span class="qgBold">"Extra"</span> category with experimental ciphers</li>'
 	o += '<li><span class="qgBold">"Ignore Comments [...]"</span> - exclude any text inside square brackets from gematria calculation<br><span class="qgNote">Note: Comments are preserved on export/import</span></li>'
 	o += '<li><span class="qgBold">"Live Database Mode"</span> - disable this option to generate a precalculated database on file import<br><span class="qgNote">Note: More information is available in the "Databases" section of this guide</span></li>'
+	
+	o += '<li><span class="qgBold">"New Phrases Go First"</span> - new phrases are inserted at the beginning of <span class="qgBold">History Table</span></li>'
 	
 	o += '<li><span class="qgBold">"Phrases on DB page"</span> - specify the amount of phrases on one page of <span class="qgBold">Database</span> query results</span></li>'
 	o += '<li><span class="qgBold">"Scroll DB by lines"</span> - set scrolling speed inside <span class="qgBold">Database</span> query results</span></li>'

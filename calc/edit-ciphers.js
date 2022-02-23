@@ -66,6 +66,7 @@ function toggleEditCiphersMenu() {
 		editCiphersMenuOpened = true
 		
 		var o = '<div class="editCiphersContainer">'
+		o += '<input class="closeMenuBtn" type="button" value="&#215;" onclick="closeAllOpenedMenus()">'
 
 		o += '<table class="custCipherMainTable"><tbody>'
 		o += '<tr><td style="text-align: center; padding: 0em 1em 1em 0em;"><input id="custCipherNameInput" type="text" autocomplete="off" oninput="checkCustCipherName()" placeholder="Cipher Name"></td>'
@@ -84,7 +85,7 @@ function toggleEditCiphersMenu() {
 		o += '</div>' // close
 
 		o += '<div id="custCipherIndCtrls"></div>' // individual characters controls
-		o += '<div id="custCipherButtonArea"><input class="intBtn2" type="button" value="Add New Cipher" onclick="addNewCipherAction()"></div>' // buttons
+		o += '<div id="custCipherButtonArea"><input class="ciphEditBtn" type="button" value="Add New Cipher" onclick="addNewCipherAction()"></div>' // buttons
 		o += '</div>'
 
 		document.getElementById("editCiphersMenuArea").innerHTML += o // add element to page
@@ -113,11 +114,12 @@ function checkCustCipherName() { // redraw add/update cipher button
 
 	var o = ""
 	if (updFlag) { // cipher exists
-		o += '<input class="intBtn2" type="button" value="Update Existing Cipher" onclick="addNewCipherAction()">'
-		o += '<input class="intBtn2" type="button" value="Delete Cipher" onclick="deleteCipherAction()">'
+		o += '<input class="ciphEditBtn" type="button" value="Update Existing Cipher" onclick="addNewCipherAction()">'
+		o += '<input class="ciphEditBtn" type="button" value="New Random Color" onclick="addNewCipherAction(true)">'
+		o += '<input class="ciphEditBtn" type="button" value="Delete Cipher" onclick="deleteCipherAction()">'
 		document.getElementById("custCipherButtonArea").innerHTML = o
 	} else {
-		o += '<input class="intBtn2" type="button" value="Add New Cipher" onclick="addNewCipherAction()">'
+		o += '<input class="ciphEditBtn" type="button" value="Add New Cipher" onclick="addNewCipherAction()">'
 		document.getElementById("custCipherButtonArea").innerHTML = o
 	}
 }
@@ -218,7 +220,7 @@ function changeIndLetter(id) { // update char from individual box
 	}
 }
 
-function addNewCipherAction() { // update existing cipher if ID is specified
+function addNewCipherAction(updCiphCol = false) { // update existing cipher if ID is specified
 	var custName = document.getElementById("custCipherNameInput").value.trim()
 	// console.log(custName)
 	var custCat = document.getElementById("custCipherCatInput").value
@@ -249,7 +251,8 @@ function addNewCipherAction() { // update existing cipher if ID is specified
 	resetColorControls() // reset color changes (otherwise they become permanent)
 	var custCipher
 	if (replaceID > -1) { // cipher needs to be updated (retain colors)
-		custCipher = new cipher(custName, custCat, cipherList[replaceID].H, cipherList[replaceID].S, cipherList[replaceID].L, charsArr, valArr, ignoreDiarciticsCustom, true, caseSensitiveCustom)
+		if (!updCiphCol) { custCipher = new cipher(custName, custCat, cipherList[replaceID].H, cipherList[replaceID].S, cipherList[replaceID].L, charsArr, valArr, ignoreDiarciticsCustom, true, caseSensitiveCustom) }
+		else { custCipher = new cipher(custName, custCat, getRndIndex(rndCol.H), getRndIndex(rndCol.S), getRndIndex(rndCol.L), charsArr, valArr, ignoreDiarciticsCustom, true, caseSensitiveCustom) }
 		if (cipherList[replaceID].cipherCategory == custCat) { // same category
 			cipherList[replaceID] = custCipher // replace existing cipher
 		} else if (cCat.indexOf(custCat) > -1) { // other existing category
@@ -263,7 +266,8 @@ function addNewCipherAction() { // update existing cipher if ID is specified
 			cipherList.push(custCipher) // add new cipher in the end of array
 		}
 	} else { // use random colors
-		custCipher = new cipher(custName, custCat, rndInt(0, 360), rndInt(0, 68), rndInt(53, 67), charsArr, valArr, ignoreDiarciticsCustom, true, caseSensitiveCustom)
+		// custCipher = new cipher(custName, custCat, rndInt(0, 360), rndInt(0, 68), rndInt(53, 67), charsArr, valArr, ignoreDiarciticsCustom, true, caseSensitiveCustom)
+		custCipher = new cipher(custName, custCat, getRndIndex(rndCol.H), getRndIndex(rndCol.S), getRndIndex(rndCol.L), charsArr, valArr, ignoreDiarciticsCustom, true, caseSensitiveCustom)
 		if (cCat.indexOf(custCat) > -1) { // existing category
 			for (i = cipherList.length-1; i > -1; i--) { // go in reverse order
 				// insert after last cipher in that category

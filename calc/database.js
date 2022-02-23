@@ -281,7 +281,7 @@ function updateDatabaseQueryTableScrollbar(stPos = 0, dItems) { // starting posi
 			if (mSame) { ms += '<span style="color: hsl('+curCiph.H+' '+curCiph.S+'% '+curCiph.L+'% / 1);"' }
 			else if (!mSame && mCross) { ms += '<span style="color: hsl(0deg 0% 50% / 1);"' }
 			else if (!mSame && !mCross) { ms += '<span style="color: hsl('+curCiph.H+' '+curCiph.S+'% '+curCiph.L+'% / '+alphaHlt+');"' }
-			ms += ' class="gV"> '+gemVal+' </span></td>' // number properties are available
+			ms += ' class="gVQ"> '+gemVal+' </span></td>' // number properties are available
 		}
 		ms += '</tr>'
 	}
@@ -377,7 +377,7 @@ function updateDatabaseQueryTable(stPos = 0, dItems) { // starting position, tot
 			if (mSame) { ms += '<span style="color: hsl('+curCiph.H+' '+curCiph.S+'% '+curCiph.L+'% / 1);"' }
 			else if (!mSame && mCross) { ms += '<span style="color: hsl(0deg 0% 50% / 1);"' }
 			else if (!mSame && !mCross) { ms += '<span style="color: hsl('+curCiph.H+' '+curCiph.S+'% '+curCiph.L+'% / '+alphaHlt+');"' }
-			ms += ' class="gV"> '+gemVal+' </span></td>' // number properties are available
+			ms += ' class="gVQ"> '+gemVal+' </span></td>' // number properties are available
 		}
 		ms += '</tr>'
 	}

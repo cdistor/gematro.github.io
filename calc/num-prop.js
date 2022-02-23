@@ -72,8 +72,8 @@ $(document).ready(function() {
 	};
 
 	// numbers inside enabled ciphers and history tables
-	$("body").on("mouseenter", ".numProp, .gV", showTooltip);
-	$("body").on("mousemove", ".numProp, .gV", changeTooltipPosition);
+	$("body").on("mouseenter", ".numProp, .gV, .gVQ", showTooltip);
+	$("body").on("mousemove", ".numProp, .gV, .gVQ", changeTooltipPosition);
 	// $("body").on("mouseleave", ".numProp, .gV", hideTooltip)
 	$("body").on("mouseleave", "div.numPropTooltip", hideTooltip);
 

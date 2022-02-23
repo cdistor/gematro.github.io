@@ -41,9 +41,9 @@ $(document).ready(function(){
 
     $("#highlightBox").keyup(function(event){ // inside Highlight box
 		if ( event.which == 46 ) { // "Delete" - clear box
-			if(ctrlIsPressed) { // Ctrl + Delete
+			if(ctrlIsPressed) { // "Ctrl + Delete"
 				removeActiveFilter(); // clear filter
-			} else { // Left Click only
+			} else { // "Delete" only
 				freq = []; // reset previously found matches statistics
 				document.getElementById("highlightBox").value = "";
 				updateHistoryTable();
@@ -58,7 +58,7 @@ $(document).ready(function(){
 			updateHistoryTableAutoHlt();
 			return; // don't update history
 		}
-		if (optFiltCrossCipherMatch) { updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
+		if (optFiltCrossCipherMatch) { autoHistoryTableLayout(); updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
     });
 	
 	$("body").on("click", "td.hC", function () { // Cipher Name in history table (normal mode)
@@ -235,7 +235,8 @@ $(document).ready(function(){
 			updateWordBreakdown() // update breakdown for current phrase
 			updateEnabledCipherTable() // update enabled cipher values
 			document.getElementById("queryPosInput").focus(); // focus input
-			addPhraseToHistory(phr, true) // enter as single phrase
+			if (!optNewPhrasesGoFirst) { addPhraseToHistory(phr, true) } // enter as single phrase
+			else { addPhraseToHistoryUnshift(phr, true) } // insert in the beginning
 		}
 	});
 	
@@ -464,6 +465,7 @@ function removeNotMatchingPhrases() {
 	var o = '<input id="btn-clear-active-filter" type="button" value="X" onclick="removeActiveFilter();displayCipherCatDetailed(cCat[0]);"/>'
 	$("#clearFilterButton").html(o) // clear active filter button
 	
+	autoHistoryTableLayout()
 	if (optFiltSameCipherMatch) {
 		updateHistoryTable(hltBoolArr) // rebuild table, pass boolean array for highlighting
 	} else if (optFiltCrossCipherMatch) {
@@ -536,6 +538,7 @@ function removeActiveFilter() {
 	userOpenCiphers = [] // clear snapshot of user ciphers
 	
 	updateEnabledCipherTable() // update ciphers
+	autoHistoryTableLayout()
 	updateHistoryTable() // update history
 }
 
